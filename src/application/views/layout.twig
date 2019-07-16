@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="keywords" content="SOARCE" />
+    <meta name="description" content="SOARCE application" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="content-language" content="en" />
+    {% block head %}{%  endblock %}
+</head>
+<body {% block bodyTag %}{% endblock %}>
+<div id="header">
+    {%  block header %}{% endblock %}
+</div>
+
+<div id="main">
+    {%  block main %}{% endblock %}
+</div>
+
+<div id="footer">
+    <p><a href="https://www.soarce-qa.de/" target="_blank">SOARCE</a> &copy; 2003 - {{ "now"|date("Y") }} by
+        <a href="https://www.segnitz.net/" target="_blank">Holger Segnitz</a></p>
+</div>
+</body>
+</html>

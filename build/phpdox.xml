@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<phpdox xmlns="http://xml.phpdox.net/config">
+<project name="hsegnitz/segnitz-net-website" source="${basedir}/../src" workdir="${basedir}/phpdox">
+    <collector publiconly="false" backend="parser">
+        <!-- exclude mask="**/Base/**" />
+        <exclude mask="**/Map/**" / -->
+        <inheritance resolve="true">
+        </inheritance>
+    </collector>
+
+    <generator output="${basedir}/api">
+        <build engine="html" enabled="true" output="html">
+            <file extension="html" />
+        </build>
+    </generator>
+</project>
+</phpdox>

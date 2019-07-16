@@ -1,2 +1,10 @@
 .idea/
-/vendor/
+build/api/
+build/coverage/
+build/logs/
+build/pdepend/
+build/phpdox/
+vendor/
+.version.php
+temp/cache/
+build/\.phpunit\.result\.cache

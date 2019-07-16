@@ -1,0 +1,66 @@
+version: '3.3'
+
+services:
+    web-soarce:
+        image: nginx:latest
+        ports:
+            - "8000:80"
+            - "8443:443"
+        volumes:
+            -   type: bind
+                source: .
+                target: /var/www
+                read_only: true
+            -   type: bind
+                source: ./.docker/nginx.conf
+                target: /etc/nginx/conf.d/default.conf
+                read_only: true
+        links:
+            - app-soarce
+        networks:
+            default:
+                aliases:
+                    - soarce.local
+    app-soarce:
+        build: .
+        volumes:
+            -   type: bind
+                source: .
+                target: /var/www
+                read_only: false
+            -   type: volume
+                source: cache_vol
+                target: /var/www/temp/cache
+                read_only: false
+        links:
+            - mysql-soarce
+        networks:
+            default:
+                aliases:
+                    - soarce.local
+
+    mysql-soarce:
+        image: mysql:5.6
+        ports:
+            - '6603:3306'
+        volumes:
+            -   db_data:/var/lib/mysql
+            -   type: bind
+                source: ./.docker/db/soarce.sql
+                target: /docker-entrypoint-initdb.d/soarce.sql
+                read_only: true
+        environment:
+            MYSQL_ROOT_PASSWORD: $MYSQL_PASSWORD
+            MYSQL_DATABASE: $MYSQL_DATABASE
+        networks:
+            default:
+                aliases:
+                    - soarce.local
+
+
+volumes:
+    cache_vol:
+        driver_opts:
+            type: tmpfs
+            device: tmpfs
+    db_data:

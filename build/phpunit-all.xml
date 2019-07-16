@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+        stopOnFailure="false"
+        backupGlobals="false">
+    <filter>
+        <whitelist>
+            <directory suffix=".php">../src/</directory>
+            <exclude>
+                <!-- directory suffix=".php">../src/library/PhpQaGraphs/Model/Gitlab/Base</directory>
+                <directory suffix=".php">../src/library/PhpQaGraphs/Model/Gitlab/Map</directory>
+                <directory suffix=".php">../src/library/PhpQaGraphs/Model/Graphs/Base</directory>
+                <directory suffix=".php">../src/library/PhpQaGraphs/Model/Graphs/Map</directory -->
+            </exclude>
+        </whitelist>
+    </filter>
+
+
+
+    <testsuites>
+        <testsuite name="unittests">
+            <directory>../tests/PhpUnit/UnitTests/</directory>
+        </testsuite>
+    </testsuites>
+
+    <logging>
+        <log type="coverage-html" target="coverage"/>
+        <log type="coverage-clover" target="logs/clover.xml"/>
+        <log type="coverage-crap4j" target="logs/crap4j.xml"/>
+        <log type="junit" target="logs/junit.xml"/>
+    </logging>
+</phpunit>
