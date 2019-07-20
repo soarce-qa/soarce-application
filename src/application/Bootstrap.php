@@ -19,6 +19,17 @@ class Bootstrap
 		$view['serverUrl']     = $container['settings']['serverUrl'];
 		$view['baseUrl']       = $container['settings']['baseUrl'];
 		$container['view'] = $view;
+
+		$container['database'] = static function ($container) {
+		    $mysqli = mysqli_connect(
+		        $container->settings['soarce']['database']['host'],
+		        $container->settings['soarce']['database']['user'],
+		        $container->settings['soarce']['database']['password'],
+		        $container->settings['soarce']['database']['database']
+            );
+		    return $mysqli;
+        };
+
     }
 
 	/**
@@ -26,7 +37,8 @@ class Bootstrap
 	 */
     private function initRouting(): void
     {
-        $this->app->get('/', '\Soarce\Application\Controllers\IndexController:index');
+        $this->app->get('/',        '\Soarce\Application\Controllers\IndexController:index');
+        $this->app->any('/receive', '\Soarce\Application\Controllers\ReceiveController:index');
     }
 
     /**

@@ -24,6 +24,7 @@
   },
   "require": {
     "php": ">=7.2,<8.0-DEV",
+    "ext-json": "*",
     "ext-mysqli": "*",
     "slim/slim": "^3.12",
     "twig/twig": "^2.11",

@@ -4,8 +4,8 @@ services:
     web-soarce:
         image: nginx:latest
         ports:
-            - "8000:80"
-            - "8443:443"
+            - "8001:80"
+            - "8444:443"
         volumes:
             -   type: bind
                 source: .
@@ -48,6 +48,10 @@ services:
             -   type: bind
                 source: ./.docker/db/soarce.sql
                 target: /docker-entrypoint-initdb.d/soarce.sql
+                read_only: true
+            -   type: bind
+                source: ./.docker/db/my.cnf
+                target: /etc/mysql/conf.d/my.cnf
                 read_only: true
         environment:
             MYSQL_ROOT_PASSWORD: $MYSQL_PASSWORD
