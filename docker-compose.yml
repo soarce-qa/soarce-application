@@ -60,7 +60,12 @@ services:
             default:
                 aliases:
                     - soarce.local
-
+    redis-soarce:
+        image: redis:4.0
+        networks:
+            default:
+                aliases:
+                    - soarce.local
 
 volumes:
     cache_vol:
