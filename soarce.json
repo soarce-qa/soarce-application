@@ -1,13 +1,7 @@
 {
-  "database": {
-    "host":     "mysql-soarce",
-    "user":     "root",
-    "password": "root",
-    "database": "soarce"
-  },
   "services": {
     "main": {
-      "url": "http://segnitz.local",
+      "url": "http://segnitz.local/",
       "parameter_name": "SOARCE"
     }
   }

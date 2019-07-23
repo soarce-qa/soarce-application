@@ -10,10 +10,10 @@ $container = new Container(require __DIR__ . '/../settings.php');
 
 $container['mysqli'] = static function ($container): mysqli {
     $mysqli = mysqli_connect(
-        $container->settings['soarce']['database']['host'],
-        $container->settings['soarce']['database']['user'],
-        $container->settings['soarce']['database']['password'],
-        $container->settings['soarce']['database']['database']
+        $container->settings['database']['host'],
+        $container->settings['database']['user'],
+        $container->settings['database']['password'],
+        $container->settings['database']['database']
     );
 
     return $mysqli;
