@@ -40,6 +40,10 @@ class CoverageReceiver extends ReceiverAbstract
      */
     private function storeCoverageForOneFile($filename, $coveredLines): void
     {
+        if (strpos($filename, "eval()'d code") !== false) {
+            return;
+        }
+
         $sql = 'INSERT INTO `coverage` (`application_id`, `file_id`, `line`) VALUES ';
         if (isset($this->fileMd5Hashes[$filename])) {
             $fileId = $this->createFile($filename, $this->fileMd5Hashes[$filename]);
