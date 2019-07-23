@@ -2,8 +2,6 @@
 
 namespace Soarce\Receiver;
 
-use Slim\Container;
-
 class CoverageReceiver extends ReceiverAbstract
 {
     /**

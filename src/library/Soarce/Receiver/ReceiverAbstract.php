@@ -52,15 +52,9 @@ abstract class ReceiverAbstract
     protected function createApplication($name): void
     {
         $escapedName = mysqli_real_escape_string($this->mysqli, $name);
-        $sql = 'INSERT IGNORE INTO `application` SET `name` = "' . $escapedName . '"';
-
+        $sql = 'INSERT INTO `application` SET `name` = "' . $escapedName . '" ON DUPLICATE KEY UPDATE `id` = LAST_INSERT_ID(`id`);';
         $this->mysqli->query($sql);
-
-        if (0 === ($id = $this->mysqli->insert_id)) {
-            $result = $this->mysqli->query('SELECT `id` FROM `application` WHERE `name` = "' . $escapedName . '"');
-            $id = $result->fetch_assoc()['id'];
-        }
-        $this->applicationId = $id;
+        $this->applicationId = $this->mysqli->insert_id;
     }
 
     /**
@@ -70,15 +64,12 @@ abstract class ReceiverAbstract
     protected function createFile($filename): int
     {
         $escapedFilename = mysqli_real_escape_string($this->mysqli, $filename);
-        $sql = 'INSERT IGNORE INTO `files` (`application_id`, `request_id`, `filename`) VALUES (
-            ' . $this->getApplicationId() . ', ' . $this->getRequestId() . ', "' . $escapedFilename . '");';
+        $sql = 'INSERT IGNORE INTO `files` (`application_id`, `request_id`, `filename`) VALUES ('
+            . $this->getApplicationId() . ', ' . $this->getRequestId() . ', "' . $escapedFilename
+            . '") ON DUPLICATE KEY UPDATE `id` = LAST_INSERT_ID(`id`);';
         $this->mysqli->query($sql);
 
-        if (0 === ($id = $this->mysqli->insert_id)) {
-            $result = $this->mysqli->query('SELECT `id` FROM `files` WHERE `filename` = "' . $escapedFilename . '" AND application_id = ' . $this->getApplicationId());
-            $id = $result->fetch_assoc()['id'];
-        }
-        return $id;
+        return $this->mysqli->insert_id;
     }
 
     /**
@@ -129,15 +120,11 @@ abstract class ReceiverAbstract
             . mysqli_real_escape_string($this->mysqli, json_encode($server, JSON_PRETTY_PRINT))
             . '", "'
             . mysqli_real_escape_string($this->mysqli, json_encode($env, JSON_PRETTY_PRINT))
-            . '");';
+            . '") ON DUPLICATE KEY UPDATE `id` = LAST_INSERT_ID(`id`);';
 
         $this->mysqli->query($sql);
 
-        if (0 === ($id = $this->mysqli->insert_id)) {
-            $result = $this->mysqli->query('SELECT `id` FROM `requests` WHERE `request_id` = "' . mysqli_real_escape_string($this->mysqli, $requestId) . '"');
-            $id = $result->fetch_assoc()['id'];
-        }
-        $this->requestId = $id;
+        $this->requestId = $this->mysqli->insert_id;
     }
 
 
