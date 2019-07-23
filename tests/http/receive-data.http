@@ -1,0 +1,102 @@
+# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection).
+#
+# Following HTTP Request Live Templates are available:
+# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
+# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
+# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
+
+GET http://soarce.local:8001/
+
+
+
+###
+
+POST http://soarce.local:8001/receive
+Content-Type: application/json
+
+{
+  "header": {
+    "type": "coverage",
+    "host": "asdf",
+    "request_time": 1563719551.120563,
+    "request_id": "954fe04b7240a2d0da4c85dc3b16f22f",
+    "get": {
+      "height": "440",
+      "width": "631",
+      "mode": "fill"
+    },
+    "post": [],
+    "server": {
+      "PHP_EXTRA_CONFIGURE_ARGS": "--enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data --disable-cgi",
+      "HOSTNAME": "698622784ac3",
+      "PHP_INI_DIR": "\/usr\/local\/etc\/php",
+      "HOME": "\/var\/www",
+      "REQUEST_TIME_FLOAT": 1563719551.112788,
+      "REQUEST_TIME": 1563719551,
+      "argv": [
+        "height=440&width=631&mode=fill"
+      ],
+      "argc": 1
+    },
+    "env": {
+      "PHP_EXTRA_CONFIGURE_ARGS": "--enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data --disable-cgi",
+      "HOSTNAME": "698622784ac3",
+      "PHP_INI_DIR": "\/usr\/local\/etc\/php"
+    }
+  },
+  "payload": {
+    "\/var\/www\/vendor\/slim\/slim\/Slim\/App.php": {
+      "47": 1,
+      "49": 1,
+      "77": 1,
+      "78": 1,
+      "80": 1,
+      "83": 1,
+      "84": 1,
+      "93": 1,
+      "144": 1,
+      "157": 1,
+      "236": 1,
+      "240": 1,
+      "241": 1,
+      "242": 1,
+      "245": 1,
+      "246": 1,
+      "249": 1,
+      "285": 1,
+      "286": 1,
+      "287": 1,
+      "288": 1,
+      "289": 1,
+      "311": 1,
+      "314": 1,
+      "315": 1,
+      "394": 1,
+      "395": 1,
+      "396": 1,
+      "400": 1,
+      "407": 1,
+      "503": 1,
+      "506": 1,
+      "509": 1,
+      "510": 1,
+      "511": 1,
+      "514": 1,
+      "515": 1,
+      "516": 1,
+      "586": 1,
+      "588": 1,
+      "589": 1,
+      "590": 1,
+      "591": 1,
+      "594": 1,
+      "595": 1,
+      "598": 1,
+      "601": 1,
+      "603": 1,
+      "718": 1
+    }
+  }
+}
+
+###

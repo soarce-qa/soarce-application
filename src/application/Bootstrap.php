@@ -1,61 +1,32 @@
 <?php
 
-use Slim\App;
+use Slim\Container;
 use Slim\Views\Twig;
+use Slim\Views\TwigExtension;
 
-class Bootstrap
-{
-    /** @var App */
-    private $app;
+require_once __DIR__ . '/../../vendor/autoload.php';
 
-    private function initDependencyInjection(): void
-    {
-        $container = $this->app->getContainer();
-        $view = new Twig(__DIR__ . '/views/', [__DIR__ . '/temp/cache/twig']);
+$container = new Container(require __DIR__ . '/../settings.php');
 
-		// Instantiate and add Slim specific extension
-		$basePath = rtrim(str_ireplace('index.php', '', $container['request']->getUri()->getBasePath()), '/');
-		$view->addExtension(new Slim\Views\TwigExtension($container['router'], $basePath));
-		$view['serverUrl']     = $container['settings']['serverUrl'];
-		$view['baseUrl']       = $container['settings']['baseUrl'];
-		$container['view'] = $view;
+$container['mysqli'] = static function ($container): mysqli {
+    $mysqli = mysqli_connect(
+        $container->settings['soarce']['database']['host'],
+        $container->settings['soarce']['database']['user'],
+        $container->settings['soarce']['database']['password'],
+        $container->settings['soarce']['database']['database']
+    );
 
-		$container['database'] = static function ($container) {
-		    $mysqli = mysqli_connect(
-		        $container->settings['soarce']['database']['host'],
-		        $container->settings['soarce']['database']['user'],
-		        $container->settings['soarce']['database']['password'],
-		        $container->settings['soarce']['database']['database']
-            );
-		    return $mysqli;
-        };
+    return $mysqli;
+};
 
-    }
+$container['view'] = static function (Container $container): Twig {
+    $view = new Twig(__DIR__ . '/views/', [__DIR__ . '/temp/cache/twig']);
 
-	/**
-	 * Define all the routes -- this will be crazy, but well... it's a small project/framework
-	 */
-    private function initRouting(): void
-    {
-        $this->app->get('/',        '\Soarce\Application\Controllers\IndexController:index');
-        $this->app->any('/receive', '\Soarce\Application\Controllers\ReceiveController:index');
-    }
+    // Instantiate and add Slim specific extension
+    $basePath = rtrim(str_ireplace('index.php', '', $container['request']->getUri()->getBasePath()), '/');
+    $view->addExtension(new TwigExtension($container['router'], $basePath));
 
-    /**
-     * Bootstrap constructor.
-     * @param App $app
-     */
-    public function __construct(App $app)
-    {
-        $this->app = $app;
-    }
+    return $view;
+};
 
-    public function boot()
-    {
-        $this->initDependencyInjection();
-        $this->initRouting();
-    }
-}
-
-(new Bootstrap($app))->boot();
-
+return $container;
