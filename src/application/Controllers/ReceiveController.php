@@ -7,6 +7,7 @@ use Slim\Http\Response;
 use Slim\Container;
 use Slim\Http\StatusCode;
 use Soarce\Receiver\CoverageReceiver;
+use Soarce\Receiver\TraceReceiver;
 
 class ReceiveController
 {
@@ -39,7 +40,7 @@ class ReceiveController
             return $response->withStatus(StatusCode::HTTP_PRECONDITION_FAILED);
         }
 
-        /* */ //debug
+        /* * / //debug
         $sql = "INSERT INTO soarce.dump (raw, header, payload) VALUES ('"
             . mysqli_real_escape_string($this->ci->mysqli, (string)$request->getBody())
             . '\', \''
@@ -57,10 +58,10 @@ class ReceiveController
             $coverageReceiver->persist($json);
         }
 
-/*        if ($json['header']['type'] === 'trace') {
-            $coverageReceiver = new CoverageReceiver($this->ci);
-            $coverageReceiver->persist($json);
-        }*/
+        if ($json['header']['type'] === 'trace') {
+            $traceReceiver = new TraceReceiver($this->ci);
+            $traceReceiver->persist($json);
+        }
 
         return $response;
 	}
