@@ -34,6 +34,10 @@ class TraceReceiver extends ReceiverAbstract
      */
     private function storeFunctionCallsForOneFile($filename, $functions): void
     {
+        if (strpos($filename, "eval()'d code") !== false) {
+            return;
+        }
+
         $sql = 'INSERT INTO `function_calls` (`application_id`, `file_id`, `class`, `function`, `type`) VALUES ';
         $fileId = $this->createFile($filename);
 

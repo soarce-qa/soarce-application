@@ -4,6 +4,9 @@ namespace Soarce\Receiver;
 
 class CoverageReceiver extends ReceiverAbstract
 {
+    /** @var string[] */
+    private $fileMd5Hashes;
+
     /**
      * @param array $json
      */
@@ -11,6 +14,7 @@ class CoverageReceiver extends ReceiverAbstract
     {
         $header  = $json['header'];
         $payload = $json['payload'];
+        $this->fileMd5Hashes = $json['md5'];
 
         $this->createApplication($header['host']);
 
@@ -36,11 +40,18 @@ class CoverageReceiver extends ReceiverAbstract
      */
     private function storeCoverageForOneFile($filename, $coveredLines): void
     {
+        if (strpos($filename, "eval()'d code") !== false) {
+            return;
+        }
+
         $sql = 'INSERT INTO `coverage` (`application_id`, `file_id`, `line`) VALUES ';
-        $fileId = $this->createFile($filename);
+        if (isset($this->fileMd5Hashes[$filename])) {
+            $fileId = $this->createFile($filename, $this->fileMd5Hashes[$filename]);
+        } else {
+            $fileId = $this->createFile($filename);
+        }
 
         $rows = [];
-
         foreach (array_keys($coveredLines) as $line) {
             $rows[] = "({$this->getApplicationId()}, {$fileId}, {$line})";
         }
