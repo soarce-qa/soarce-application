@@ -38,7 +38,7 @@ class TraceReceiver extends ReceiverAbstract
             return;
         }
 
-        $sql = 'INSERT INTO `function_calls` (`application_id`, `file_id`, `class`, `function`, `type`) VALUES ';
+        $sql = 'INSERT INTO `function_call` (`application_id`, `file_id`, `class`, `function`, `type`) VALUES ';
         $fileId = $this->createFile($filename);
 
         $rows = [];
