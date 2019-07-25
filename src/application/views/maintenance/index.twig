@@ -1,0 +1,23 @@
+{% extends "layout.twig" %}
+
+{%  block head %}
+    <title>SOARCE</title>
+{%  endblock %}
+
+{%  block header %}
+    <h2>Maintenance</h2>
+{% endblock %}
+
+{% block main %}
+
+    <h3>Maintenance</h3>
+    <form method="post">
+        <ul>
+            <li><a href="/">back</a></li>
+            <li>...</li>
+            <li><input type="submit" name="action" value="truncate"></li>
+            <li><input type="submit" name="action" value="reset autoincrement"></li>
+        </ul>
+    </form>
+
+{% endblock %}
