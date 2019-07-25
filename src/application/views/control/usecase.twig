@@ -1,0 +1,52 @@
+{% extends "layout.twig" %}
+
+{%  block head %}
+    <title>SOARCE</title>
+{%  endblock %}
+
+{%  block header %}
+    <h2>Control</h2>
+{% endblock %}
+
+{% block main %}
+
+    <h3>Usecases</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>name</th>
+                <th>requests</th>
+                <th>active</th>
+                <th>created</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for usecase in usecases %}
+            <tr>
+                <th>{{ usecase.id }}</th>
+                <td>{{ usecase.name }}</td>
+                <td>{{ usecase.requests }}</td>
+                <td>{% if usecase.active %}yes{% else %}no{% endif %}</td>
+                <td>{{ usecase.created | date('Y-m-d H:i:s') }}</td>
+                <td>
+                    <form method="post" action="/control/usecases/{{ usecase.id }}">
+                        <ul>
+                            <li><input type="submit" name="action" value="activate"></li>
+                            <li><input type="submit" name="action" value="restart"></li>
+                            <li><input type="submit" name="action" value="delete"></li>
+                        </ul>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <form method="post" action="/control/usecases">
+        New: <input type="text" name="usecase"> <input type="submit" name="action" value="create">
+    </form>
+{% endblock %}
+
+
