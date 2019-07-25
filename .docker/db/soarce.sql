@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS `dump` (
 -- Data exporting was unselected.
 
 -- Dumping structure for table soarce.files
-CREATE TABLE IF NOT EXISTS `files` (
+CREATE TABLE IF NOT EXISTS `file` (
                                        `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
                                        `application_id` int(10) unsigned NOT NULL,
                                        `request_id` int(10) unsigned NOT NULL,
@@ -57,14 +57,14 @@ CREATE TABLE IF NOT EXISTS `files` (
                                        PRIMARY KEY (`id`),
                                        UNIQUE KEY `application_id_filename` (`application_id`,`filename`),
                                        KEY `fi__requests` (`request_id`),
-                                       CONSTRAINT `FK__requests` FOREIGN KEY (`request_id`) REFERENCES `requests` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+                                       CONSTRAINT `FK__requests` FOREIGN KEY (`request_id`) REFERENCES `request` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
                                        CONSTRAINT `FK_files_application` FOREIGN KEY (`application_id`) REFERENCES `application` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 -- Data exporting was unselected.
 
 -- Dumping structure for table soarce.function_calls
-CREATE TABLE IF NOT EXISTS `function_calls` (
+CREATE TABLE IF NOT EXISTS `function_call` (
                                                 `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
                                                 `application_id` int(10) unsigned NOT NULL,
                                                 `file_id` bigint(20) unsigned NOT NULL DEFAULT '0',
@@ -74,14 +74,14 @@ CREATE TABLE IF NOT EXISTS `function_calls` (
                                                 PRIMARY KEY (`id`),
                                                 KEY `fi__files` (`file_id`),
                                                 KEY `application_id` (`application_id`),
-                                                CONSTRAINT `FK__files` FOREIGN KEY (`file_id`) REFERENCES `files` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+                                                CONSTRAINT `FK__files` FOREIGN KEY (`file_id`) REFERENCES `file` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
                                                 CONSTRAINT `FK_function_calls_application` FOREIGN KEY (`application_id`) REFERENCES `application` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Data exporting was unselected.
 
 -- Dumping structure for table soarce.requests
-CREATE TABLE IF NOT EXISTS `requests` (
+CREATE TABLE IF NOT EXISTS `request` (
                                           `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
                                           `usecase_id` mediumint(8) unsigned NOT NULL,
                                           `application_id` int(10) unsigned NOT NULL,
@@ -96,13 +96,13 @@ CREATE TABLE IF NOT EXISTS `requests` (
                                           KEY `fi_case` (`usecase_id`),
                                           KEY `application_id` (`application_id`),
                                           CONSTRAINT `FK_requests_application` FOREIGN KEY (`application_id`) REFERENCES `application` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-                                          CONSTRAINT `usecase` FOREIGN KEY (`usecase_id`) REFERENCES `usecases` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+                                          CONSTRAINT `usecase` FOREIGN KEY (`usecase_id`) REFERENCES `usecase` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 -- Data exporting was unselected.
 
 -- Dumping structure for table soarce.usecases
-CREATE TABLE IF NOT EXISTS `usecases` (
+CREATE TABLE IF NOT EXISTS `usecase` (
                                           `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
                                           `name` varchar(63) NOT NULL,
                                           `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,

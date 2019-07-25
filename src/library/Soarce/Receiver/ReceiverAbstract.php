@@ -65,7 +65,7 @@ abstract class ReceiverAbstract
     protected function createFile($filename, $md5 = null): int
     {
         $escapedFilename = mysqli_real_escape_string($this->mysqli, $filename);
-        $sql = 'INSERT IGNORE INTO `files` (`application_id`, `request_id`, `filename`, `md5`) VALUES ('
+        $sql = 'INSERT IGNORE INTO `file` (`application_id`, `request_id`, `filename`, `md5`) VALUES ('
             . $this->getApplicationId() . ', ' . $this->getRequestId() . ', "' . $escapedFilename
             . '", '
             . ($md5 !== 0 ? "0x{$md5}" : 'null')
@@ -84,7 +84,7 @@ abstract class ReceiverAbstract
     {
         if (null === $this->usecaseId) {
             // due to the unique constraint/index there can only be one row!
-            $result = $this->mysqli->query('SELECT `id` FROM `usecases` WHERE `active` = 1');
+            $result = $this->mysqli->query('SELECT `id` FROM `usecase` WHERE `active` = 1');
             $this->usecaseId = $result->fetch_assoc()['id'];
         }
 
@@ -109,7 +109,7 @@ abstract class ReceiverAbstract
      */
     protected function createRequest($requestId, $requestStarted, $get, $post, $server, $env): void
     {
-        $sql = 'INSERT IGNORE INTO `requests` (`usecase_id`, `application_id`, `request_id`, `request_started`, `get`, `post`, `server`, `env`) VALUES ('
+        $sql = 'INSERT IGNORE INTO `request` (`usecase_id`, `application_id`, `request_id`, `request_started`, `get`, `post`, `server`, `env`) VALUES ('
             . mysqli_real_escape_string($this->mysqli, $this->getUsecaseId())
             . ', '
             . mysqli_real_escape_string($this->mysqli, $this->getApplicationId())
