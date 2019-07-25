@@ -18,4 +18,33 @@
         <li><a href="/whatever">whatever</a></li>
     </ul>
 
+    <div id="stats">
+        <h3>Stats</h3>
+        <h4>MySQL</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>table</th>
+                    <th>records</th>
+                    <th>size</th>
+                    <th>next-index</th>
+                    <th>index-usage</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for table in DatabaseStatistics %}
+                <tr>
+                    <td>{{ table.TABLE_NAME }}</td>
+                    <td>{{ table.TABLE_ROWS }}</td>
+                    <td>{{ (table.DATA_LENGTH + table.INDEX_LENGTH)|byte }}</td>
+                    <td>{{ table.AUTO_INCREMENT }}</td>
+                    <td>{{ (table.INDEX_PERCENTAGE*100)|number_format(6, '.', ',') }} %</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <a href="/maintenance">Maintenance</a>
+        <h4>Redis?</h4>
+    </div>
+
 {% endblock %}

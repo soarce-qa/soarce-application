@@ -7,7 +7,7 @@ use Slim\Http\Response;
 use Slim\Container;
 use Soarce\Statistics\Database;
 
-class IndexController
+class MaintenanceController
 {
     /** @var Container */
     protected $ci;
@@ -28,10 +28,17 @@ class IndexController
 	 */
 	public function index(Request $request, Response $response): Response
     {
-        $dbstatistics = new Database($this->ci);
-        $this->ci->view['DatabaseStatistics'] = $dbstatistics->getMysqlStats();
+        $databaseMaintenance = new \Soarce\Maintenance\Database($this->ci);
 
-		return $this->ci->view->render($response, 'index/index.twig');
+        if ($request->isPost()) {
+            if ($request->getParam('action') === 'reset autoincrement') {
+                $databaseMaintenance->resetAutoIncrement();
+            } elseif ($request->getParam('action') === 'truncate') {
+                $databaseMaintenance->purgeAll();
+            }
+        }
+
+		return $this->ci->view->render($response, 'maintenance/index.twig');
 	}
 
 }
