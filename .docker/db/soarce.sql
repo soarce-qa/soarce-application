@@ -109,8 +109,8 @@ CREATE TABLE IF NOT EXISTS `usecase` (
                                           `active` tinyint(1) unsigned DEFAULT NULL,
                                           PRIMARY KEY (`id`),
                                           UNIQUE KEY `active` (`active`),
-                                          KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+                                          UNIQUE KEY `name` (`name`)
+) COLLATE='utf8mb4_general_ci' ENGINE=InnoDB  AUTO_INCREMENT=1;
 
 -- Data exporting was unselected.
 
