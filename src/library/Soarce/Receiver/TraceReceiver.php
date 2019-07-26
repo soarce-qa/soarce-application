@@ -38,7 +38,7 @@ class TraceReceiver extends ReceiverAbstract
             return;
         }
 
-        $sql = 'INSERT INTO `function_call` (`application_id`, `file_id`, `class`, `function`, `type`) VALUES ';
+        $sql = 'INSERT INTO `function_call` (`file_id`, `class`, `function`, `type`) VALUES ';
         $fileId = $this->createFile($filename);
 
         $rows = [];
@@ -46,7 +46,7 @@ class TraceReceiver extends ReceiverAbstract
         foreach ($functions as $functionName => $userDefined) {
             $split = preg_split('/(->|::)/', $functionName);
             if (count($split) === 1) {
-                $rows[] = "({$this->getApplicationId()}, {$fileId}, '', '"
+                $rows[] = "({$fileId}, '', '"
                     . mysqli_real_escape_string($this->mysqli, $split[0])
                     . "', '"
                     . (1 == $userDefined ? 'user-defined' : 'internal')
@@ -54,7 +54,7 @@ class TraceReceiver extends ReceiverAbstract
                 continue;
             }
 
-            $rows[] = "({$this->getApplicationId()}, {$fileId}, '"
+            $rows[] = "({$fileId}, '"
                 . mysqli_real_escape_string($this->mysqli, $split[0])
                 . "', '"
                 . mysqli_real_escape_string($this->mysqli, $split[1])
