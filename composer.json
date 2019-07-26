@@ -29,7 +29,8 @@
     "slim/slim": "^3.12",
     "twig/twig": "^2.11",
     "slim/twig-view": "^2.5",
-    "symfony/dotenv": "^4.3"
+    "symfony/dotenv": "^4.3",
+    "swaggest/json-schema": "^0.12.11"
   },
   "autoload": {
     "psr-4": {
