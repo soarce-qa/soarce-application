@@ -18,6 +18,13 @@
         <li><a href="/whatever">whatever</a></li>
     </ul>
 
+    <h3>Config</h3>
+    {% if configIsValid %}
+    <p><span style="color: green; font-weight: bold">valid</span></p>
+    {% else %}
+    <p><span style="color: red;"><span style="font-weight: bold;">invalid: </span> {{ configErrorMessage }}</span></p>
+    {% endif %}
+
     <div id="stats">
         <h3>Stats</h3>
         <h4>MySQL</h4>
