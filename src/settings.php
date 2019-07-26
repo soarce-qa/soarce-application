@@ -14,6 +14,8 @@ return [
             'database' => 'soarce',
         ],
 
-        'soarce' => json_decode(file_get_contents(__DIR__ . '/../soarce.json'), JSON_OBJECT_AS_ARRAY),
+        'soarce' => [
+            'services' => \Soarce\Config::load(__DIR__ . '/../soarce.json'),
+        ],
     ],
 ];

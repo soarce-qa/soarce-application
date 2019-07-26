@@ -2,6 +2,7 @@
 
 namespace Soarce;
 
+use Soarce\Config\Service;
 use Swaggest\JsonSchema\Schema;
 
 class Config
@@ -24,5 +25,19 @@ class Config
             self::$validationError = $e->getMessage();
             return false;
         }*/
+    }
+
+    /**
+     * @param  string $filename
+     * @return Service[]
+     */
+    public static function load($filename): array
+    {
+        $services = [];
+        foreach (json_decode(file_get_contents($filename), JSON_OBJECT_AS_ARRAY) as $rawService) {
+            $services[] = new Service($rawService['name'], $rawService['url'], $rawService['parameter_name']);
+        }
+
+        return $services;
     }
 }
