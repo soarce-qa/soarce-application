@@ -5,6 +5,7 @@ namespace Soarce\Application\Controllers;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Slim\Container;
+use Soarce\Control\Service;
 use Soarce\Control\Usecase;
 
 class ControlController
@@ -31,6 +32,23 @@ class ControlController
     {
         return $this->ci->view->render($response, 'control/index.twig');
 	}
+
+    /**
+     * @param  Request  $request
+     * @param  Response $response
+     * @param  array    $args
+     * @return Response
+     */
+	public function service(Request $request, Response $response, $args): Response
+    {
+        $serviceControl = new Service($this->ci);
+        $service = $args['service'] ?? '';
+        $action  = $request->getParam('action');
+
+        $this->ci->view['services'] = $serviceControl->getAllServiceActionables();
+
+        return $this->ci->view->render($response, 'control/service.twig');
+    }
 
     /**
      * @param  Request  $request
