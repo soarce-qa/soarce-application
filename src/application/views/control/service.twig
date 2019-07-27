@@ -26,7 +26,7 @@
         <tbody>
         {% for service in services %}
             <tr>
-                <td>{{ service.serviceConfig.name }}</td>
+                <th>{{ service.serviceConfig.name }}</th>
                 <td>{{ service.serviceConfig.url }}</td>
                 <td>{{ service.serviceConfig.parameterName }}</td>
                 <td>{% if service.ping %}yes{% else %}no{% endif %}</td>
@@ -36,6 +36,13 @@
         {% endfor %}
         </tbody>
     </table>
+
+    <h4>Control all Services</h4>
+    <form method="post" action="/control/services">
+        <ul>
+            <li><input type="submit" name="action" value="preconditions"></li>
+        </ul>
+    </form>
 
     <p>
         <a href="/">back</a>

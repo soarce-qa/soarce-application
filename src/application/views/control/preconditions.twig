@@ -1,0 +1,57 @@
+{% extends "layout.twig" %}
+
+{%  block head %}
+    <title>SOARCE</title>
+{%  endblock %}
+
+{%  block header %}
+    <h2>Control</h2>
+{% endblock %}
+
+{% block main %}
+
+    <h3>Services</h3>
+
+    <h4>Overview</h4>
+    <table>
+        <thead>
+            <tr>
+                <th>name</th>
+                <th>xdebug_installed</th>
+                <th>autotrace_off</th>
+                <th>trace_format</th>
+                <th>trace_output_name</th>
+                <th>trace_trigger_enabled</th>
+                <th>tracedir_readable</th>
+                <th>datadir_writable</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for service in services %}
+            <tr>
+                <th>{{ service.serviceConfig.name }}</th>
+                <td style="text-align: center;">{{ _self.yesno(service.preconditions.xdebug_installed) }}</td>
+                <td style="text-align: center;">{{ _self.yesno(service.preconditions.autotrace_off) }}</td>
+                <td style="text-align: center;">{{ _self.yesno(service.preconditions.trace_format) }}</td>
+                <td style="text-align: center;">{{ _self.yesno(service.preconditions.trace_output_name) }}</td>
+                <td style="text-align: center;">{{ _self.yesno(service.preconditions.trace_trigger_enabled) }}</td>
+                <td style="text-align: center;">{{ _self.yesno(service.preconditions.tracedir_readable) }}</td>
+                <td style="text-align: center;">{{ _self.yesno(service.preconditions.datadir_writable) }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <p>
+        <a href="/control/services">back</a>
+    </p>
+{% endblock %}
+
+
+{% macro yesno(status) %}
+    {% if status %}
+    <span style="color: green;">yes</span>
+    {% else %}
+    <span style="color: red; font-weight: bold">no</span>
+    {% endif %}
+{% endmacro %}

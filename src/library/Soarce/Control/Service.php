@@ -46,5 +46,19 @@ class Service
         return $actionables;
     }
 
+    /**
+     * @return Actionable[]
+     */
+    public function checkPreconditons(): array
+    {
+        $actionables = [];
+        foreach ($this->getAllServiceConfigs() as $service) {
+            $actionable = new Actionable($service);
+            $actionable->collectPreconditions();
+            $actionables[] = $actionable;
+        }
+
+        return $actionables;
+    }
 
 }
