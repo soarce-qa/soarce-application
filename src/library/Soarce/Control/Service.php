@@ -39,8 +39,8 @@ class Service
     public function getAllServiceActionables(): array
     {
         $actionables = [];
-        foreach ($this->getAllServiceConfigs() as $service) {
-            $actionables[] = new Actionable($service);
+        foreach ($this->getAllServiceConfigs() as $serviceName => $service) {
+            $actionables[$serviceName] = new Actionable($service);
         }
 
         return $actionables;
@@ -61,13 +61,23 @@ class Service
     public function checkPreconditons(): array
     {
         $actionables = [];
-        foreach ($this->getAllServiceConfigs() as $service) {
-            $actionable = new Actionable($service);
+        foreach ($this->getAllServiceActionables() as $serviceName => $actionable) {
             $actionable->collectPreconditions();
-            $actionables[] = $actionable;
+            $actionables[$serviceName] = $actionable;
         }
 
         return $actionables;
     }
 
+    /**
+     * @return string[]
+     */
+    public function start(): array
+    {
+        $ret = [];
+        foreach ($this->getAllServiceActionables() as $serviceName => $actionable) {
+            $ret[$serviceName] = $actionable->start();
+        }
+        return $ret;
+    }
 }
