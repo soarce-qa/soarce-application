@@ -45,7 +45,7 @@ class Actionable
      */
     public function getDetails(): array
     {
-       return json_decode(file_get_contents($this->buildUrl('details')), JSON_OBJECT_AS_ARRAY);
+        return json_decode(file_get_contents($this->buildUrl('details')), JSON_OBJECT_AS_ARRAY);
     }
 
     /**
@@ -53,7 +53,15 @@ class Actionable
      */
     public function collectPreconditions(): void
     {
-       $this->preconditions = json_decode(file_get_contents($this->buildUrl('preconditions')), JSON_OBJECT_AS_ARRAY);
+        $this->preconditions = json_decode(file_get_contents($this->buildUrl('preconditions')), JSON_OBJECT_AS_ARRAY);
+    }
+
+    /**
+     * @return string
+     */
+    public function start(): string
+    {
+        return file_get_contents($this->buildUrl('start'));
     }
 
     /**

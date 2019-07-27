@@ -53,6 +53,10 @@ class ControlController
                 case 'details':
                     $this->ci->view['service'] = $serviceControl->getServiceActionable($service);
                     return $this->ci->view->render($response, 'control/details.twig');
+                case 'start':
+                    $this->ci->view['services'] = $serviceControl->start();
+                    return $this->ci->view->render($response, 'control/startstop.twig');
+                    break;
             }
         }
 

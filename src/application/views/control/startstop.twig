@@ -1,0 +1,36 @@
+{% extends "layout.twig" %}
+
+{%  block head %}
+    <title>SOARCE</title>
+{%  endblock %}
+
+{%  block header %}
+    <h2>Control</h2>
+{% endblock %}
+
+{% block main %}
+
+    <h3>Services</h3>
+
+    <h4>Start/Stop</h4>
+    <table>
+        <thead>
+            <tr>
+                <th>name</th>
+                <th>result</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for name, result in services %}
+            <tr>
+                <th>{{ name }}</th>
+                <td>{{ result }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <p>
+        <a href="/control/services">back</a>
+    </p>
+{% endblock %}
