@@ -1,0 +1,40 @@
+{% extends "layout.twig" %}
+
+{%  block head %}
+    <title>SOARCE</title>
+{%  endblock %}
+
+{%  block header %}
+    <h2>Control</h2>
+{% endblock %}
+
+{% block main %}
+
+    <h3>Services</h3>
+
+    <h4>Details of "{{ service.serviceConfig.name }}"</h4>
+
+    <h5>$_SERVER</h5>
+    <pre>
+        {{ service.details.server|json_encode(constant('JSON_PRETTY_PRINT')) }}
+    </pre>
+
+    <h5>$_env</h5>
+    <pre>
+        {{ service.details.env|json_encode(constant('JSON_PRETTY_PRINT')) }}
+    </pre>
+
+    <h5>Extensions</h5>
+    <pre>
+        {{ service.details.extensions|json_encode(constant('JSON_PRETTY_PRINT')) }}
+    </pre>
+
+    <h5>Ini Settings</h5>
+    <pre>
+        {{ service.details.ini_settings|json_encode(constant('JSON_PRETTY_PRINT')) }}
+    </pre>
+
+    <p>
+        <a href="/control/services">back</a>
+    </p>
+{% endblock %}
