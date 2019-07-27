@@ -1,0 +1,16 @@
+version: '3.3'
+
+# copy and modify this file to allow SOARCE access to your application
+# and services if they are managed by docker-compose as well.
+
+services:
+    app-soarce:
+        networks:
+            custom_network1:
+            custom_network2:
+
+networks:
+    custom_network1:
+        external: true
+    custom_network2:
+        external: true

@@ -18,6 +18,29 @@ tba
 
 tba
 
+### Networks
+
+SOURCE-control needs to be able to send http requests to your applications and services. If they are
+orchestrated by docker-compose in a closed network, you will have to make it known to SOARCE's docker-compose.
+This can be achieved by copying/renaming the file `docker-compose.override.yml.dist` to `docker-compose.override.yml`
+and changing/adding the network name(s). It could look like this:
+
+```yaml
+version: '3.3'
+
+services:
+    app-soarce:
+        networks:
+            mycoolapp_default:
+            thisotherapp_default:
+
+networks:
+    mycoolapp_default:
+        external: true
+    thisotherapp_default:
+        external: true
+```
+
 ## Known Issues
 
 ### Performance
