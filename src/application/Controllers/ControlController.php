@@ -57,6 +57,10 @@ class ControlController
                     $this->ci->view['services'] = $serviceControl->start();
                     return $this->ci->view->render($response, 'control/startstop.twig');
                     break;
+                case 'end':
+                    $this->ci->view['services'] = $serviceControl->end();
+                    return $this->ci->view->render($response, 'control/startstop.twig');
+                    break;
             }
         }
 
