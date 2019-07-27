@@ -1,0 +1,57 @@
+{% extends "layout.twig" %}
+
+{%  block head %}
+    <title>SOARCE</title>
+{%  endblock %}
+
+{%  block header %}
+    <h2>Control</h2>
+{% endblock %}
+
+{% block main %}
+
+    <h3>Services</h3>
+
+    <h4>Overview</h4>
+    <table>
+        <thead>
+            <tr>
+                <th>name</th>
+                <th>url</th>
+                <th>parameter_name</th>
+                <th>available</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for service in services %}
+            <tr>
+                <th>{{ service.serviceConfig.name }}</th>
+                <td>{{ service.serviceConfig.url }}</td>
+                <td>{{ service.serviceConfig.parameterName }}</td>
+                <td>{% if service.ping %}yes{% else %}no{% endif %}</td>
+                <td>
+                    <form method="post" action="/control/services/{{ service.serviceConfig.name }}">
+                        <ul>
+                            <li><input type="submit" name="action" value="details"></li>
+                        </ul>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <h4>Control all Services</h4>
+    <form method="post" action="/control/services">
+        <ul>
+            <li><input type="submit" name="action" value="preconditions"></li>
+        </ul>
+    </form>
+
+    <p>
+        <a href="/">back</a>
+    </p>
+{% endblock %}
+
+

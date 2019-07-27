@@ -44,7 +44,7 @@ class CoverageReceiver extends ReceiverAbstract
             return;
         }
 
-        $sql = 'INSERT INTO `coverage` (`application_id`, `file_id`, `line`) VALUES ';
+        $sql = 'INSERT INTO `coverage` (`file_id`, `line`) VALUES ';
         if (isset($this->fileMd5Hashes[$filename])) {
             $fileId = $this->createFile($filename, $this->fileMd5Hashes[$filename]);
         } else {
@@ -53,7 +53,7 @@ class CoverageReceiver extends ReceiverAbstract
 
         $rows = [];
         foreach (array_keys($coveredLines) as $line) {
-            $rows[] = "({$this->getApplicationId()}, {$fileId}, {$line})";
+            $rows[] = "({$fileId}, {$line})";
         }
 
         $sql .= implode(', ', $rows);

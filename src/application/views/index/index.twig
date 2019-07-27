@@ -15,8 +15,16 @@
 
     <h3>Menu</h3>
     <ul>
-        <li><a href="/whatever">whatever</a></li>
+        <li><a href="/control/usecases">usecases control</a></li>
+        <li><a href="/control/services">services control</a></li>
     </ul>
+
+    <h3>Config</h3>
+    {% if configIsValid %}
+    <p><span style="color: green; font-weight: bold">valid</span></p>
+    {% else %}
+    <p><span style="color: red;"><span style="font-weight: bold;">invalid: </span> {{ configErrorMessage }}</span></p>
+    {% endif %}
 
     <div id="stats">
         <h3>Stats</h3>
