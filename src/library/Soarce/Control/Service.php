@@ -80,4 +80,16 @@ class Service
         }
         return $ret;
     }
+
+    /**
+     * @return string[]
+     */
+    public function end(): array
+    {
+        $ret = [];
+        foreach ($this->getAllServiceActionables() as $serviceName => $actionable) {
+            $ret[$serviceName] = $actionable->end();
+        }
+        return $ret;
+    }
 }

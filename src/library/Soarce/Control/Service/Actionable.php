@@ -65,6 +65,14 @@ class Actionable
     }
 
     /**
+     * @return string
+     */
+    public function end(): string
+    {
+        return file_get_contents($this->buildUrl('end'));
+    }
+
+    /**
      * @return bool[]
      */
     public function getPreconditions(): array
