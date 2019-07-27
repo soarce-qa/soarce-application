@@ -45,6 +45,17 @@ class ControlController
         $service = $args['service'] ?? '';
         $action  = $request->getParam('action');
 
+        if ($request->isPost()) {
+            switch ($action) {
+                case 'preconditions':
+                    $this->ci->view['services'] = $serviceControl->checkPreconditons();
+                    return $this->ci->view->render($response, 'control/preconditions.twig');
+                case 'details':
+                    $this->ci->view['service'] = $serviceControl->getServiceActionable($service);
+                    return $this->ci->view->render($response, 'control/details.twig');
+            }
+        }
+
         $this->ci->view['services'] = $serviceControl->getAllServiceActionables();
 
         return $this->ci->view->render($response, 'control/service.twig');

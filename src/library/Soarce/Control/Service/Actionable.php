@@ -11,6 +11,9 @@ class Actionable
     /** @var Service */
     private $serviceConfig;
 
+    /** @var bool[] */
+    private $preconditions;
+
     /**
      * Actionable constructor.
      *
@@ -35,6 +38,30 @@ class Actionable
     public function ping(): bool
     {
         return self::PING__EXPECTED_RESPONSE === file_get_contents($this->buildUrl('ping'));
+    }
+
+    /**
+     * @return array[]
+     */
+    public function getDetails(): array
+    {
+       return json_decode(file_get_contents($this->buildUrl('details')), JSON_OBJECT_AS_ARRAY);
+    }
+
+    /**
+     *
+     */
+    public function collectPreconditions(): void
+    {
+       $this->preconditions = json_decode(file_get_contents($this->buildUrl('preconditions')), JSON_OBJECT_AS_ARRAY);
+    }
+
+    /**
+     * @return bool[]
+     */
+    public function getPreconditions(): array
+    {
+        return $this->preconditions;
     }
 
     /**
