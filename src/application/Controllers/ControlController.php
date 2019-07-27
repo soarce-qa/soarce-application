@@ -50,6 +50,9 @@ class ControlController
                 case 'preconditions':
                     $this->ci->view['services'] = $serviceControl->checkPreconditons();
                     return $this->ci->view->render($response, 'control/preconditions.twig');
+                case 'details':
+                    $this->ci->view['service'] = $serviceControl->getServiceActionable($service);
+                    return $this->ci->view->render($response, 'control/details.twig');
             }
         }
 

@@ -47,6 +47,15 @@ class Service
     }
 
     /**
+     * @param  string     $serviceName
+     * @return Actionable
+     */
+    public function getServiceActionable($serviceName): Actionable
+    {
+        return new Actionable($this->getAllServiceConfigs()[$serviceName]);
+    }
+
+    /**
      * @return Actionable[]
      */
     public function checkPreconditons(): array

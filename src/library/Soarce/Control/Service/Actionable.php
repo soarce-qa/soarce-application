@@ -41,6 +41,14 @@ class Actionable
     }
 
     /**
+     * @return array[]
+     */
+    public function getDetails(): array
+    {
+       return json_decode(file_get_contents($this->buildUrl('details')), JSON_OBJECT_AS_ARRAY);
+    }
+
+    /**
      *
      */
     public function collectPreconditions(): void

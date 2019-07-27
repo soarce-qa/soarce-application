@@ -31,6 +31,11 @@
                 <td>{{ service.serviceConfig.parameterName }}</td>
                 <td>{% if service.ping %}yes{% else %}no{% endif %}</td>
                 <td>
+                    <form method="post" action="/control/services/{{ service.serviceConfig.name }}">
+                        <ul>
+                            <li><input type="submit" name="action" value="details"></li>
+                        </ul>
+                    </form>
                 </td>
             </tr>
         {% endfor %}
