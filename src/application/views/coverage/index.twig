@@ -1,0 +1,41 @@
+{% extends "layout.twig" %}
+
+{%  block head %}
+    <title>SOARCE</title>
+{%  endblock %}
+
+{%  block header %}
+    <h2>Welcome</h2>
+{% endblock %}
+
+{% block main %}
+
+    <h3>Coverage</h3>
+    <p>See below a list of </p>
+
+    <h3>Filters</h3>
+    <ul>
+        <li>---</li>
+    </ul>
+
+    <h3>Files</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>application</th>
+                <th>file</th>
+                <th>lines covered</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for file in files %}
+            <tr>
+                <td>{{ file.applicationName }}</td>
+                <td>{{ file.fileName }}</td>
+                <td>{{ file.lines }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

@@ -14,5 +14,8 @@ $app->group('/control',   function() {
     $this->any('/usecases[/{usecase}]', '\Soarce\Application\Controllers\ControlController:usecase');
     $this->any('/services[/{service}]', '\Soarce\Application\Controllers\ControlController:service');
 });
+$app->group('/coverage',   function() {
+    $this->get('',                    '\Soarce\Application\Controllers\CoverageController:index');
+});
 
 $app->run();
