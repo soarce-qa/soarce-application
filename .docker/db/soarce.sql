@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS `application` (
                                              `name` varchar(63) DEFAULT NULL,
                                              PRIMARY KEY (`id`),
                                              UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Data exporting was unselected.
 
@@ -29,9 +29,9 @@ CREATE TABLE IF NOT EXISTS `coverage` (
                                           `file_id` bigint(20) unsigned NOT NULL,
                                           `line` mediumint(8) unsigned NOT NULL,
                                           PRIMARY KEY (`id`),
-                                          KEY `fi__files2` (`file_id`),
+                                          UNIQUE KEY `file_id_line` (`file_id`,`line`),
                                           CONSTRAINT `FK__files2` FOREIGN KEY (`file_id`) REFERENCES `file` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Data exporting was unselected.
 
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS `dump` (
                                       `header` mediumtext NOT NULL,
                                       `payload` mediumtext NOT NULL,
                                       PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Data exporting was unselected.
 
@@ -55,21 +55,22 @@ CREATE TABLE IF NOT EXISTS `file` (
                                       PRIMARY KEY (`id`),
                                       UNIQUE KEY `application_id_filename` (`request_id`,`filename`),
                                       CONSTRAINT `FK__requests` FOREIGN KEY (`request_id`) REFERENCES `request` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 -- Data exporting was unselected.
 
 -- Dumping structure for table soarce.function_call
 CREATE TABLE IF NOT EXISTS `function_call` (
                                                `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-                                               `file_id` bigint(20) unsigned NOT NULL DEFAULT '0',
-                                               `class` varchar(510) DEFAULT NULL,
-                                               `function` varchar(510) NOT NULL DEFAULT '0',
+                                               `file_id` bigint(20) unsigned NOT NULL,
+                                               `class` varchar(382) DEFAULT NULL,
+                                               `function` varchar(382) NOT NULL,
                                                `type` enum('internal','user-defined') NOT NULL,
                                                PRIMARY KEY (`id`),
+                                               UNIQUE KEY `file_id_class_function` (`file_id`,`class`,`function`),
                                                KEY `fi__files` (`file_id`),
                                                CONSTRAINT `FK__files` FOREIGN KEY (`file_id`) REFERENCES `file` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 -- Data exporting was unselected.
 
@@ -90,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `request` (
                                          KEY `application_id` (`application_id`),
                                          CONSTRAINT `FK_requests_application` FOREIGN KEY (`application_id`) REFERENCES `application` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
                                          CONSTRAINT `usecase` FOREIGN KEY (`usecase_id`) REFERENCES `usecase` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 -- Data exporting was unselected.
 
@@ -103,7 +104,7 @@ CREATE TABLE IF NOT EXISTS `usecase` (
                                          PRIMARY KEY (`id`),
                                          UNIQUE KEY `name` (`name`),
                                          UNIQUE KEY `active` (`active`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Data exporting was unselected.
 
