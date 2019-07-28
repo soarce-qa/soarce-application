@@ -32,7 +32,8 @@ class CoverageController
         $analyzer = new Coverage($this->ci);
 
         $viewParams = [
-            'files' => $analyzer->getFiles(),
+            'files'    => $analyzer->getFiles(),
+            'services' => $this->ci->settings['soarce']['services'],
         ];
         return $this->ci->view->render($response, 'coverage/index.twig', $viewParams);
 	}

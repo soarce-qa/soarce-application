@@ -13,12 +13,15 @@ class Service
     /** @var string */
     private $parameterName;
 
-    public function __construct($name, $url, $parameterName)
+    /** @var string */
+    private $commonPath;
+
+    public function __construct($name, $url, $parameterName, $commonPath)
     {
         $this->name          = $name;
         $this->url           = $url;
         $this->parameterName = $parameterName;
-
+        $this->commonPath    = $commonPath;
     }
 
     /**
@@ -45,4 +48,11 @@ class Service
         return $this->parameterName;
     }
 
+    /**
+     * @return string
+     */
+    public function getCommonPath(): string
+    {
+        return $this->commonPath;
+    }
 }

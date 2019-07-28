@@ -31,7 +31,7 @@
         {% for file in files %}
             <tr>
                 <td>{{ file.applicationName }}</td>
-                <td>{{ file.fileName }}</td>
+                <td>{{ file.fileName | stripCommonPath(services[file.applicationName].commonPath) }}</td>
                 <td>{{ file.lines }}</td>
             </tr>
         {% endfor %}

@@ -35,7 +35,7 @@ class Config
     {
         $services = [];
         foreach (json_decode(file_get_contents($filename), JSON_OBJECT_AS_ARRAY)['services'] as $name => $rawService) {
-            $services[$name] = new Service($name, $rawService['url'], $rawService['parameter_name']);
+            $services[$name] = new Service($name, $rawService['url'], $rawService['parameter_name'], $rawService['common_path']);
         }
 
         return $services;

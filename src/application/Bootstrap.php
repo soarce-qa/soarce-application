@@ -4,6 +4,7 @@ use Slim\Container;
 use Slim\Views\Twig;
 use Slim\Views\TwigExtension;
 use Soarce\View\Helper\Bytes;
+use Soarce\View\Helper\StripCommonPath;
 use Twig\TwigFilter;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
@@ -32,6 +33,11 @@ $container['view'] = static function (Container $container): Twig {
 
     $filter = new TwigFilter('byte', static function ($bytes) {
         return Bytes::filter($bytes);
+    });
+    $twig->addFilter($filter);
+
+    $filter = new TwigFilter('stripCommonPath', static function ($path, $commonPath) {
+        return StripCommonPath::filter($path, $commonPath);
     });
     $twig->addFilter($filter);
 
