@@ -44,7 +44,7 @@ class CoverageReceiver extends ReceiverAbstract
             return;
         }
 
-        $sql = 'INSERT INTO `coverage` (`file_id`, `line`) VALUES ';
+        $sql = 'INSERT IGNORE INTO `coverage` (`file_id`, `line`) VALUES ';
         if (isset($this->fileMd5Hashes[$filename])) {
             $fileId = $this->createFile($filename, $this->fileMd5Hashes[$filename]);
         } else {
