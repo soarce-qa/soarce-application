@@ -11,12 +11,18 @@
 {% block main %}
 
     <h3>Coverage</h3>
-    <p>See below a list of </p>
+    <p>See below a list of files in which at least one line was executed. Click on a link to open the detail view of the code.
+        The list can be filtered with the following controls:</p>
 
     <h3>Filters</h3>
-    <ul>
-        <li>---</li>
-    </ul>
+    <form method="get" action="">
+        <ul>
+            <li>Application: {{ _self.select('applicationId', applicationId, applications) }}</li>
+            <li>Usecases:    {{ _self.select('usecaseId',     usecaseId,     usecases) }}</li>
+            <li>Requests:    {{ _self.select('requestId',     requestId,     requests) }}</li>
+            <li>update:      <input type="submit" name="nothing" value="update"></li>
+        </ul>
+    </form>
 
     <h3>Files</h3>
     <table>
@@ -39,3 +45,18 @@
     </table>
 
 {% endblock %}
+
+
+
+{% macro select(name, current, list) %}
+    <select name="{{ name }}">
+        <option value="">please choose</option>
+        {% for id, row in list %}
+            {% if id == current %}
+                <option value="{{ id }}" selected="selected">{{ row.name }}</option>
+            {% else %}
+                <option value="{{ id }}">{{ row.name }}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+{% endmacro %}

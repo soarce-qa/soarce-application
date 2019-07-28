@@ -31,9 +31,19 @@ class CoverageController
     {
         $analyzer = new Coverage($this->ci);
 
+        $applicationId = '' === $request->getParam('applicationId') ? null : $request->getParam('applicationId');
+        $usecaseId     = '' === $request->getParam('usecaseId')     ? null : $request->getParam('usecaseId');
+        $requestId     = '' === $request->getParam('requestId')     ? null : $request->getParam('requestId');
+
         $viewParams = [
-            'files'    => $analyzer->getFiles(),
-            'services' => $this->ci->settings['soarce']['services'],
+            'applications'  => $analyzer->getAppplications($usecaseId),
+            'applicationId' => $applicationId,
+            'usecases'      => $analyzer->getUsecases(),
+            'usecaseId'     => $usecaseId,
+            'requests'      => $analyzer->getRequests($usecaseId, $applicationId),
+            'requestId'     => $requestId,
+            'files'         => $analyzer->getFiles($applicationId, $usecaseId, $requestId),
+            'services'      => $this->ci->settings['soarce']['services'],
         ];
         return $this->ci->view->render($response, 'coverage/index.twig', $viewParams);
 	}
