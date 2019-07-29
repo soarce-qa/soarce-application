@@ -23,7 +23,7 @@ class CoverageController
     }
 
     /**
-	 * @param  Request $request
+	 * @param  Request  $request
 	 * @param  Response $response
 	 * @return Response
 	 */
@@ -48,4 +48,32 @@ class CoverageController
         return $this->ci->view->render($response, 'coverage/index.twig', $viewParams);
 	}
 
+    /**
+     * @param  Request  $request
+     * @param  Response $response
+     * @param  array    $params
+     * @return Response
+     */
+	public function file(Request $request, Response $response, $params): Response
+    {
+        $analyzer = new Coverage($this->ci);
+
+        $usecaseId     = '' === $request->getParam('usecaseId')     ? null : $request->getParam('usecaseId');
+        $requestId     = '' === $request->getParam('requestId')     ? null : $request->getParam('requestId');
+        $fileId        = (int)($params['file'] ?? 0);
+
+        if (0 === $fileId) {
+            throw new \InvalidArgumentException('needs a fileId');
+        }
+
+        $viewParams = [
+            'source'        => $analyzer->getSource($fileId),
+            'coverage'      => $analyzer->getCoverage($fileId, $usecaseId, $requestId),
+            'usecases'      => $analyzer->getUsecases(),
+            'usecaseId'     => $usecaseId,
+            'requests'      => $analyzer->getRequests($usecaseId),
+            'requestId'     => $requestId,
+        ];
+        return $this->ci->view->render($response, 'coverage/file.twig', $viewParams);
+    }
 }

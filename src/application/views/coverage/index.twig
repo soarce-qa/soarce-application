@@ -1,4 +1,5 @@
 {% extends "layout.twig" %}
+{% import 'coverage/controls.twig' as controls %}
 
 {%  block head %}
     <title>SOARCE</title>
@@ -17,9 +18,9 @@
     <h3>Filters</h3>
     <form method="get" action="">
         <ul>
-            <li>Application: {{ _self.select('applicationId', applicationId, applications) }}</li>
-            <li>Usecases:    {{ _self.select('usecaseId',     usecaseId,     usecases) }}</li>
-            <li>Requests:    {{ _self.select('requestId',     requestId,     requests) }}</li>
+            <li>Application: {{ controls.select('applicationId', applicationId, applications) }}</li>
+            <li>Usecases:    {{ controls.select('usecaseId',     usecaseId,     usecases) }}</li>
+            <li>Requests:    {{ controls.select('requestId',     requestId,     requests) }}</li>
             <li>update:      <input type="submit" name="nothing" value="update"></li>
         </ul>
     </form>
@@ -37,7 +38,11 @@
         {% for file in files %}
             <tr>
                 <td>{{ file.applicationName }}</td>
-                <td>{{ file.fileName | stripCommonPath(services[file.applicationName].commonPath) }}</td>
+                <td>
+                    <a href="/coverage/file/{{ file.fileId }}?usecaseId={{ usecaseId }}&requestId={{ requestId }}" target="_blank">
+                        {{ file.fileName | stripCommonPath(services[file.applicationName].commonPath) }}
+                    </a>
+                </td>
                 <td>{{ file.lines }}</td>
             </tr>
         {% endfor %}
@@ -46,17 +51,3 @@
 
 {% endblock %}
 
-
-
-{% macro select(name, current, list) %}
-    <select name="{{ name }}">
-        <option value="">please choose</option>
-        {% for id, row in list %}
-            {% if id == current %}
-                <option value="{{ id }}" selected="selected">{{ row.name }}</option>
-            {% else %}
-                <option value="{{ id }}">{{ row.name }}</option>
-            {% endif %}
-        {% endfor %}
-    </select>
-{% endmacro %}

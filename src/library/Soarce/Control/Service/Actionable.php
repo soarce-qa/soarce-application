@@ -81,6 +81,15 @@ class Actionable
     }
 
     /**
+     * @param  string $filename
+     * @return string
+     */
+    public function getFile($filename): string
+    {
+        return file_get_contents($this->buildUrl('readfile') . '&' . http_build_query(['filename' => $filename]));
+    }
+
+    /**
      * @param  string $action
      * @return string
      */

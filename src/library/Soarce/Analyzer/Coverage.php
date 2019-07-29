@@ -2,6 +2,8 @@
 
 namespace Soarce\Analyzer;
 
+use Soarce\Control\Service;
+
 class Coverage extends AbstractAnalyzer
 {
     /**
@@ -86,5 +88,50 @@ class Coverage extends AbstractAnalyzer
             return $result->fetch_all(MYSQLI_ASSOC);
         }
         return [];
+    }
+
+    /**
+     * @param  int $fileId
+     * @return string[]
+     */
+    public function getSource($fileId): array
+    {
+        $controlService = new Service($this->container);
+
+        $sql = 'SELECT a.`name` as `applicationName`, f.`filename` as `fileName`
+            FROM `file`        f
+            JOIN `request`     r ON r.`id`      = f.`request_id`
+            JOIN `application` a ON a.`id`      = r.`application_id` 
+            WHERE f.id = ' . (int)$fileId;
+
+        $row = $this->mysqli->query($sql)->fetch_assoc();
+
+        $actionable = $controlService->getServiceActionable($row['applicationName']);
+        return explode("\n", $actionable->getFile($row['fileName']));
+    }
+
+    /**
+     * @param  int $fileId
+     * @param  int $usecaseId
+     * @param  int $requestId
+     * @return int[]
+     */
+    public function getCoverage($fileId, $usecaseId = null, $requestId = null): array
+    {
+        $sql = 'SELECT c.`line`
+            FROM `coverage`    c
+            JOIN `file`        f ON c.`file_id` = f.`id` AND f.`id` = ' . (int)$fileId . '
+            JOIN `request`     r ON r.`id`      = f.`request_id`'       . ($usecaseId     !== null ? " and r.`usecase_id` = {$usecaseId} "     : '')
+                                                                        . ($requestId     !== null ? " and r.`id`         = {$requestId} "     : '') . '
+            WHERE 1';
+
+        $result = $this->mysqli->query($sql);
+
+        $ret = [];
+        while ($row = $result->fetch_assoc()) {
+            $ret[$row['line']] = true;
+        }
+
+        return $ret;
     }
 }

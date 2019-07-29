@@ -16,6 +16,7 @@ $app->group('/control',   function() {
 });
 $app->group('/coverage',   function() {
     $this->get('',                    '\Soarce\Application\Controllers\CoverageController:index');
+    $this->get('/file/{file:[0-9]+}', '\Soarce\Application\Controllers\CoverageController:file');
 });
 
 $app->run();
