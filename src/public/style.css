@@ -1,0 +1,40 @@
+* {
+    color: azure;
+}
+
+body {
+    background-color: #1e272c;
+}
+
+div.coverage {
+    font-family: monospace;
+    padding: 5px;
+    font-size: 15px;
+    line-height: 26px;
+}
+
+div.covered {
+    white-space: pre;
+    border: 1px solid #008000;
+    background: repeating-linear-gradient(
+        -35deg,
+        #013f00,
+        #013f00 10px,
+        #004600 10px,
+        #004600 20px
+    );
+    margin-bottom: 3px;
+}
+
+div.uncovered {
+    white-space: pre;
+    border: 1px solid #9c0000;
+    background: repeating-linear-gradient(
+        35deg,
+        #200000,
+        #200000 10px,
+        #270000 10px,
+        #270000 20px
+    );
+    margin-bottom: 3px;
+}
