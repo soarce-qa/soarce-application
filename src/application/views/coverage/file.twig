@@ -3,6 +3,7 @@
 
 {%  block head %}
     <title>SOARCE</title>
+    <script lang="javascript" src="/coverage.js"></script>
 {%  endblock %}
 
 {%  block header %}
@@ -22,7 +23,7 @@
 
     <h3>Coverage for file</h3>
     <div class="coverage">
-    {% set previousLineCovered = true %}
+    {% set previousLineCovered = false %}
     {% apply spaceless|replace({"\n":'', "\r":''})|raw %}
         <div class="uncovered">
 {% for nr, line in source %}
@@ -33,10 +34,12 @@
 </div><div class="uncovered">
 {% set previousLineCovered = false %}
 {% endif %}
-{{ nr+1 }}: {{ line }}<br>
+<div class="loc" onclick="showRequestsAndUsecases(this)" data-line="{{ nr+1 }}" data-file="{{ fileId }}">{{ nr+1 }}: {{ line }}</div>
 {% endfor %}
         </div>
     {% endapply %}
     </div>
+
+    <div id="coverageRequestsAndUsecases"></div>
 {% endblock %}
 

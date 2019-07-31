@@ -134,4 +134,49 @@ class Coverage extends AbstractAnalyzer
 
         return $ret;
     }
+
+    /**
+     * @param  int   $fileId
+     * @param  int   $line
+     * @return array
+     */
+    public function getRequestsForLoc($fileId, $line): array
+    {
+        $sql = 'SELECT DISTINCT r.`id`, r.`request_id`
+            FROM `coverage` c 
+            JOIN `file`     f ON c.`file_id`    = f.`id`
+            JOIN `request`  r on f.`request_id` = r.`id`
+            WHERE c.`file_id` = ' . (int)$fileId . ' AND c.`line` = ' . (int)$line . '
+            ORDER BY r.`request_id` ASC';
+
+        $ret = [];
+        $result = $this->mysqli->query($sql);
+        while ($row = $result->fetch_assoc()) {
+            $ret[$row['id']] = $row['request_id'];
+        }
+        return $ret;
+    }
+
+    /**
+     * @param  int   $fileId
+     * @param  int   $line
+     * @return array
+     */
+    public function getUsecasesForLoC($fileId, $line): array
+    {
+        $sql = 'SELECT u.`id`, u.`name`
+            FROM `coverage` c 
+            JOIN `file`     f ON c.`file_id`    = f.`id`
+            JOIN `request`  r on f.`request_id` = r.`id`
+            JOIN `usecase`  u on r.`usecase_id` = u.`id`
+            WHERE c.`file_id` = ' . (int)$fileId . ' AND c.`line` = ' . (int)$line . '
+            ORDER BY r.`request_id` ASC';
+
+        $ret = [];
+        $result = $this->mysqli->query($sql);
+        while ($row = $result->fetch_assoc()) {
+            $ret[$row['id']] = $row['name'];
+        }
+        return $ret;
+    }
 }

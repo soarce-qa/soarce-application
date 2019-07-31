@@ -67,6 +67,7 @@ class CoverageController
         }
 
         $viewParams = [
+            'fileId'        => $fileId,
             'source'        => $analyzer->getSource($fileId),
             'coverage'      => $analyzer->getCoverage($fileId, $usecaseId, $requestId),
             'usecases'      => $analyzer->getUsecases(),
@@ -75,5 +76,42 @@ class CoverageController
             'requestId'     => $requestId,
         ];
         return $this->ci->view->render($response, 'coverage/file.twig', $viewParams);
+    }
+
+    /**
+     * @param  Request  $request
+     * @param  Response $response
+     * @param  array    $params
+     * @return Response
+     */
+	public function line(Request $request, Response $response, $params): Response
+    {
+        $analyzer = new Coverage($this->ci);
+
+        $fileId        = (int)($params['file'] ?? 0);
+        $lineId        = (int)($params['line'] ?? 0);
+
+        if (0 === $fileId) {
+            throw new \InvalidArgumentException('needs a fileId');
+        }
+
+        if (0 === $lineId) {
+            throw new \InvalidArgumentException('needs a lineId');
+        }
+
+        header('Last-Modified:' . gmdate('D, d M Y H:i:s ', time() + 30) . 'GMT');
+        header('Expires:' .       gmdate('D, d M Y H:i:s ', time() + 30) . 'GMT');
+        header('Content-Type: application/json');
+        header('Cache-Control: max-age=30');
+        header('Pragma: cache');
+
+        $requests = $analyzer->getRequestsForLoc($fileId, $lineId);
+        $usecases = $analyzer->getUsecasesForLoC($fileId, $lineId);
+
+        echo json_encode([
+            'usecases' => $usecases,
+            'requests' => $requests,
+        ], JSON_PRETTY_PRINT);
+        die();
     }
 }
