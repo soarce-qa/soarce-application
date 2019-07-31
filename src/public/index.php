@@ -14,5 +14,10 @@ $app->group('/control',   function() {
     $this->any('/usecases[/{usecase}]', '\Soarce\Application\Controllers\ControlController:usecase');
     $this->any('/services[/{service}]', '\Soarce\Application\Controllers\ControlController:service');
 });
+$app->group('/coverage',   function() {
+    $this->get('',                                       '\Soarce\Application\Controllers\CoverageController:index');
+    $this->get('/file/{file:[0-9]+}',                    '\Soarce\Application\Controllers\CoverageController:file');
+    $this->get('/file/{file:[0-9]+}/line/{line:[0-9]+}', '\Soarce\Application\Controllers\CoverageController:line');
+});
 
 $app->run();

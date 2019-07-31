@@ -1,0 +1,45 @@
+{% extends "layout.twig" %}
+{% import 'coverage/controls.twig' as controls %}
+
+{%  block head %}
+    <title>SOARCE</title>
+    <script lang="javascript" src="/coverage.js"></script>
+{%  endblock %}
+
+{%  block header %}
+    <h2>Welcome</h2>
+{% endblock %}
+
+{% block main %}
+
+    <h3>Filters</h3>
+    <form method="get" action="">
+        <ul>
+            <li>Usecases:    {{ controls.select('usecaseId',     usecaseId,     usecases) }}</li>
+            <li>Requests:    {{ controls.select('requestId',     requestId,     requests) }}</li>
+            <li>update:      <input type="submit" name="nothing" value="update"></li>
+        </ul>
+    </form>
+
+    <h3>Coverage for file</h3>
+    <div class="coverage">
+    {% set previousLineCovered = false %}
+    {% apply spaceless|replace({"\n":'', "\r":''})|raw %}
+        <div class="uncovered">
+{% for nr, line in source %}
+{% if coverage[nr+1] and not previousLineCovered %}
+</div><div class="covered">
+{% set previousLineCovered = true %}
+{% elseif not coverage[nr+1] and previousLineCovered %}
+</div><div class="uncovered">
+{% set previousLineCovered = false %}
+{% endif %}
+<div class="loc" onclick="showRequestsAndUsecases(this)" data-line="{{ nr+1 }}" data-file="{{ fileId }}">{{ nr+1 }}: {{ line }}</div>
+{% endfor %}
+        </div>
+    {% endapply %}
+    </div>
+
+    <div id="coverageRequestsAndUsecases"></div>
+{% endblock %}
+

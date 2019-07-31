@@ -1,0 +1,53 @@
+{% extends "layout.twig" %}
+{% import 'coverage/controls.twig' as controls %}
+
+{%  block head %}
+    <title>SOARCE</title>
+{%  endblock %}
+
+{%  block header %}
+    <h2>Welcome</h2>
+{% endblock %}
+
+{% block main %}
+
+    <h3>Coverage</h3>
+    <p>See below a list of files in which at least one line was executed. Click on a link to open the detail view of the code.
+        The list can be filtered with the following controls:</p>
+
+    <h3>Filters</h3>
+    <form method="get" action="">
+        <ul>
+            <li>Application: {{ controls.select('applicationId', applicationId, applications) }}</li>
+            <li>Usecases:    {{ controls.select('usecaseId',     usecaseId,     usecases) }}</li>
+            <li>Requests:    {{ controls.select('requestId',     requestId,     requests) }}</li>
+            <li>update:      <input type="submit" name="nothing" value="update"></li>
+        </ul>
+    </form>
+
+    <h3>Files</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>application</th>
+                <th>file</th>
+                <th>lines covered</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for file in files %}
+            <tr>
+                <td>{{ file.applicationName }}</td>
+                <td>
+                    <a href="/coverage/file/{{ file.fileId }}?usecaseId={{ usecaseId }}&requestId={{ requestId }}" target="_blank">
+                        {{ file.fileName | stripCommonPath(services[file.applicationName].commonPath) }}
+                    </a>
+                </td>
+                <td>{{ file.lines }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
+
