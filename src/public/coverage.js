@@ -1,4 +1,3 @@
-
 function showRequestsAndUsecases(elem) {
 
     let coverageUrl = '/coverage/file/' + elem.dataset.file + '/line/' + elem.dataset.line;
@@ -19,9 +18,9 @@ function showRequestsAndUsecases(elem) {
             } else {
                 out += "<ul>";
                 for (let id in payload.usecases) {
-                    out += "<li>"
+                    out += "<li><a href='/coverage?usecaseId=" + id + "'>"
                         + id + ' ' + payload.usecases[id]
-                        + "</li>";
+                        + "</a></li>";
                 }
                 out += "</ul>";
             }
@@ -32,18 +31,18 @@ function showRequestsAndUsecases(elem) {
             } else {
                 out += "<ul>";
                 for (let id in payload.requests) {
-                    out += "<li>"
+                    out += "<li><a href='/coverage?requestId=" + id + "'>"
                         + id + ' ' + payload.requests[id]
-                        + "</li>";
+                        + "</a></li>";
                 }
                 out += "</ul>";
             }
             elemCU.innerHTML = out;
 
-            elemCU.style.top = (elem.getBoundingClientRect().top - 50) + "px";
+            elemCU.style.top = (elem.getBoundingClientRect().top - 30) + "px";
         }
     };
 
-    xmlhttp.open( "GET", coverageUrl, true );
+    xmlhttp.open("GET", coverageUrl, true);
     xmlhttp.send();
 }

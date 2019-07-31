@@ -68,12 +68,12 @@ class CoverageController
 
         $viewParams = [
             'fileId'        => $fileId,
+            'usecaseId'     => $usecaseId,
+            'requestId'     => $requestId,
+            'usecases'      => $analyzer->getUsecases($fileId),
+            'requests'      => $analyzer->getRequests($usecaseId, null, $fileId),
             'source'        => $analyzer->getSource($fileId),
             'coverage'      => $analyzer->getCoverage($fileId, $usecaseId, $requestId),
-            'usecases'      => $analyzer->getUsecases(),
-            'usecaseId'     => $usecaseId,
-            'requests'      => $analyzer->getRequests($usecaseId),
-            'requestId'     => $requestId,
         ];
         return $this->ci->view->render($response, 'coverage/file.twig', $viewParams);
     }
