@@ -65,8 +65,8 @@ abstract class ReceiverAbstract
     protected function createFile($filename, $md5 = null): int
     {
         $escapedFilename = mysqli_real_escape_string($this->mysqli, $filename);
-        $sql = 'INSERT IGNORE INTO `file` (`request_id`, `filename`, `md5`) VALUES ('
-            . $this->getRequestId() . ', "' . $escapedFilename
+        $sql = 'INSERT IGNORE INTO `file` (`application_id`, `filename`, `md5`) VALUES ('
+            . $this->getApplicationId() . ', "' . $escapedFilename
             . '", '
             . ($md5 !== null ? "0x{$md5}" : 'null')
             . ') ON DUPLICATE KEY UPDATE `id` = LAST_INSERT_ID(`id`)'
@@ -131,6 +131,4 @@ abstract class ReceiverAbstract
 
         $this->requestId = $this->mysqli->insert_id;
     }
-
-
 }

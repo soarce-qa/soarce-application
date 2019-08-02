@@ -30,13 +30,17 @@ abstract class AbstractAnalyzer
      */
     public function getUsecases($file = null): array
     {
-        $sql = 'SELECT u.`id`, u.`name`, COUNT(f.`id`) as `files`
+        $sql = 'SELECT u.`id`, u.`name`
             FROM `usecase` u
-            JOIN `request` r on r.`usecase_id` = u.`id`
-            JOIN `file` f ON f.`request_id` = r.`id` ' . ($file !== null ? " and f.`id` = {$file} " : '') . '
+            ' . ($file !== null ? "JOIN `request` r on r.`usecase_id` = u.`id` JOIN `coverage` c ON c.`request_id` = r.`id` and c.`file_id` = {$file} " : '') . '
             WHERE 1 GROUP BY u.`id` ORDER BY u.`name` ASC';
         $ret = [];
         $result = $this->mysqli->query($sql);
+
+        if (!$result) {
+            throw new AnalyzerException($this->mysqli->error, $this->mysqli->errno);
+        }
+
         while ($row = $result->fetch_assoc()) {
             $ret[$row['id']] = $row;
         }
@@ -49,14 +53,17 @@ abstract class AbstractAnalyzer
      */
     public function getAppplications($usecase = null): array
     {
-        $sql = 'SELECT a.`id`, a.`name`, COUNT(f.`id`) as `files`
+        $sql = 'SELECT a.`id`, a.`name`
             FROM `application` a
-            JOIN `request` r on r.`application_id` = a.id ' . ($usecase !== null ? " and r.`usecase_id` = {$usecase} " : '') . '
-            JOIN `usecase` u ON r.`usecase_id`     = u.`id`
-            JOIN `file` f    ON f.`request_id`     = r.`id`
-            WHERE 1 GROUP BY a.`id` ORDER BY u.`name` ASC';
+            ' . ($usecase !== null ? "JOIN `request` r on r.`application_id` = a.id and r.`usecase_id` = {$usecase} " : '') . '
+            WHERE 1 GROUP BY a.`id` ORDER BY a.`name` ASC';
         $ret = [];
         $result = $this->mysqli->query($sql);
+
+        if (!$result) {
+            throw new AnalyzerException($this->mysqli->error, $this->mysqli->errno);
+        }
+
         while ($row = $result->fetch_assoc()) {
             $ret[$row['id']] = $row;
         }
@@ -71,18 +78,22 @@ abstract class AbstractAnalyzer
      */
     public function getRequests($usecase = null, $application = null, $file = null): array
     {
-        $sql = 'SELECT r.`id`, r.`request_id` as `name`, COUNT(f.id) as `files`
+        $sql = 'SELECT r.`id`, r.`request_id` as `name`
             FROM `request` r
-            JOIN `application` a on r.`application_id` = a.`id` ' . ($application !== null ? " and r.`application_id` = {$application} " : '') . '
-            JOIN `usecase` u     ON r.`usecase_id`     = u.`id` ' . ($usecase     !== null ? " and r.`usecase_id`     = {$usecase}     " : '') . '
-            JOIN `file` f        ON f.`request_id`     = r.`id` ' . ($file        !== null ? " and f.`id`             = {$file}        " : '') . '
+            JOIN `application` a on r.`application_id` = a.`id` ' . ($application !== null ? " and r.`application_id` = {$application} " : '')
+                                                                  . ($usecase     !== null ? " and r.`usecase_id`     = {$usecase}     " : '') . '
+            JOIN `coverage` c    ON c.`request_id`     = r.`id` ' . ($file        !== null ? " and c.`file_id`        = {$file}        " : '') . '
             WHERE 1 GROUP BY r.`id` ORDER BY `name` ASC';
         $ret = [];
         $result = $this->mysqli->query($sql);
+
+        if (!$result) {
+            throw new AnalyzerException($this->mysqli->error, $this->mysqli->errno);
+        }
+
         while ($row = $result->fetch_assoc()) {
             $ret[$row['id']] = $row;
         }
         return $ret;
     }
-
 }

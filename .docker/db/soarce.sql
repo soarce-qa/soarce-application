@@ -27,10 +27,14 @@ CREATE TABLE IF NOT EXISTS `application` (
 CREATE TABLE IF NOT EXISTS `coverage` (
                                           `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
                                           `file_id` bigint(20) unsigned NOT NULL,
+                                          `request_id` int(10) unsigned NOT NULL,
                                           `line` mediumint(8) unsigned NOT NULL,
                                           PRIMARY KEY (`id`),
-                                          UNIQUE KEY `file_id_line` (`file_id`,`line`),
-                                          CONSTRAINT `FK__files2` FOREIGN KEY (`file_id`) REFERENCES `file` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+                                          UNIQUE KEY `file_id_line` (`file_id`,`request_id`,`line`),
+                                          KEY `line` (`line`),
+                                          KEY `FK_coverage_request` (`request_id`),
+                                          CONSTRAINT `FK__files2` FOREIGN KEY (`file_id`) REFERENCES `file` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+                                          CONSTRAINT `FK_coverage_request` FOREIGN KEY (`request_id`) REFERENCES `request` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Data exporting was unselected.
@@ -49,12 +53,12 @@ CREATE TABLE IF NOT EXISTS `dump` (
 -- Dumping structure for table soarce.file
 CREATE TABLE IF NOT EXISTS `file` (
                                       `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-                                      `request_id` int(10) unsigned NOT NULL,
+                                      `application_id` int(10) unsigned NOT NULL,
                                       `filename` varchar(510) DEFAULT NULL,
                                       `md5` binary(16) DEFAULT NULL,
                                       PRIMARY KEY (`id`),
-                                      UNIQUE KEY `application_id_filename` (`request_id`,`filename`),
-                                      CONSTRAINT `FK__requests` FOREIGN KEY (`request_id`) REFERENCES `request` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+                                      UNIQUE KEY `application_id_filename` (`application_id`,`filename`),
+                                      CONSTRAINT `FK__requests` FOREIGN KEY (`application_id`) REFERENCES `application` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 -- Data exporting was unselected.
@@ -63,13 +67,16 @@ CREATE TABLE IF NOT EXISTS `file` (
 CREATE TABLE IF NOT EXISTS `function_call` (
                                                `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
                                                `file_id` bigint(20) unsigned NOT NULL,
+                                               `request_id` int(10) unsigned NOT NULL,
                                                `class` varchar(382) DEFAULT NULL,
                                                `function` varchar(382) NOT NULL,
                                                `type` enum('internal','user-defined') NOT NULL,
                                                PRIMARY KEY (`id`),
-                                               UNIQUE KEY `file_id_class_function` (`file_id`,`class`,`function`),
+                                               UNIQUE KEY `file_id_class_function` (`file_id`,`request_id`,`class`,`function`),
                                                KEY `fi__files` (`file_id`),
-                                               CONSTRAINT `FK__files` FOREIGN KEY (`file_id`) REFERENCES `file` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+                                               KEY `FK_function_call_request` (`request_id`),
+                                               CONSTRAINT `FK__files` FOREIGN KEY (`file_id`) REFERENCES `file` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+                                               CONSTRAINT `FK_function_call_request` FOREIGN KEY (`request_id`) REFERENCES `request` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 -- Data exporting was unselected.

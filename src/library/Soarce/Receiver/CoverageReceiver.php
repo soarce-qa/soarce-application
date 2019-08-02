@@ -33,8 +33,6 @@ class CoverageReceiver extends ReceiverAbstract
     }
 
     /**
-     * @todo create cronjob that removes duplicate rows in coverage!
-     *
      * @param string $filename
      * @param int[]  $coveredLines
      */
@@ -44,16 +42,18 @@ class CoverageReceiver extends ReceiverAbstract
             return;
         }
 
-        $sql = 'INSERT IGNORE INTO `coverage` (`file_id`, `line`) VALUES ';
+        $sql = 'INSERT IGNORE INTO `coverage` (`file_id`, `request_id`, `line`) VALUES ';
         if (isset($this->fileMd5Hashes[$filename])) {
             $fileId = $this->createFile($filename, $this->fileMd5Hashes[$filename]);
         } else {
             $fileId = $this->createFile($filename);
         }
 
+        $requestId = $this->getRequestId();
+
         $rows = [];
         foreach (array_keys($coveredLines) as $line) {
-            $rows[] = "({$fileId}, {$line})";
+            $rows[] = "({$fileId}, {$requestId}, {$line})";
         }
 
         $sql .= implode(', ', $rows);
