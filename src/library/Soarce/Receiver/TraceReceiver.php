@@ -38,15 +38,15 @@ class TraceReceiver extends ReceiverAbstract
             return;
         }
 
-        $sql = 'INSERT IGNORE INTO `function_call` (`file_id`, `class`, `function`, `type`) VALUES ';
+        $sql = 'INSERT IGNORE INTO `function_call` (`file_id`, `request_id`, `class`, `function`, `type`) VALUES ';
         $fileId = $this->createFile($filename);
+        $requestId = $this->getRequestId();
 
         $rows = [];
-
         foreach ($functions as $functionName => $userDefined) {
             $split = preg_split('/(->|::)/', $functionName);
             if (count($split) === 1) {
-                $rows[] = "({$fileId}, '', '"
+                $rows[] = "({$fileId}, {$requestId}, '', '"
                     . mysqli_real_escape_string($this->mysqli, $split[0])
                     . "', '"
                     . (1 == $userDefined ? 'user-defined' : 'internal')
@@ -54,7 +54,7 @@ class TraceReceiver extends ReceiverAbstract
                 continue;
             }
 
-            $rows[] = "({$fileId}, '"
+            $rows[] = "({$fileId}, {$requestId}, '"
                 . mysqli_real_escape_string($this->mysqli, $split[0])
                 . "', '"
                 . mysqli_real_escape_string($this->mysqli, $split[1])
