@@ -21,7 +21,8 @@
             <li>Application: {{ controls.select('applicationId', applicationId, applications) }}</li>
             <li>Usecases:    {{ controls.select('usecaseId',     usecaseId,     usecases) }}</li>
             <li>Requests:    {{ controls.select('requestId',     requestId,     requests) }}</li>
-            <li>update:      <input type="submit" name="nothing" value="update"></li>
+            <li>update:      <input type="submit" name="whatever" value="update"></li>
+            <li><a href="/">back</a></li>
         </ul>
     </form>
 
@@ -39,7 +40,7 @@
             <tr>
                 <td>{{ file.applicationName }}</td>
                 <td>
-                    <a href="/coverage/file/{{ file.fileId }}?usecaseId={{ usecaseId }}&requestId={{ requestId }}" target="_blank">
+                    <a href="/coverage/file/{{ file.fileId }}?usecaseId={{ usecaseId }}&requestId={{ requestId }}&applicationId={{ applicationId }}">
                         {{ file.fileName | stripCommonPath(services[file.applicationName].commonPath) }}
                     </a>
                 </td>

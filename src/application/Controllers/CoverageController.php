@@ -58,6 +58,7 @@ class CoverageController
     {
         $analyzer = new Coverage($this->ci);
 
+        $applicationId = '' === $request->getParam('applicationId') ? null : $request->getParam('applicationId');
         $usecaseId     = '' === $request->getParam('usecaseId')     ? null : $request->getParam('usecaseId');
         $requestId     = '' === $request->getParam('requestId')     ? null : $request->getParam('requestId');
         $fileId        = (int)($params['file'] ?? 0);
@@ -68,6 +69,7 @@ class CoverageController
 
         $viewParams = [
             'fileId'        => $fileId,
+            'applicationId' => $applicationId,
             'usecaseId'     => $usecaseId,
             'requestId'     => $requestId,
             'usecases'      => $analyzer->getUsecases($fileId),

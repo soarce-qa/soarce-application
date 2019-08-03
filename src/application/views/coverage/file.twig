@@ -18,6 +18,7 @@
             <li>Usecases:    {{ controls.select('usecaseId',     usecaseId,     usecases) }}</li>
             <li>Requests:    {{ controls.select('requestId',     requestId,     requests) }}</li>
             <li>update:      <input type="submit" name="nothing" value="update"></li>
+            <li><a href="/coverage?usecaseId={{ usecaseId }}&requestId={{ requestId }}&applicationId={{ applicationId }}">back</a></li>
         </ul>
     </form>
 
