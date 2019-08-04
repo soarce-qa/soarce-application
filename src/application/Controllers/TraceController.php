@@ -63,67 +63,22 @@ class TraceController
     /**
      * @param  Request  $request
      * @param  Response $response
-     * @param  array    $params
      * @return Response
-     * /
-	public function file(Request $request, Response $response, $params): Response
+     */
+	public function usecaseByFile(Request $request, Response $response): Response
     {
-        $analyzer = new Coverage($this->ci);
+        $analyzer = new Trace($this->ci);
 
-        $usecaseId     = '' === $request->getParam('usecaseId')     ? null : $request->getParam('usecaseId');
-        $requestId     = '' === $request->getParam('requestId')     ? null : $request->getParam('requestId');
-        $fileId        = (int)($params['file'] ?? 0);
-
-        if (0 === $fileId) {
-            throw new \InvalidArgumentException('needs a fileId');
-        }
+        $applicationId = '' === $request->getParam('applicationId') ? null : $request->getParam('applicationId');
+        $fileId        = '' === $request->getParam('fileId')        ? null : $request->getParam('fileId');
 
         $viewParams = [
+            'applications'  => $analyzer->getAppplications(),
+            'applicationId' => $applicationId,
+            'files'         => $analyzer->getFiles($applicationId),
             'fileId'        => $fileId,
-            'usecaseId'     => $usecaseId,
-            'requestId'     => $requestId,
             'usecases'      => $analyzer->getUsecases($fileId),
-            'requests'      => $analyzer->getRequests($usecaseId, null, $fileId),
-            'source'        => $analyzer->getSource($fileId),
-            'coverage'      => $analyzer->getCoverage($fileId, $usecaseId, $requestId),
         ];
-        return $this->ci->view->render($response, 'coverage/file.twig', $viewParams);
+        return $this->ci->view->render($response, 'trace/usecaseByFile.twig', $viewParams);
     }
-
-    /**
-     * @param  Request  $request
-     * @param  Response $response
-     * @param  array    $params
-     * @return Response
-     * /
-	public function line(Request $request, Response $response, $params): Response
-    {
-        $analyzer = new Coverage($this->ci);
-
-        $fileId        = (int)($params['file'] ?? 0);
-        $lineId        = (int)($params['line'] ?? 0);
-
-        if (0 === $fileId) {
-            throw new \InvalidArgumentException('needs a fileId');
-        }
-
-        if (0 === $lineId) {
-            throw new \InvalidArgumentException('needs a lineId');
-        }
-
-        header('Last-Modified:' . gmdate('D, d M Y H:i:s ', time() + 30) . 'GMT');
-        header('Expires:' .       gmdate('D, d M Y H:i:s ', time() + 30) . 'GMT');
-        header('Content-Type: application/json');
-        header('Cache-Control: max-age=30');
-        header('Pragma: cache');
-
-        $requests = $analyzer->getRequestsForLoc($fileId, $lineId);
-        $usecases = $analyzer->getUsecasesForLoC($fileId, $lineId);
-
-        echo json_encode([
-            'usecases' => $usecases,
-            'requests' => $requests,
-        ], JSON_PRETTY_PRINT);
-        die();
-    } /* */
 }

@@ -1,0 +1,44 @@
+{% extends "layout.twig" %}
+{% import 'coverage/controls.twig' as controls %}
+
+{%  block head %}
+    <title>SOARCE</title>
+{%  endblock %}
+
+{%  block header %}
+    <h2>Welcome</h2>
+{% endblock %}
+
+{% block main %}
+
+    <h3>Trace function calls</h3>
+    <p>The list can be filtered with the following controls:</p>
+
+    <h3>Filters</h3>
+    <form method="get" action="">
+        <ul>
+            <li>Application:      {{ controls.select('applicationId', applicationId, applications) }}</li>
+            <li>Originating File: {{ controls.select('fileId',        fileId,        files) }}</li>
+            <li>update:      <input type="submit" name="nothing" value="update"></li>
+            <li><a href="/trace">back</a></li>
+        </ul>
+    </form>
+
+    <h3>Usecases</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>name</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for usecase in usecases %}
+            <tr>
+                <td>{{ usecase.name }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
+

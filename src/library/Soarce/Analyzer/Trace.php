@@ -65,4 +65,12 @@ class Trace extends AbstractAnalyzer
 
     }
 
+    /**
+     * @param  string $fileName
+     * @return array
+     */
+    public function getUsecasesByFilename($fileName): array
+    {
+
+    }
 }
