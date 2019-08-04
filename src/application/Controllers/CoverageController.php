@@ -75,6 +75,7 @@ class CoverageController
             'usecases'      => $analyzer->getUsecases($fileId),
             'requests'      => $analyzer->getRequests($usecaseId, null, $fileId),
             'source'        => $analyzer->getSource($fileId),
+            'md5'           => $analyzer->getMd5FromDb($fileId),
             'coverage'      => $analyzer->getCoverage($fileId, $usecaseId, $requestId),
         ];
         return $this->ci->view->render($response, 'coverage/file.twig', $viewParams);

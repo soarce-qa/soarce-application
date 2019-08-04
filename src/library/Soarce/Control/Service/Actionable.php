@@ -8,6 +8,8 @@ class Actionable
 {
     private const PING__EXPECTED_RESPONSE = 'pong';
 
+    private const CHECKSUM_HEADER = 'X-SOARCE-FileChecksum';
+
     /** @var Service */
     private $serviceConfig;
 
@@ -82,11 +84,27 @@ class Actionable
 
     /**
      * @param  string $filename
-     * @return string
+     * @return FileContent
      */
-    public function getFile($filename): string
+    public function getFile($filename): FileContent
     {
-        return file_get_contents($this->buildUrl('readfile') . '&' . http_build_query(['filename' => $filename]));
+        $fileContent = file_get_contents($this->buildUrl('readfile') . '&' . http_build_query(['filename' => $filename]));
+
+        $md5 = '';
+        foreach ($http_response_header as $header) {
+            $line = explode(':', $header, 2);
+            if (count($line) !== 2) {
+                continue;
+            }
+            if ($line[0] === self::CHECKSUM_HEADER) {
+                echo $md5 = trim($line[1]); break;
+            }
+        }
+
+        return new FileContent(
+            explode("\n", $fileContent),
+            $md5
+        );
     }
 
     /**

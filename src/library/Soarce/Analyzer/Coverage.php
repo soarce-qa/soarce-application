@@ -3,14 +3,15 @@
 namespace Soarce\Analyzer;
 
 use Soarce\Control\Service;
+use Soarce\Control\Service\FileContent;
 
 class Coverage extends AbstractAnalyzer
 {
 
     /**
-     * @param  int   $application
-     * @param  int   $usecase
-     * @param  int   $request
+     * @param int $application
+     * @param int $usecase
+     * @param int $request
      * @return array
      */
     public function getFiles($application = null, $usecase = null, $request = null): array
@@ -18,8 +19,7 @@ class Coverage extends AbstractAnalyzer
         $sql = 'SELECT a.`id` as `applicationId`, a.`name` as `applicationName`, f.`id` as `fileId`, f.`filename` as `fileName`, COUNT(distinct c.`line`) as `lines`
             FROM `file`        f
             JOIN `application` a ON a.`id`             = f.`application_id` ' . ($application !== null ? " and a.`id`         = {$application} " : '') . '
-            JOIN `request`     r ON r.`application_id` = a.`id` '             . ($usecase     !== null ? " and r.`usecase_id` = {$usecase} "     : '')
-                                                                              . ($request     !== null ? " and r.`id`         = {$request} "     : '') . '
+            JOIN `request`     r ON r.`application_id` = a.`id` ' . ($usecase !== null ? " and r.`usecase_id` = {$usecase} " : '') . ($request !== null ? " and r.`id`         = {$request} " : '') . '
             JOIN `coverage`    c ON c.`request_id`     = r.`id` and c.`file_id` = f.`id`
             WHERE 1
             GROUP BY a.name, f.filename
@@ -33,14 +33,15 @@ class Coverage extends AbstractAnalyzer
         if ($result->num_rows > 0) {
             return $result->fetch_all(MYSQLI_ASSOC);
         }
+
         return [];
     }
 
     /**
-     * @param  int $fileId
-     * @return string[]
+     * @param int $fileId
+     * @return FileContent
      */
-    public function getSource($fileId): array
+    public function getSource($fileId): FileContent
     {
         $controlService = new Service($this->container);
 
@@ -57,21 +58,23 @@ class Coverage extends AbstractAnalyzer
 
         $row = $result->fetch_assoc();
         $actionable = $controlService->getServiceActionable($row['applicationName']);
-        return explode("\n", $actionable->getFile($row['fileName']));
+
+        return $actionable->getFile($row['fileName']);
     }
 
     /**
-     * @param  int $fileId
-     * @param  int $usecaseId
-     * @param  int $requestId
+     * @param int $fileId
+     * @param int $usecaseId
+     * @param int $requestId
      * @return int[]
      */
     public function getCoverage($fileId, $usecaseId = null, $requestId = null): array
     {
         $sql = 'SELECT c.`line`
             FROM `coverage` c
-            JOIN `request`  r ON r.`id` = c.`request_id`' . ($usecaseId !== null ? " and r.`usecase_id` = {$usecaseId} " : '')
-                                                          . ($requestId !== null ? " and r.`id`         = {$requestId} " : '') . '
+            JOIN `request`  r ON r.`id` = c.`request_id`'
+                . ($usecaseId !== null ? " and r.`usecase_id` = {$usecaseId} " : '')
+                . ($requestId !== null ? " and r.`id` = {$requestId} " : '') . '
             WHERE c.`file_id` = ' . (int)$fileId;
 
         $result = $this->mysqli->query($sql);
@@ -86,6 +89,25 @@ class Coverage extends AbstractAnalyzer
         }
 
         return $ret;
+    }
+
+    /**
+     * @param  int    $fileId
+     * @return string
+     */
+    public function getMd5FromDb($fileId): string
+    {
+        $sql = 'SELECT HEX(f.`md5`) as `md5`
+            FROM `file` f
+            WHERE f.`id` = ' . (int)$fileId;
+
+        $result = $this->mysqli->query($sql);
+
+        if (!$result) {
+            throw new AnalyzerException($this->mysqli->error, $this->mysqli->errno);
+        }
+
+        return strtolower($result->fetch_assoc()['md5']);
     }
 
     /**

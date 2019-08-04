@@ -23,11 +23,15 @@
     </form>
 
     <h3>Coverage for file</h3>
+    {% if md5 != source.md5 %}
+    <p style="color: red;"><strong>CAUTION: </strong> File content might have changed, coverage might be off. {{ md5 }} | {{ source.md5 }}</p>
+    {% endif %}
+
     <div class="coverage">
     {% set previousLineCovered = false %}
     {% apply spaceless|replace({"\n":'', "\r":''})|raw %}
         <div class="uncovered">
-{% for nr, line in source %}
+{% for nr, line in source.lines %}
 {% if coverage[nr+1] and not previousLineCovered %}
 </div><div class="covered">
 {% set previousLineCovered = true %}
