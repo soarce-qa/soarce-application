@@ -26,14 +26,21 @@ abstract class AbstractAnalyzer
 
     /**
      * @param  int   $file
+     * @param  int   $function
      * @return array
      */
-    public function getUsecases($file = null): array
+    public function getUsecases($file = null, $function = null): array
     {
         $sql = 'SELECT u.`id`, u.`name`
-            FROM `usecase` u
-            ' . ($file !== null ? "JOIN `request` r on r.`usecase_id` = u.`id` JOIN `coverage` c ON c.`request_id` = r.`id` and c.`file_id` = {$file} " : '') . '
-            WHERE 1 GROUP BY u.`id` ORDER BY u.`name` ASC';
+            FROM `usecase` u ';
+        if ($file !== null || $function !== null) {
+            $sql .= 'JOIN `request` r on r.`usecase_id` = u.`id` '
+                . ' JOIN `function_call` f ON f.`request_id` = r.`id` '
+                . ($file     === null ? '' : " and f.`file_id` = {$file} ")
+                . ($function === null ? '' : " and f.`id`      = {$function} ");
+        }
+
+        $sql .= ' WHERE 1 GROUP BY u.`id` ORDER BY u.`name` ASC';
         $ret = [];
         $result = $this->mysqli->query($sql);
 

@@ -71,14 +71,17 @@ class TraceController
 
         $applicationId = '' === $request->getParam('applicationId') ? null : $request->getParam('applicationId');
         $fileId        = '' === $request->getParam('fileId')        ? null : $request->getParam('fileId');
+        $functionId    = '' === $request->getParam('functionId')    ? null : $request->getParam('functionId');
 
         $viewParams = [
             'applications'  => $analyzer->getAppplications(),
             'applicationId' => $applicationId,
             'files'         => $analyzer->getFiles($applicationId),
             'fileId'        => $fileId,
-            'usecases'      => $analyzer->getUsecases($fileId),
+            'functions'     => $analyzer->getFunctionCallsForSelect($applicationId, $fileId),
+            'functionId'    => $functionId,
+            'usecases'      => $analyzer->getUsecases($fileId, $functionId),
         ];
-        return $this->ci->view->render($response, 'trace/usecaseByFile.twig', $viewParams);
+        return $this->ci->view->render($response, 'trace/usecase.twig', $viewParams);
     }
 }

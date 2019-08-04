@@ -19,6 +19,7 @@
         <ul>
             <li>Application:      {{ controls.select('applicationId', applicationId, applications) }}</li>
             <li>Originating File: {{ controls.select('fileId',        fileId,        files) }}</li>
+            <li>Function Call:    {{ controls.select('functionId',    functionId,    functions) }}</li>
             <li>update:      <input type="submit" name="nothing" value="update"></li>
             <li><a href="/trace">back</a></li>
         </ul>

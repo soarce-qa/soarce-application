@@ -43,7 +43,7 @@ class Trace extends AbstractAnalyzer
      */
     public function getFunctionCalls($application, $usecase, $request, $file): array
     {
-        $sql = 'SELECT c.`class`, c.`function`, c.`type`
+        $sql = 'SELECT c.`id`, c.`class`, c.`function`, c.`type`
             FROM `function_call` c
             JOIN `file`          f ON c.`file_id` = f.`id` '             . ($file        !== null ? " and f.`id`             = {$file} "        : '') . '
             JOIN `request`       r ON r.`id`      = c.`request_id` '     . ($usecase     !== null ? " and r.`usecase_id`     = {$usecase} "     : '')
@@ -62,15 +62,22 @@ class Trace extends AbstractAnalyzer
             return $result->fetch_all(MYSQLI_ASSOC);
         }
         return [];
-
     }
 
     /**
-     * @param  string $fileName
+     * @param  int   $application
+     * @param  int   $file
      * @return array
      */
-    public function getUsecasesByFilename($fileName): array
+    public function getFunctionCallsForSelect($application, $file): array
     {
-
+        $ret = [];
+        foreach ($this->getFunctionCalls($application, null, null, $file) as $id => $row) {
+            $ret[$row['id']] = [
+                'id'   => $row['id'],
+                'name' => "{$row['class']} - {$row['function']}",
+            ];
+        }
+        return $ret;
     }
 }
