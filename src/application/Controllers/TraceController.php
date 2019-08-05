@@ -20,6 +20,7 @@ class TraceController
     public function __construct(Container $dependencyInjectionContainer)
     {
         $this->ci = $dependencyInjectionContainer;
+        $this->ci->view['activeMainMenu'] = 'traces';
     }
 
     /**
@@ -39,6 +40,8 @@ class TraceController
 	 */
   	public function calls(Request $request, Response $response): Response
     {
+        $this->ci->view['activeSubMenu'] = 'calls';
+
         $analyzer = new Trace($this->ci);
 
         $applicationId = '' === $request->getParam('applicationId') ? null : $request->getParam('applicationId');
@@ -65,8 +68,10 @@ class TraceController
      * @param  Response $response
      * @return Response
      */
-	public function usecaseByFile(Request $request, Response $response): Response
+	public function usecase(Request $request, Response $response): Response
     {
+        $this->ci->view['activeSubMenu'] = 'usecases';
+
         $analyzer = new Trace($this->ci);
 
         $applicationId = '' === $request->getParam('applicationId') ? null : $request->getParam('applicationId');

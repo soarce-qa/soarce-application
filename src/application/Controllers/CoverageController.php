@@ -20,6 +20,7 @@ class CoverageController
     public function __construct(Container $dependencyInjectionContainer)
     {
         $this->ci = $dependencyInjectionContainer;
+        $this->ci->view['activeMainMenu'] = 'coverage';
     }
 
     /**
