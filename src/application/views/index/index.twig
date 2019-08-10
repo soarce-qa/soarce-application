@@ -55,24 +55,46 @@
                         <th style="width: 10px">#</th>
                         <th>Table</th>
                         <th style="text-align: right;">Records</th>
+                        <th style="width: 100px; text-align: right;">%</th>
                         <th style="text-align: right;">Size</th>
+                        <th style="width: 100px; text-align: right;">%</th>
                         <th style="text-align: right;">Next Autoindex</th>
-                        <th>Index Usage</th>
-                        <th style="width: 150px;">%</th>
+                        <th style="width: 100px; text-align: right;">%</th>
+                        <th style="text-align: right;">Index Usage</th>
+                        <th style="width: 100px; text-align: right;">%</th>
                     </tr>
                 </thead>
                 <tbody>
+                    {% set maxRows          = max(DatabaseStatistics|column('TABLE_ROWS')) %}
+                    {% set maxLength        = max(DatabaseStatistics|column('TOTAL_LENGTH')) %}
+                    {% set maxAutoIncrement = max(DatabaseStatistics|column('AUTO_INCREMENT')) %}
+
                     {% for id,table in DatabaseStatistics %}
                     <tr>
                         <td>{{ id + 1 }}</td>
                         <td>{{ table.TABLE_NAME }}</td>
                         <td style="text-align: right;">{{ table.TABLE_ROWS }}</td>
-                        <td style="text-align: right;">{{ (table.DATA_LENGTH + table.INDEX_LENGTH)|byte }}</td>
-                        <td style="text-align: right;">{{ table.AUTO_INCREMENT }}</td>
-                        <td>{{ (table.INDEX_PERCENTAGE*100)|number_format(6, '.', ',') }} %</td>
                         <td>
-                            <div class="progress progress-xs">
-                                <div class="progress-bar" style="width: {{ (table.INDEX_PERCENTAGE*100)|number_format(2, '.', '') }} %"></div>
+                            <div class="progress progress-xs progress-striped">
+                                <div class="progress-bar" style="width: {{ (table.TABLE_ROWS/maxRows * 100)|number_format(2, '.', '') }}%"></div>
+                            </div>
+                        </td>
+                        <td style="text-align: right;">{{ table.TOTAL_LENGTH|byte }}</td>
+                        <td>
+                            <div class="progress progress-xs progress-striped">
+                                <div class="progress-bar" style="width: {{ (table.TOTAL_LENGTH/maxLength * 100)|number_format(2, '.', '') }}%"></div>
+                            </div>
+                        </td>
+                        <td style="text-align: right;">{{ table.AUTO_INCREMENT }}</td>
+                        <td>
+                            <div class="progress progress-xs progress-striped">
+                                <div class="progress-bar" style="width: {{ (table.AUTO_INCREMENT/maxAutoIncrement * 100)|number_format(2, '.', '') }}%"></div>
+                            </div>
+                        </td>
+                        <td style="text-align: right;">{{ (table.INDEX_PERCENTAGE*100)|number_format(6, '.', ',') }} %</td>
+                        <td>
+                            <div class="progress progress-xs progress-striped">
+                                <div class="progress-bar progress-bar-danger" style="width: {{ (table.INDEX_PERCENTAGE*100)|number_format(2, '.', '') }}%"></div>
                             </div>
                         </td>
                     </tr>

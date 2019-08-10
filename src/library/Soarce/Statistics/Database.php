@@ -30,7 +30,7 @@ class Database
      */
     public function getMysqlStats(): array
     {
-        $tables = $this->mysqli->query('SELECT t.`TABLE_NAME`, t.TABLE_ROWS, t.DATA_LENGTH, t.INDEX_LENGTH, t.`AUTO_INCREMENT` FROM information_schema.`TABLES` t WHERE t.TABLE_SCHEMA = "soarce";')->fetch_all(MYSQLI_ASSOC);
+        $tables = $this->mysqli->query('SELECT t.`TABLE_NAME`, t.TABLE_ROWS, (t.DATA_LENGTH+t.INDEX_LENGTH) as TOTAL_LENGTH, t.`AUTO_INCREMENT` FROM information_schema.`TABLES` t WHERE t.TABLE_SCHEMA = "soarce";')->fetch_all(MYSQLI_ASSOC);
         foreach ($tables as &$table) {
             $temp = $this->mysqli->query('SELECT count(*) as `TABLE_ROWS` FROM ' . $table['TABLE_NAME'] . ';')->fetch_assoc();
             $table['TABLE_ROWS'] = $temp['TABLE_ROWS'];
