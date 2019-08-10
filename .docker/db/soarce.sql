@@ -15,7 +15,7 @@ use soarce;
 
 -- Dumping structure for table soarce.application
 CREATE TABLE IF NOT EXISTS `application` (
-                                             `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                                             `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
                                              `name` varchar(63) DEFAULT NULL,
                                              PRIMARY KEY (`id`),
                                              UNIQUE KEY `name` (`name`)
@@ -26,8 +26,8 @@ CREATE TABLE IF NOT EXISTS `application` (
 -- Dumping structure for table soarce.coverage
 CREATE TABLE IF NOT EXISTS `coverage` (
                                           `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-                                          `file_id` bigint(20) unsigned NOT NULL,
-                                          `request_id` int(10) unsigned NOT NULL,
+                                          `file_id` int(10) unsigned NOT NULL,
+                                          `request_id` mediumint(8) unsigned NOT NULL,
                                           `line` mediumint(8) unsigned NOT NULL,
                                           PRIMARY KEY (`id`),
                                           UNIQUE KEY `file_id_line` (`file_id`,`request_id`,`line`),
@@ -52,8 +52,8 @@ CREATE TABLE IF NOT EXISTS `dump` (
 
 -- Dumping structure for table soarce.file
 CREATE TABLE IF NOT EXISTS `file` (
-                                      `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-                                      `application_id` int(10) unsigned NOT NULL,
+                                      `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                                      `application_id` smallint(5) unsigned NOT NULL,
                                       `filename` varchar(510) DEFAULT NULL,
                                       `md5` binary(16) DEFAULT NULL,
                                       PRIMARY KEY (`id`),
@@ -66,8 +66,8 @@ CREATE TABLE IF NOT EXISTS `file` (
 -- Dumping structure for table soarce.function_call
 CREATE TABLE IF NOT EXISTS `function_call` (
                                                `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-                                               `file_id` bigint(20) unsigned NOT NULL,
-                                               `request_id` int(10) unsigned NOT NULL,
+                                               `file_id` int(10) unsigned NOT NULL,
+                                               `request_id` mediumint(8) unsigned NOT NULL,
                                                `class` varchar(382) DEFAULT NULL,
                                                `function` varchar(382) NOT NULL,
                                                `type` enum('internal','user-defined') NOT NULL,
@@ -83,9 +83,9 @@ CREATE TABLE IF NOT EXISTS `function_call` (
 
 -- Dumping structure for table soarce.request
 CREATE TABLE IF NOT EXISTS `request` (
-                                         `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                                         `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
                                          `usecase_id` mediumint(8) unsigned NOT NULL,
-                                         `application_id` int(10) unsigned NOT NULL,
+                                         `application_id` smallint(5) unsigned NOT NULL,
                                          `request_id` varchar(510) NOT NULL,
                                          `request_started` double unsigned NOT NULL DEFAULT '0',
                                          `get` mediumtext,
