@@ -5,51 +5,90 @@
 {%  endblock %}
 
 {%  block header %}
-    <h2>Control</h2>
+    Control <small>// Usecases</small>
 {% endblock %}
 
 {% block main %}
 
-    <h3>Usecases</h3>
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Control Usecases Manually</h3>
+        </div>
+        <div class="box-body with-border">
+            <table id="filesTable" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>name</th>
+                        <th>requests</th>
+                        <th>active</th>
+                        <th>created</th>
+                        <th>actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for usecase in usecases %}
+                    <tr>
+                        <th>{{ usecase.id }}</th>
+                        <td>{{ usecase.name }}</td>
+                        <td style="text-align: right;">{{ usecase.requests }}</td>
+                        <td>{% if usecase.active %}yes{% else %}no{% endif %}</td>
+                        <td>{{ usecase.created | date('Y-m-d H:i:s') }}</td>
+                        <td>
+                            <form method="post" action="/control/usecases/{{ usecase.id }}" style="padding:0; margin:0;">
+                                <div class="form-group">
+                                    <div class="btn-group">
+                                        <button type="submit" value="activate" name="action" class="btn btn-sm btn-default btn-success {% if usecase.active %}disabled"  disabled="disabled{% endif %}"><i class="fa fa-play"></i> activate</button>
+                                        <button type="submit" value="restart"  name="action" class="btn btn-sm btn-default btn-warning"><i class="fa fa-refresh"></i> restart</button>
+                                        <button type="submit" value="delete"   name="action" class="btn btn-sm btn-default btn-danger" ><i class="fa fa-trash"></i> delete</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>id</th>
+                        <th>name</th>
+                        <th>requests</th>
+                        <th>active</th>
+                        <th>created</th>
+                        <th>actions</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="box-footer with-border">
+            <i class="fa fa-refresh"></i><strong> Restart</strong> will delete all requests and their data<br>
+            <i class="fa fa-trash"></i><strong> Delete</strong>    will delete the usecase as well
+        </div>
+    </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>id</th>
-                <th>name</th>
-                <th>requests</th>
-                <th>active</th>
-                <th>created</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for usecase in usecases %}
-            <tr>
-                <th>{{ usecase.id }}</th>
-                <td>{{ usecase.name }}</td>
-                <td>{{ usecase.requests }}</td>
-                <td>{% if usecase.active %}yes{% else %}no{% endif %}</td>
-                <td>{{ usecase.created | date('Y-m-d H:i:s') }}</td>
-                <td>
-                    <form method="post" action="/control/usecases/{{ usecase.id }}">
-                        <ul>
-                            <li><input type="submit" name="action" value="activate"></li>
-                            <li><input type="submit" name="action" value="restart"></li>
-                            <li><input type="submit" name="action" value="delete"></li>
-                        </ul>
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Create New Usecase</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+            </div>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <form method="post" action="/control/usecases">
+                        <div class="input-group input-group-sm">
+                            <input type="text" name="usecase" class="form-control" placeholder="Name for new Usecase">
+                            <span class="input-group-btn">
+                              <button type="button" name="action" class="btn btn-info btn-flat">Create</button>
+                            </span>
+                        </div>
                     </form>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    <form method="post" action="/control/usecases">
-        New: <input type="text" name="usecase"> <input type="submit" name="action" value="create">
-    </form>
-    <p>
-        <a href="/">back</a>
-    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
 
 
