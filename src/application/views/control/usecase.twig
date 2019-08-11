@@ -36,12 +36,10 @@
                         <td>{{ usecase.created | date('Y-m-d H:i:s') }}</td>
                         <td>
                             <form method="post" action="/control/usecases/{{ usecase.id }}" style="padding:0; margin:0;">
-                                <div class="form-group">
-                                    <div class="btn-group">
-                                        <button type="submit" value="activate" name="action" class="btn btn-sm btn-default btn-success {% if usecase.active %}disabled"  disabled="disabled{% endif %}"><i class="fa fa-play"></i> activate</button>
-                                        <button type="submit" value="restart"  name="action" class="btn btn-sm btn-default btn-warning"><i class="fa fa-refresh"></i> restart</button>
-                                        <button type="submit" value="delete"   name="action" class="btn btn-sm btn-default btn-danger" ><i class="fa fa-trash"></i> delete</button>
-                                    </div>
+                                <div class="btn-group">
+                                    <button type="submit" value="activate" name="action" class="btn btn-sm btn-default btn-success {% if usecase.active %}disabled"  disabled="disabled{% endif %}"><i class="fa fa-play"></i> activate</button>
+                                    <button type="submit" value="restart"  name="action" class="btn btn-sm btn-default btn-warning"><i class="fa fa-refresh"></i> restart</button>
+                                    <button type="submit" value="delete"   name="action" class="btn btn-sm btn-default btn-danger" ><i class="fa fa-trash"></i> delete</button>
                                 </div>
                             </form>
                         </td>
