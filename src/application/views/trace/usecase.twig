@@ -6,40 +6,81 @@
 {%  endblock %}
 
 {%  block header %}
-    <h2>Welcome</h2>
+    Filter Usecases
 {% endblock %}
 
 {% block main %}
 
-    <h3>Trace function calls</h3>
     <p>The list can be filtered with the following controls:</p>
 
-    <h3>Filters</h3>
-    <form method="get" action="">
-        <ul>
-            <li>Application:      {{ controls.select('applicationId', applicationId, applications) }}</li>
-            <li>Originating File: {{ controls.select('fileId',        fileId,        files) }}</li>
-            <li>Function Call:    {{ controls.select('functionId',    functionId,    functions) }}</li>
-            <li>update:      <input type="submit" name="nothing" value="update"></li>
-            <li><a href="/trace">back</a></li>
-        </ul>
-    </form>
+    {% embed "filterbox.twig" %}
+        {% block filters %}
+            {% import 'controls.twig' as controls %}
+            <div class="form-group">
+                <label for="">Application:</label>
+                {{ controls.select('applicationId', applicationId, applications) }}
+            </div>
+            <div class="form-group">
+                <label for="">Originating File:</label>
+                {{ controls.select('fileId',        fileId,        files) }}
+            </div>
+            <div class="form-group">
+                <label for="">Function Call:</label>
+                {{ controls.select('functionId',    functionId,    functions) }}
+            </div>
+            <div class="form-group">
+                <div class="btn-group">
+                    <a href="/" class="btn btn-default"><i class="fa fa-angle-left"></i> back</a>
+                    <button type="submit" value="update" name="whatever" class="btn btn-default btn-primary"><i class="fa fa-refresh"></i> update</button>
+                </div>
+            </div>
+        {% endblock %}
+    {% endembed %}
 
-    <h3>Usecases</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>name</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for usecase in usecases %}
-            <tr>
-                <td>{{ usecase.name }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Usecases</h3>
+        </div>
+        <div class="box-body">
+            <table id="filesTable" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for usecase in usecases %}
+                    <tr>
+                        <td>{{ usecase.name }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>name</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
 
 {% endblock %}
 
+{% block pageEnd %}
+    <script>
+        $(function () {
+            $('#filesTable').DataTable({
+                'paging'      : true,
+                'pageLength'  : 25,
+                'lengthChange': true,
+                "lengthMenu": [ 10, 25, 50, 100, 250 ],
+                'searching'   : true,
+                'ordering'    : true,
+                'info'        : true,
+                'autoWidth'   : true
+            });
+
+            $('.select2').select2();
+        })
+    </script>
+{% endblock %}
