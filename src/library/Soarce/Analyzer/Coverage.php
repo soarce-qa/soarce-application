@@ -93,11 +93,11 @@ class Coverage extends AbstractAnalyzer
 
     /**
      * @param  int    $fileId
-     * @return string
+     * @return mixed[]
      */
-    public function getMd5FromDb($fileId): string
+    public function getFile($fileId): array
     {
-        $sql = 'SELECT HEX(f.`md5`) as `md5`
+        $sql = 'SELECT f.`id`, f.`application_id`, f.`filename`, LOWER(HEX(f.`md5`)) as `md5`
             FROM `file` f
             WHERE f.`id` = ' . (int)$fileId;
 
@@ -107,7 +107,7 @@ class Coverage extends AbstractAnalyzer
             throw new AnalyzerException($this->mysqli->error, $this->mysqli->errno);
         }
 
-        return strtolower($result->fetch_assoc()['md5']);
+        return $result->fetch_assoc();
     }
 
     /**

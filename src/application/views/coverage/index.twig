@@ -1,5 +1,4 @@
 {% extends "layout.twig" %}
-{% import 'controls.twig' as controls %}
 
 {%  block head %}
     <title>SOARCE</title>
@@ -15,35 +14,29 @@
     <p>See below a list of files in which at least one line was executed. Click on a link to open the detail view of the code.
         The list can be filtered with the following controls:</p>
 
-    <div class="box">
-        <div class="box-header with-border">
-            <h3 class="box-title">Filters</h3>
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+    {% embed "filterbox.twig" %}
+        {% block filters %}
+        {% import 'controls.twig' as controls %}
+        <div class="form-group">
+            <label for="">Application:</label>
+            {{ controls.select('applicationId', applicationId, applications) }}
+        </div>
+        <div class="form-group">
+            <label for="">Usecases:</label>
+            {{ controls.select('usecaseId',     usecaseId,     usecases) }}
+        </div>
+        <div class="form-group">
+            <label for="">Requests:</label>
+            {{ controls.select('requestId',     requestId,     requests) }}
+        </div>
+        <div class="form-group">
+            <div class="btn-group">
+                <a href="/" class="btn btn-default"><i class="fa fa-angle-left"></i> back</a>
+                <button type="submit" value="update" name="whatever" class="btn btn-default btn-primary"><i class="fa fa-refresh"></i> update</button>
             </div>
         </div>
-        <div class="box-body">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="">Application:</label>
-                        {{ controls.select('applicationId', applicationId, applications) }}
-                    </div>
-                    <div class="form-group">
-                        <label for="">Usecases:</label>
-                        {{ controls.select('usecaseId',     usecaseId,     usecases) }}
-                    </div>
-                    <div class="form-group">
-                        <label for="">Requests:</label>
-                        {{ controls.select('requestId',     requestId,     requests) }}
-                    </div>
-                    <div class="form-group">
-                        <input type="submit" value="update" name="whatever" class="btn btn-default btn-primary">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     <div class="box">
         <div class="box-header with-border">
@@ -101,5 +94,4 @@
             $('.select2').select2();
         })
     </script>
-
 {% endblock %}

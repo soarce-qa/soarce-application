@@ -1,0 +1,30 @@
+li.L0,li.L1,li.L2,li.L3,li.L5,li.L6,li.L7,li.L8 {
+    color: #888 !important;
+    list-style-type: decimal !important;
+}
+
+
+div.coverage {
+    font-family: monospace;
+    padding: 5px;
+    font-size: 13px;
+    line-height: 18px;
+}
+
+div.loc-covered {
+    background: #c7ffc9;
+}
+
+div.loc-uncovered {
+    background: #ffd8dd;
+}
+
+#coverageRequestsAndUsecases {
+    font-family: monospace;
+    border: 1px solid #141c47;
+    background: #dce0ff;
+    position: absolute;
+    right:   20px;
+    z-index: 500;
+    padding: 3px;
+}
