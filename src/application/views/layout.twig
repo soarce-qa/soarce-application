@@ -65,31 +65,31 @@
             <ul class="sidebar-menu" data-widget="tree">
                 <li class="header">Main Menu</li>
                 <!-- Optionally, you can add icons to the links -->
-                <li class="{% if activeMainMenu == "home" %}active{% endif %}"><a href="/"><i class="fa fa-link"></i> <span>Home</span></a></li>
-                <li class="{% if activeMainMenu == "coverage" %}active{% endif %}"><a href="/coverage"><i class="fa fa-link"></i> <span>Coverage Analysis</span></a></li>
+                <li class="{% if activeMainMenu == "home" %}active{% endif %}"><a href="/"><i class="fa fa-home"></i> <span>Home</span></a></li>
+                <li class="{% if activeMainMenu == "coverage" %}active{% endif %}"><a href="/coverage"><i class="fa fa-file-text-o"></i> <span>Coverage Analysis</span></a></li>
                 <li class="treeview {% if activeMainMenu == "traces" %}active{% endif %}">
-                    <a href="/trace"><i class="fa fa-link"></i> <span>Trace Analysis</span>
+                    <a href="/trace"><i class="fa fa-search"></i> <span>Trace Analysis</span>
                         <span class="pull-right-container">
                             <i class="fa fa-angle-left pull-right"></i>
                         </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li class="{% if activeSubMenu == "calls" %}active{% endif %}"><a href="/trace/calls">calls</a></li>
-                        <li class="{% if activeSubMenu == "usecases" %}active{% endif %}"><a href="/trace/usecase">usecases</a></li>
+                        <li class="{% if activeSubMenu == "calls" %}active{% endif %}"><a href="/trace/calls"><i class="fa fa-phone"></i> calls</a></li>
+                        <li class="{% if activeSubMenu == "usecases" %}active{% endif %}"><a href="/trace/usecase"><i class="fa fa-handshake-o"></i> usecases</a></li>
                     </ul>
                 </li>
                 <li class="treeview {% if activeMainMenu == "control" %}active{% endif %}">
-                    <a href="/control"><i class="fa fa-link"></i> <span>Control</span>
+                    <a href="/control"><i class="fa fa-cogs"></i> <span>Control</span>
                         <span class="pull-right-container">
                             <i class="fa fa-angle-left pull-right"></i>
                         </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li class="{% if activeSubMenu == "usecases" %}active{% endif %}"><a href="/control/usecases">usecases</a></li>
-                        <li class="{% if activeSubMenu == "services" %}active{% endif %}"><a href="/control/services">services</a></li>
+                        <li class="{% if activeSubMenu == "usecases" %}active{% endif %}"><a href="/control/usecases"><i class="fa fa-indent"></i> usecases</a></li>
+                        <li class="{% if activeSubMenu == "services" %}active{% endif %}"><a href="/control/services"><i class="fa fa-server"></i> services</a></li>
                     </ul>
                 </li>
-                <li class="{% if activeMainMenu == "maintenance" %}active{% endif %}"><a href="/maintenance"><i class="fa fa-link"></i> <span>Database Maintenance</span></a></li>
+                <li class="{% if activeMainMenu == "maintenance" %}active{% endif %}"><a href="/maintenance"><i class="fa fa-database"></i> <span>Database Maintenance</span></a></li>
             </ul>
             <!-- /.sidebar-menu -->
         </section>
@@ -110,9 +110,7 @@
 
         <!-- Main content -->
         <section class="content container-fluid">
-
             {%  block main %}{% endblock %}
-
         </section>
         <!-- /.content -->
     </div>
@@ -122,10 +120,10 @@
     <footer class="main-footer">
         <!-- To the right -->
         <div class="pull-right hidden-xs">
-            created by <a href="https://www.segnitz.net/">Holger Segnitz</a>
+            created by <a href="https://www.segnitz.net/" target="_blank">Holger Segnitz</a>
         </div>
         <!-- Default to the left -->
-        <strong>&copy; 2017 - {{ "now" | date("Y") }} - <a href="https://www.soarce-qa.de/">SOARCE</a>.</strong>
+        <strong>&copy; 2017 - {{ "now" | date("Y") }} - <a href="https://www.soarce-qa.de/" target="_blank">SOARCE</a>.</strong>
     </footer>
 
     <!-- Add the sidebar's background. This div must be placed
