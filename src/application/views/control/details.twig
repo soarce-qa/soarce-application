@@ -5,36 +5,168 @@
 {%  endblock %}
 
 {%  block header %}
-    <h2>Control</h2>
+    Control <small>// services</small>
 {% endblock %}
 
 {% block main %}
 
-    <h3>Services</h3>
-
     <h4>Details of "{{ service.serviceConfig.name }}"</h4>
 
-    <h5>$_SERVER</h5>
-    <pre>
-        {{ service.details.server|json_encode(constant('JSON_PRETTY_PRINT')) }}
-    </pre>
+    <div class="box collapsed-box">
+        <div class="box-header with-border">
+            <h3 class="box-title">$_SERVER</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="box-body">
+            <table id="filesTable" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>key</th>
+                    <th>value</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for key, value in service.details.server %}
+                    <tr>
+                        <td>{{ key }}</td>
+                        <td>
+                            {% if value is iterable %}
+                                {{ value | json_encode(constant('JSON_PRETTY_PRINT'))}}
+                            {% else %}
+                                {{ value }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                <tr>
+                    <th>key</th>
+                    <th>value</th>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
 
-    <h5>$_env</h5>
-    <pre>
-        {{ service.details.env|json_encode(constant('JSON_PRETTY_PRINT')) }}
-    </pre>
+    <div class="box collapsed-box">
+        <div class="box-header with-border">
+            <h3 class="box-title">$_ENV</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="box-body">
+            <table id="filesTable" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>key</th>
+                    <th>value</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for key, value in service.details.env %}
+                    <tr>
+                        <td>{{ key }}</td>
+                        <td>
+                            {% if value is iterable %}
+                                {{ value | json_encode(constant('JSON_PRETTY_PRINT'))}}
+                            {% else %}
+                                {{ value }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                <tr>
+                    <th>key</th>
+                    <th>value</th>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
 
-    <h5>Extensions</h5>
-    <pre>
-        {{ service.details.extensions|json_encode(constant('JSON_PRETTY_PRINT')) }}
-    </pre>
+    <div class="box collapsed-box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Extensions</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="box-body">
+            <table id="filesTable" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>extension</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for value in service.details.extensions %}
+                    <tr>
+                        <td>
+                            {% if value is iterable %}
+                                {{ value | json_encode(constant('JSON_PRETTY_PRINT'))}}
+                            {% else %}
+                                {{ value }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                <tr>
+                    <th>extension</th>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
 
-    <h5>Ini Settings</h5>
-    <pre>
-        {{ service.details.ini_settings|json_encode(constant('JSON_PRETTY_PRINT')) }}
-    </pre>
+    <div class="box collapsed-box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Ini Settings</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="box-body">
+            <table id="filesTable" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>key</th>
+                    <th>value</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for key, value in service.details.ini_settings %}
+                    <tr>
+                        <td>{{ key }}</td>
+                        <td>
+                            {% if value is iterable %}
+                                {{ value | json_encode(constant('JSON_PRETTY_PRINT'))}}
+                            {% else %}
+                                {{ value }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                <tr>
+                    <th>key</th>
+                    <th>value</th>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
 
-    <p>
-        <a href="/control/services">back</a>
-    </p>
 {% endblock %}
