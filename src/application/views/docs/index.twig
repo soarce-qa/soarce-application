@@ -1,0 +1,41 @@
+{% extends "layout.twig" %}
+
+{%  block head %}
+    <title>SOARCE</title>
+{%  endblock %}
+
+{%  block header %}
+    SOARCE
+    <small>// Documentation</small>
+{% endblock %}
+
+{% block main %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <i class="fa fa-"></i>
+                    <h3 class="box-title">Documentation - Index</h3>
+                </div>
+
+                <div class="box-body">
+                    <ol>
+                        <li>Overview</li>
+                        <li>Application</li>
+                        <li>Plugin</li>
+                        <li>License</li>
+                        <li>
+                            <a href="/docs/credits">Credits</a>
+                            <ol>
+                                <li><a href="/docs/credits#contributors">Contributors</a></li>
+                                <li><a href="/docs/credits#opensource">OpenSource Credits</a></li>
+                            </ol>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

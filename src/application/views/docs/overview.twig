@@ -1,0 +1,155 @@
+{% extends "layout.twig" %}
+
+{%  block head %}
+    <title>SOARCE</title>
+{%  endblock %}
+
+{%  block header %}
+    SOARCE
+    <small>// Documentation</small>
+{% endblock %}
+
+{% block main %}
+
+    <div class="col-md-3">
+        <div class="box box-solid fixed">
+            <div class="box-header with-border">
+                <i class="fa fa-binoculars"></i>
+                <h3 class="box-title">Overview</h3>
+            </div>
+
+            <div class="box-body">
+                <ol>
+                    <li><a href="/docs/overview#introduction"       >Introduction</a></li>
+                    <li><a href="/docs/overview#theory-of-operation">Theory of Operation</a></li>
+                    <li><a href="/docs/overview#outlook"            >Outlook</a></li>
+                    <li><a href="/docs/overview#contribution"       >Contribution</a></li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <i class="fa fa-binoculars"></i>
+                <h3 class="box-title" id="introduction">Introduction</h3>
+            </div>
+
+            <div class="box-body with-border">
+                <p>There are different scenarios for which this software offers a purpose. We aim to support our fellow software developers, software engineers and software testers
+                    in every-day situations. Keeping track of code execution across service borders is a bit more difficult. Also, when encountering undocumented or &quot;grown&quot;
+                    code obfuscated by singletons, global variables and too many public static methods, it is hard to detect what code is still in use and when it is actually being
+                    used.</p>
+
+                <p>Using SOARCE in combination with either manual tests or even better an exhaustive Selenium, Codeception or Katalon Test-Suite, you will be able to gather
+                    code coverage and a list of involved classes and functions per use case per service. This allows for reverse search as well, to answer the question "If I
+                    change this function, what feature do I need to test?". It can also be used to see what services are involved and what code inside them is executed for a
+                    singular page load of the main application.</p>
+
+                <p>To be perfectly honest, this project was perceived out of necessity. After many years of taking over one legacy software after the other and trying
+                    to make a sense out of them, we took it upon us to finally create the tool, we would have wanted to have back then.</p>
+
+                <p>But let this be enough of an introduction, let's look at how this actually works:</p>
+            </div>
+        </div>
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <i class="fa fa-binoculars"></i>
+                <h3 class="box-title" id="theory-of-operation">Theory of Operation</h3>
+            </div>
+
+            <div class="box-body with-border">
+                <h4><strong>An exemplary test run</strong></h4>
+                <p>Let's assume, everything is already set up - we'll cover that later. The gathering of coverage and traces and the association with use cases will work almost
+                automatically. For most cases it is actually enough to tell SOARCE to start collecting and in addition to tell it what the current use case is. An example selenium
+                    test for a login:</p>
+                <ul>
+                    <li>request to SOARCE: start collecting
+                        <ul>
+                            <li>SOARCE forwards this command to all registered applications and services and returns only when all confirm success</li>
+                        </ul>
+                    </li>
+                    <li>request to SOARCE: activate usecase "login"</li>
+                    <li>request to Application: load index page
+                        <ul>
+                            <li>Fill username and password</li>
+                            <li>Send form</li>
+                        </ul>
+                    </li>
+                    <li>request to Application: send credentials
+                        <ul>
+                            <li>Application calls an authentication service and asks if the credentials are valid</li>
+                            <li>Returns an error to application</li>
+                        </ul>
+                    </li>
+                    <li>assert an error message within application response</li>
+                    <li>Optional: request to SOARCE to stop/halt collection and then trigger some untraced cleanup requests</li>
+                    <li>Request to SOARCE: Start collection for the next use case</li>
+                    <li>...</li>
+                </ul>
+            </div>
+
+            <div class="box-body with-border">
+                <h4><strong>How does it work?</strong></h4>
+                <h5><strong>Application</strong></h5>
+                <p>The application has a list of all services involved (see configuration). If you work with docker-compose, both the SOARCE application and the applications and
+                    services to be tested will have to have access to their respective networks.</p>
+                <p>Within the application there is set of Command and Control features that tell all the linked services to start or stop collecting coverage and trace data.
+                    Furthermore the application will know which use case is set to be active and treat all incoming coverage or trace data as linked to said use case.</p>
+                <h5><strong>The Client / Plugin</strong></h5>
+                <p>We tried to develop this part as minimal invasive as possible. Currently the only thing you will need inside your service containers will be xdebug. The client
+                    will be simply installed as a composer package, configured with a few lines of JSON and will then handle everything automatically by intercepting calls to the
+                    actual application and thus either execute certain tasks or run the coverage and tracing automatically.</p>
+                <p>Code Coverage is sent back directly at the end of every request, trace information however is more complicated. As we do not want to write hundreds of megabytes
+                    per request to the harddrive just to read it once and then delete it again (even though SSDs might be fast enough (actually not really ;)), we don't want to
+                    wear them out with that), we had to become creative. The client will create named fifo pipes within the container and then start a (configurable) number of
+                    worker jobs that would each listen on one of the pipes. Tracing information would be written to these pipes and the workers would read and analyze them and
+                    send back the extracted information to the SOARCE application for storage. Redis is used as a reliant provider for Mutex Locking as lock-files didn't work
+                    - at least with php-fpm.</p>
+                <h5><strong>Analysis</strong></h5>
+                <p>Data is written in a relatively raw form into a relational database. Through various views and forms you can for example see the coverage of all tests in all
+                    applications but are then able to narrow it down with the use of filters.</p>
+                <p>If you have an idea for another view which is not there yet, please let us know by creating a ticket or even create a pull-request right away.</p>
+            </div>
+        </div>
+
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <i class="fa fa-binoculars"></i>
+                <h3 class="box-title" id="outlook">Outlook</h3>
+            </div>
+
+            <div class="box-body with-border">
+                <ul>
+                    <li>Display a sequence of requests filterable by use case</li>
+                    <li>Display details of request</li>
+                    <li>Collect "coverable lines" too, so that not everying uncovered is immediately bad (e.g. whitespace).</li>
+                    <li>Collect trace metrics</li>
+                    <li>Write data directly to redis as a buffer and only write single-threaded into database</li>
+                    <li>Solve large auto_increment values due to insert ignore side-effects</li>
+                    <li>Make Select Fields Multiselects where applicable</li>
+                    <li>Properly trace service calls by passing along IDs and adding to them - draw call diagrams</li>
+                    <li>Collect more tracing information (what function calls which how often)</li>
+                    <li>Clients for different languages</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <i class="fa fa-binoculars"></i>
+                <h3 class="box-title" id="contribution">Contribution</h3>
+            </div>
+
+            <div class="box-body with-border">
+                <h4><strong>Free Software</strong></h4>
+                <p>This software is under MIT License. That means it is free of charge, you can do with it whatever you want, we will not charge you for using it.</p>
+                <p>However, if you want to keep this project alive, there are a number of possiblities: test it, contribute ideas for new features, contribute pull requests
+                    for new features, write documentation, etc.</p>
+                <p>If you want to donate to support, I have an Amazon wishlist and a Steam wishlist. And as this software is free as in "beer", we're always interested in
+                    novelty beer samples from around the world.</p>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

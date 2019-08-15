@@ -34,7 +34,7 @@
 
     {% block head %}{%  endblock %}
 </head>
-<body class="hold-transition skin-blue sidebar-mini" {% block bodyTag %}{% endblock %}>
+<body class="hold-transition fixed skin-blue sidebar-mini" {% block bodyTag %}{% endblock %}>
 <div class="wrapper">
 
     <!-- Main Header -->
@@ -90,6 +90,20 @@
                     </ul>
                 </li>
                 <li class="{% if activeMainMenu == "maintenance" %}active{% endif %}"><a href="/maintenance"><i class="fa fa-database"></i> <span>Database Maintenance</span></a></li>
+                <li class="treeview {% if activeMainMenu == "docs" %}active{% endif %}">
+                    <a href="/docs"><i class="fa fa-book"></i> <span>Documentation</span>
+                        <span class="pull-right-container">
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li class="{% if activeSubMenu == "overview"    %}active{% endif %}"><a href="/docs/overview"   ><i class="fa fa-binoculars" ></i> Overview</a></li>
+                        <li class="{% if activeSubMenu == "application" %}active{% endif %}"><a href="/docs/application"><i class="fa fa-laptop"     ></i> Application</a></li>
+                        <li class="{% if activeSubMenu == "plugin"      %}active{% endif %}"><a href="/docs/plugin"     ><i class="fa fa-plug"       ></i> Plugin</a></li>
+                        <li class="{% if activeSubMenu == "license"     %}active{% endif %}"><a href="/docs/license"    ><i class="fa fa-institution"></i> License</a></li>
+                        <li class="{% if activeSubMenu == "credits"     %}active{% endif %}"><a href="/docs/credits"    ><i class="fa fa-list"       ></i> Credits</a></li>
+                    </ul>
+                </li>
             </ul>
             <!-- /.sidebar-menu -->
         </section>
@@ -123,7 +137,8 @@
             created by <a href="https://www.segnitz.net/" target="_blank">Holger Segnitz</a>
         </div>
         <!-- Default to the left -->
-        <strong>&copy; 2017 - {{ "now" | date("Y") }} - <a href="https://www.soarce-qa.de/" target="_blank">SOARCE</a>.</strong>
+        <strong>&copy; 2017 - {{ "now" | date("Y") }} - <a href="https://www.soarce-qa.de/" target="_blank">SOARCE</a>&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;</strong>
+        <a href="/docs/license">license</a>&nbsp;&nbsp;&nbsp;<strong>-</strong>&nbsp;&nbsp;&nbsp;<a href="/docs/credits#contributors">contributors</a>
     </footer>
 
     <!-- Add the sidebar's background. This div must be placed
