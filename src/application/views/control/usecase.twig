@@ -35,11 +35,11 @@
                         <td>{% if usecase.active %}yes{% else %}no{% endif %}</td>
                         <td>{{ usecase.created | date('Y-m-d H:i:s') }}</td>
                         <td>
-                            <form method="post" action="/control/usecases/{{ usecase.id }}" style="padding:0; margin:0;">
+                            <form action="/control/usecases/{{ usecase.id }}" method="post">
                                 <div class="btn-group">
-                                    <button type="submit" value="activate" name="action" class="btn btn-sm btn-default btn-success {% if usecase.active %}disabled"  disabled="disabled{% endif %}"><i class="fa fa-play"></i> activate</button>
-                                    <button type="submit" value="restart"  name="action" class="btn btn-sm btn-default btn-warning"><i class="fa fa-refresh"></i> restart</button>
-                                    <button type="submit" value="delete"   name="action" class="btn btn-sm btn-default btn-danger" ><i class="fa fa-trash"></i> delete</button>
+                                    <button type="submit" name="action" value="activate"  class="btn btn-sm btn-default btn-success {% if usecase.active %}disabled"  disabled="disabled{% endif %}"><i class="fa fa-play"></i> activate</button>
+                                    <button type="button" data-toggle="modal" data-target="#restartModal"  data-formaction="/control/usecases/{{ usecase.id }}" class="btn btn-sm btn-default btn-warning"><i class="fa fa-refresh"></i> restart</button>
+                                    <button type="button" data-toggle="modal" data-target="#deleteModal"   data-formaction="/control/usecases/{{ usecase.id }}" class="btn btn-sm btn-default btn-danger" ><i class="fa fa-trash"></i> delete</button>
                                 </div>
                             </form>
                         </td>
@@ -79,4 +79,24 @@
 
 {% endblock %}
 
+{% block pageEnd %}
+{% include "modal.twig" with {
+    'type':        'warning',
+    'modalId':     'restartModal',
+    'title':       'Restart Usecase',
+    'message':     'Do you really want to restart the usecase? This will delete all the data of the usecase.',
+    'actionLabel': '<i class="fa fa-refresh"></i> restart',
+    'actionName':  'action',
+    'actionValue': 'restart',
+} %}
 
+{% include "modal.twig" with {
+    'type':        'danger',
+    'modalId':     'deleteModal',
+    'title':       'Delete Usecase',
+    'message':     'Do you really want to restart the usecase? This will delete all the data of the usecase and the usecase itself.',
+    'actionLabel': '<i class="fa fa-trash"></i> delete',
+    'actionName':  'action',
+    'actionValue': 'delete',
+} %}
+{% endblock %}

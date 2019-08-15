@@ -1,0 +1,33 @@
+<div class="modal modal-{{ type }} fade" id="{{ modalId }}" tabindex="-1" role="dialog" aria-labelledby="{{ modalId }}Title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="{{ modalId }}Title">{{ title }}</h4>
+            </div>
+            <div class="modal-body">
+                {{ message }}
+            </div>
+            <div class="modal-footer">
+                <form method="post" style="padding:0; margin:0;" id="modal-{{ type }}-form">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-outline btn-secondary pull-left" data-dismiss="modal">Close</button>
+                        <button type="submit" name="{{ actionName }}" value="{{ actionValue }}" class="btn btn-outline btn-{{type}}">{{ actionLabel|raw }}</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#{{ modalId }}').on('show.bs.modal', function (event) {
+        let button     = $(event.relatedTarget);
+        let formAction = button.data('formaction');
+        let modal      = $(this);
+
+        document.getElementById('modal-{{ type }}-form').action = formAction;
+    })
+</script>
