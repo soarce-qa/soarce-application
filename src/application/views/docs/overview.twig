@@ -42,7 +42,7 @@
                     used.</p>
 
                 <p>Using SOARCE in combination with either manual tests or even better an exhaustive Selenium, Codeception or Katalon Test-Suite, you will be able to gather
-                    code coverage and a list of involved classes and functions per use case per service. This allows for reverse search as well, to answer the question "If I
+                    code coverage and a list of involved classes and functions per use case per service. This allows for reverse search as well, to answer questions like "If I
                     change this function, what feature do I need to test?". It can also be used to see what services are involved and what code inside them is executed for a
                     singular page load of the main application.</p>
 
@@ -98,8 +98,8 @@
                     Furthermore the application will know which use case is set to be active and treat all incoming coverage or trace data as linked to said use case.</p>
                 <h5><strong>The Client / Plugin</strong></h5>
                 <p>We tried to develop this part as minimal invasive as possible. Currently the only thing you will need inside your service containers will be xdebug. The client
-                    will be simply installed as a composer package, configured with a few lines of JSON and will then handle everything automatically by intercepting calls to the
-                    actual application and thus either execute certain tasks or run the coverage and tracing automatically.</p>
+                    - including it's dependencies - will be simply installed as a composer package, configured with a few lines of JSON and will then handle everything
+                    automatically by intercepting calls to the actual application and thus either execute certain tasks or run the coverage and tracing automatically.</p>
                 <p>Code Coverage is sent back directly at the end of every request, trace information however is more complicated. As we do not want to write hundreds of megabytes
                     per request to the harddrive just to read it once and then delete it again (even though SSDs might be fast enough (actually not really ;)), we don't want to
                     wear them out with that), we had to become creative. The client will create named fifo pipes within the container and then start a (configurable) number of
@@ -124,6 +124,7 @@
                     <li>Display a sequence of requests filterable by use case</li>
                     <li>Display details of request</li>
                     <li>Collect "coverable lines" too, so that not everying uncovered is immediately bad (e.g. whitespace).</li>
+                    <li>Backport client to PHP5.6 as too many still use that</li>
                     <li>Collect trace metrics</li>
                     <li>Write data directly to redis as a buffer and only write single-threaded into database</li>
                     <li>Solve large auto_increment values due to insert ignore side-effects</li>
