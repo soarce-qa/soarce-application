@@ -21,8 +21,9 @@
             <div class="box-body">
                 <ol>
                     <li><a href="/docs/overview#introduction">Introduction</a></li>
-                    <li><a href="/docs/overview#docker">Docker-Compose</a></li>
-                    <li><a href="/docs/overview#soarce-json">soarce.json</a></li>
+                    <li><a href="/docs/overview#configuration">Configuration</a></li>
+                    <li><a href="/docs/overview#usage">Usage</a></li>
+                    <li><a href="/docs/overview#known-issues">Known Issues</a></li>
                 </ol>
             </div>
         </div>
@@ -43,9 +44,10 @@
         <div class="box box-solid">
             <div class="box-header with-border">
                 <i class="fa fa-laptop"></i>
-                <h3 class="box-title" id="docker">docker-compose</h3>
+                <h3 class="box-title" id="configuration">Configuration</h3>
             </div>
             <div class="box-body with-border">
+                <h4>Docker Compose</h4>
                 <p>
                     The SOARCE main application needs to be able to send http requests to the applications and services under test. If they are
                     orchestrated by docker-compose in a closed network, you will have to make it known to SOARCE's docker-compose.
@@ -65,17 +67,10 @@ networks:
   mycoolapp_default:
     external: true
   thisotherapp_default:
-    external: true
-                    </pre>
-            </div>
-        </div>
-
-        <div class="box box-solid">
-            <div class="box-header with-border">
-                <i class="fa fa-laptop"></i>
-                <h3 class="box-title" id="soarce-json">soarce.json</h3>
+    external: true</pre>
             </div>
             <div class="box-body with-border">
+                <h4>soarce.json</h4>
                 <p>
                     You will need to tell SOARCE a list of services, their URLs and a few config parameters, especially when you don't want to stick with the defaults. Since
                     it would be quite cumbersome to do this via ENV vars, we decided to place it into a JSON-File that has to go by the name `soarce.json` in this project's root
@@ -95,12 +90,11 @@ networks:
       "common_path": "/var/www/"
     }
   }
-}
-                    </pre>
+}</pre>
                 <p>The parameters so far in detail:</p>
                 <ul>
-                    <li>The `key` of the `services` object is arbitrary but should be something you can recognize the service unter test with by name. It will be used in the database
-                        and in the web frontend.</li>
+                    <li>The `key` of the `services` object is arbitrary but should be something you can recognize the service under test with by name. It will be used
+                        in the database and in the web frontend.</li>
                     <li>The `url` parameter is the local network URL pointing to the application or service under test. If the server does not run on a standard port, include it,
                         the same has to be done if the application is setup in a subdirectory</li>
                     <li>The `parameter_name` parameter tells SOARCE to use a certain parameter as key for commands to the SOARCE client plugin. In most cases it should be fine to
@@ -111,25 +105,48 @@ networks:
                 </ul>
             </div>
         </div>
-                    ## Known Issues
 
-                    ### Performance
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <i class="fa fa-laptop"></i>
+                <h3 class="box-title" id="usage">Usage</h3>
+            </div>
+            <div class="box-body with-border">
+                <h4>Collecting Coverage and Traces</h4>
+                <p>After everything is configured, you will need to create and activate usecases. If you are using a test tool like Selenium or Katalon, we recommend
+                to do this in an automated way right with your tests. If you are manually testing, you can use the web frontend as well.</p>
+                <p>Navigate to "Control" and then "usecases". You should see a probably empty list and form "Create New Usecase". Simply enter a name for the usecase and
+                hit the button "Create".</p>
+                <p>The list above should now have at least one entry. In order for SOARCE to collect the data you need, there needs to be one active usecase. Incoming data
+                will be associated with that usecase automatically, so there can be only one active usecase. To activate a use case simply click on the green button next to it.</p>
+                <p>You can of course delete a use case or delete all it's data if you for exmaple decide to re-run the test.</p>
+            </div>
+            <div class="box-body with-border">
+                <h4>Analysis</h4>
+                <p>All current views basically show all data by default. You can use filters (top form on the pages) to narrow down the data displayed to your needs.</p>
+                <p>Within code coverage view you can click on lines to see which usecases and requests touched the respective line.</p>
+            </div>
+        </div>
 
-                    Do not use xdebug in this application, only in the applications and services which are supposed
-                    to be tested.
-
-                    ### Database Keys
-
-                    We currently use Unique Key Constraints for certain tables so that we don't need transactions, nor
-                    limit writing data to single threads nor spend a lot of CPU time with cleaning up and rewriting hundreds
-                    of thousands of rows. On top of that foreign key constraints with ON DELETE CASCADE are used to delete all
-                    data linked to a usecase when that usecase is re-run. This all causes huge gaps in the primary key sequence.
-                    Because of this we chose quite large integer types.
-                    Until we have a purge command in the GUI, we recommend to clear the database from time to time manually to
-                    reset the keys when you re-run a full test-suite.
-                    For the future we plan to funnel the writing into one process by writing data to redis first, this
-                    will eliminate the need for regular purging and long integers.
-                </p>
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <i class="fa fa-laptop"></i>
+                <h3 class="box-title" id="known-issues">Known Issues</h3>
+            </div>
+            <div class="box-body with-border">
+                <h4>Performance</h4>
+                <p>Do not use xdebug in this application itself, only in the applications and services which are supposed to be tested need xdebug.</p>
+                <p>Some settings might need finetuning, we don't know yet.</p>
+            </div>
+            <div class="box-body with-border">
+                <h4>Database Keys</h4>
+                <p>We use Unique Key Constraints for certain tables so that we don't need transactions, nor limit writing data to single threads
+                    nor spend a lot of CPU time with cleaning up and rewriting hundreds of thousands of rows. On top of that foreign key constraints
+                    with ON DELETE CASCADE are used to delete all data linked to a usecase when that usecase is reset. This all causes huge gaps in
+                    the primary key sequence.</p>
+                <p>Because of this we chose quite large integer types. For the time being we recommend to purge the whole database in case you want to
+                    rerun a full test suite. We plan to make writing of data single threaded and cached through redis in the near future, this should
+                    minimize the problem.</p>
             </div>
         </div>
     </div>
