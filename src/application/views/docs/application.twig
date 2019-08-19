@@ -20,7 +20,9 @@
 
             <div class="box-body">
                 <ol>
-                    <li><a href="/docs/overview#introduction"       >Introduction</a></li>
+                    <li><a href="/docs/overview#introduction">Introduction</a></li>
+                    <li><a href="/docs/overview#docker">Docker-Compose</a></li>
+                    <li><a href="/docs/overview#soarce-json">soarce.json</a></li>
                 </ol>
             </div>
         </div>
@@ -31,37 +33,84 @@
                 <i class="fa fa-laptop"></i>
                 <h3 class="box-title" id="introduction">Introduction</h3>
             </div>
-
             <div class="box-body with-border">
-                <p>## Configuration
+                <p>The application needs to be configured in two ways. You have to tell it where to find all services it needs to remote control and a few settings for said remote
+                    control and - in case the services to be tested are also run via docker-compose - you need to make each docker-compose aware of the other network(s).<p>
+                <p>Apart from this, you can play around with php, redis, MySQL settings to finetune your experience - this will not be part of this manual, at least yet.</p>
+            </div>
+        </div>
 
-                    ### ENV-Variables
-
-                    tba
-
-                    ### Networks
-
-                    SOURCE-control needs to be able to send http requests to your applications and services. If they are
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <i class="fa fa-laptop"></i>
+                <h3 class="box-title" id="docker">docker-compose</h3>
+            </div>
+            <div class="box-body with-border">
+                <p>
+                    The SOARCE main application needs to be able to send http requests to the applications and services under test. If they are
                     orchestrated by docker-compose in a closed network, you will have to make it known to SOARCE's docker-compose.
                     This can be achieved by copying/renaming the file `docker-compose.override.yml.dist` to `docker-compose.override.yml`
-                    and changing/adding the network name(s). It could look like this:
+                    and changing/adding the network name(s). It could look like this:</p>
 
-                    ```yaml
-                    version: '3.3'
+                    <pre>
+version: '3.3'
 
-                    services:
-                    app-soarce:
-                    networks:
-                    mycoolapp_default:
-                    thisotherapp_default:
+services:
+  app-soarce:
+    networks:
+      mycoolapp_default:
+      thisotherapp_default:
 
-                    networks:
-                    mycoolapp_default:
-                    external: true
-                    thisotherapp_default:
-                    external: true
-                    ```
+networks:
+  mycoolapp_default:
+    external: true
+  thisotherapp_default:
+    external: true
+                    </pre>
+            </div>
+        </div>
 
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <i class="fa fa-laptop"></i>
+                <h3 class="box-title" id="soarce-json">soarce.json</h3>
+            </div>
+            <div class="box-body with-border">
+                <p>
+                    You will need to tell SOARCE a list of services, their URLs and a few config parameters, especially when you don't want to stick with the defaults. Since
+                    it would be quite cumbersome to do this via ENV vars, we decided to place it into a JSON-File that has to go by the name `soarce.json` in this project's root
+                    directory.</p>
+
+                    <pre>
+{
+  "services": {
+    "myAwesomeMainApplication": {
+      "url": "http://myawesomemainapplication.local/",
+      "parameter_name": "SOARCE",
+      "common_path": "/var/www/"
+    },
+    "mySneakyBackgroundService": {
+      "url": "http://mysneakybackgroundservice.local/",
+      "parameter_name": "SOARCE",
+      "common_path": "/var/www/"
+    }
+  }
+}
+                    </pre>
+                <p>The parameters so far in detail:</p>
+                <ul>
+                    <li>The `key` of the `services` object is arbitrary but should be something you can recognize the service unter test with by name. It will be used in the database
+                        and in the web frontend.</li>
+                    <li>The `url` parameter is the local network URL pointing to the application or service under test. If the server does not run on a standard port, include it,
+                        the same has to be done if the application is setup in a subdirectory</li>
+                    <li>The `parameter_name` parameter tells SOARCE to use a certain parameter as key for commands to the SOARCE client plugin. In most cases it should be fine to
+                        keep the default value `SOARCE`. You have to change it, if the application has a parameter `SOARCE` itself. Of cours this has to match the value in client
+                        config.</li>
+                    <li>The `common_path` parameter is used to strip paths in the web frontend that will be common for all requests for that application to reduce visual noise.
+                        This is for example the document root of the web server or the application root.</li>
+                </ul>
+            </div>
+        </div>
                     ## Known Issues
 
                     ### Performance
@@ -80,7 +129,6 @@
                     reset the keys when you re-run a full test-suite.
                     For the future we plan to funnel the writing into one process by writing data to redis first, this
                     will eliminate the need for regular purging and long integers.
-
                 </p>
             </div>
         </div>
