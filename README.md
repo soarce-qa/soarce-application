@@ -1,4 +1,4 @@
-# soarce/application
+# soarce/application [![Packagist](https://img.shields.io/packagist/dt/soarce/application.svg)](https://packagist.org/packages/soarce/application)
 
 ## Version: 0.6.0
 
