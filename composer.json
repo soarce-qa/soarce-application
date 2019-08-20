@@ -2,6 +2,7 @@
   "name": "soarce/application",
   "description": "SOARCE application",
   "type" : "project",
+  "license": "MIT",
   "authors": [
     {
       "name": "Holger Segnitz",
@@ -11,11 +12,11 @@
     }
   ],
   "support": {
-    "issues": "https://github.com/hsegnitz/tbd/issues",
-    "forum":  "https://github.com/hsegnitz/tbd/issues",
-    "wiki":   "https://github.com/hsegnitz/tbd/wiki",
-    "source": "https://github.com/hsegnitz/tbd",
-    "docs":   "https://github.com/hsegnitz/tbd/wiki"
+    "issues": "https://github.com/soarce-qa/application/issues",
+    "forum":  "https://github.com/soarce-qa/application/issues",
+    "wiki":   "https://github.com/soarce-qa/application/wiki",
+    "source": "https://github.com/soarce-qa/application",
+    "docs":   "https://github.com/soarce-qa/application/wiki"
   },
   "config": {
     "platform": {
