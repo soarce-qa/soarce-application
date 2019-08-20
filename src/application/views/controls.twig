@@ -1,6 +1,6 @@
 
 {% macro select(name, current, list) %}
-    <select name="{{ name }}">
+    <select name="{{ name }}" class="form-control select2">
         <option value="">-- all -- please choose</option>
         {% for id, row in list %}
             {% if id == current %}

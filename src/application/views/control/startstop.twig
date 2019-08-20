@@ -5,32 +5,42 @@
 {%  endblock %}
 
 {%  block header %}
-    <h2>Control</h2>
+    Control <small>// services</small>
 {% endblock %}
 
 {% block main %}
 
-    <h3>Services</h3>
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Start / Stop</h3>
+        </div>
+        <div class="box-body with-border">
+            <table id="filesTable" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>name</th>
+                        <th>result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for name, result in services %}
+                    <tr>
+                        <td>{{ name }}</td>
+                        <td>{{ result }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>name</th>
+                        <th>result</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="box-footer with-border">
+            <a href="/control/services" class="btn btn-default"><i class="fa fa-angle-left"></i> back</a>
+        </div>
+    </div>
 
-    <h4>Start/Stop</h4>
-    <table>
-        <thead>
-            <tr>
-                <th>name</th>
-                <th>result</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for name, result in services %}
-            <tr>
-                <th>{{ name }}</th>
-                <td>{{ result }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <p>
-        <a href="/control/services">back</a>
-    </p>
 {% endblock %}

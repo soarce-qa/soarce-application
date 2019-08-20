@@ -21,6 +21,7 @@ class ControlController
     public function __construct(Container $dependencyInjectionContainer)
     {
         $this->ci = $dependencyInjectionContainer;
+        $this->ci->view['activeMainMenu'] = 'control';
     }
 
     /**
@@ -41,6 +42,8 @@ class ControlController
      */
 	public function service(Request $request, Response $response, $args): Response
     {
+        $this->ci->view['activeSubMenu'] = 'services';
+
         $serviceControl = new Service($this->ci);
         $service = $args['service'] ?? '';
         $action  = $request->getParam('action');
@@ -77,6 +80,8 @@ class ControlController
      */
 	public function usecase(Request $request, Response $response, $args): Response
     {
+        $this->ci->view['activeSubMenu'] = 'usecases';
+
         $usecaseControl = new Usecase($this->ci);
         $usecase = $args['usecase'] ?? '';
         $action  = $request->getParam('action');

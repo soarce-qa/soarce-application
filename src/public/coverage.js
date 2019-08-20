@@ -39,7 +39,8 @@ function showRequestsAndUsecases(elem) {
             }
             elemCU.innerHTML = out;
 
-            elemCU.style.top = (elem.getBoundingClientRect().top - 30) + "px";
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            elemCU.style.top = (elem.getBoundingClientRect().top + scrollTop - 30) + "px";
         }
     };
 

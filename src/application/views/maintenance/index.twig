@@ -5,19 +5,39 @@
 {%  endblock %}
 
 {%  block header %}
-    <h2>Maintenance</h2>
+    Database Maintenance
 {% endblock %}
 
 {% block main %}
 
-    <h3>Maintenance</h3>
-    <form method="post">
-        <ul>
-            <li><a href="/">back</a></li>
-            <li>...</li>
-            <li><input type="submit" name="action" value="truncate"></li>
-            <li><input type="submit" name="action" value="reset autoincrement"></li>
-        </ul>
-    </form>
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Database Maintenance</h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <form method="post">
+                        <div class="btn-group">
+                            <button class="btn btn-lrg btn-danger" type="button" data-formaction="" data-toggle="modal" data-target="#truncateModal"><i class="fa fa-trash"></i> truncate</button>
+                            <button class="btn btn-lrg btn-info"   type="submit" name="action" value="reset autoincrement"><i class="fa fa-undo"></i> reset autoincrement</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
+
+{% endblock %}
+{% block pageEnd %}
+    {% include "modal.twig" with {
+        'type':        'danger',
+        'modalId':     'truncateModal',
+        'title':       'Truncate All Tables',
+        'message':     'Do you really want to truncate the database? It will delete all data.',
+        'actionLabel': '<i class="fa fa-trash"></i> truncate',
+        'actionName':  'action',
+        'actionValue': 'truncate',
+    } %}
 {% endblock %}

@@ -19,6 +19,7 @@ class MaintenanceController
     public function __construct(Container $dependcyInjectionContainer)
     {
         $this->ci = $dependcyInjectionContainer;
+        $this->ci->view['activeMainMenu'] = 'maintenance';
     }
 
     /**

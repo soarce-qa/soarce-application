@@ -1,0 +1,27 @@
+{% extends "layout.twig" %}
+
+{%  block head %}
+    <title>SOARCE</title>
+{%  endblock %}
+
+{%  block header %}
+    SOARCE
+    <small>// License</small>
+{% endblock %}
+
+{% block main %}
+
+    <div class="col-md-9">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <i class="fa fa-institution"></i>
+                <h3 class="box-title" id="maintainers">MIT License</h3>
+            </div>
+
+            <div class="box-body with-border">
+                <pre>{{ licenseText }}</pre>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
