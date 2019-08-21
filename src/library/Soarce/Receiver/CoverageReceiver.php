@@ -42,7 +42,7 @@ class CoverageReceiver extends ReceiverAbstract
             return;
         }
 
-        $sql = 'INSERT IGNORE INTO `coverage` (`file_id`, `request_id`, `line`) VALUES ';
+        $sql = 'INSERT IGNORE INTO `coverage` (`file_id`, `request_id`, `line`, `covered`) VALUES ';
         if (isset($this->fileMd5Hashes[$filename])) {
             $fileId = $this->createFile($filename, $this->fileMd5Hashes[$filename]);
         } else {
@@ -52,8 +52,8 @@ class CoverageReceiver extends ReceiverAbstract
         $requestId = $this->getRequestId();
 
         $rows = [];
-        foreach (array_keys($coveredLines) as $line) {
-            $rows[] = "({$fileId}, {$requestId}, {$line})";
+        foreach ($coveredLines as $line => $covered) {
+            $rows[] = "({$fileId}, {$requestId}, {$line}, {$covered})";
         }
 
         $sql .= implode(', ', $rows);
