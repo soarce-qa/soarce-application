@@ -49,7 +49,7 @@
 
     <div class="coverage">
         <pre class="prettyprint linenums">{% for nr, line in source.lines %}
-<div class="loc {% if coverage[nr+1] %}loc-covered{% else %}loc-uncovered{% endif %}" onclick="showRequestsAndUsecases(this)" data-line="{{ nr+1 }}" data-file="{{ fileId }}">&nbsp;{{ line | escape | replace({"\n":'', "\r":'', "\t":'&nbsp;&nbsp;&nbsp;&nbsp;', " ":'&nbsp;'})|raw }}</div>
+<div class="loc {% if coverage[nr+1] == 1 %}loc-covered{% elseif coverage[nr+1] < 0 %}loc-uncovered{% endif %}" onclick="showRequestsAndUsecases(this)" data-line="{{ nr+1 }}" data-file="{{ fileId }}">&nbsp;{{ line | escape | replace({"\n":'', "\r":'', "\t":'&nbsp;&nbsp;&nbsp;&nbsp;', " ":'&nbsp;'})|raw }}</div>
 {% endfor %}
         </pre>
     </div>
