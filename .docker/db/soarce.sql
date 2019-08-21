@@ -25,16 +25,19 @@ CREATE TABLE IF NOT EXISTS `application` (
 
 -- Dumping structure for table soarce.coverage
 CREATE TABLE IF NOT EXISTS `coverage` (
-                                          `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-                                          `file_id` int(10) unsigned NOT NULL,
-                                          `request_id` mediumint(8) unsigned NOT NULL,
-                                          `line` mediumint(8) unsigned NOT NULL,
-                                          PRIMARY KEY (`id`),
-                                          UNIQUE KEY `file_id_line` (`file_id`,`request_id`,`line`),
-                                          KEY `line` (`line`),
-                                          KEY `FK_coverage_request` (`request_id`),
-                                          CONSTRAINT `FK__files2` FOREIGN KEY (`file_id`) REFERENCES `file` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-                                          CONSTRAINT `FK_coverage_request` FOREIGN KEY (`request_id`) REFERENCES `request` (`id`) ON DELETE CASCADE
+                            `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                            `file_id` INT(10) UNSIGNED NOT NULL,
+                            `request_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+                            `line` MEDIUMINT(8) UNSIGNED NOT NULL,
+                            `covered` TINYINT(4) NOT NULL DEFAULT '0',
+                            PRIMARY KEY (`id`),
+                            UNIQUE INDEX `file_id_line` (`file_id`, `request_id`, `line`),
+                            INDEX `line` (`line`),
+                            INDEX `request` (`request_id`),
+                            INDEX `file_line_request_covered` (`file_id`, `request_id`, `line`, `covered`),
+                            INDEX `file_line_covered` (`file_id`, `line`, `covered`),
+                            CONSTRAINT `file` FOREIGN KEY (`file_id`) REFERENCES `file` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+                            CONSTRAINT `request` FOREIGN KEY (`request_id`) REFERENCES `request` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Data exporting was unselected.
