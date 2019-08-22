@@ -32,19 +32,19 @@ class CoverageController
     {
         $analyzer = new Coverage($this->ci);
 
-        $applicationId = '' === $request->getParam('applicationId') ? null : $request->getParam('applicationId');
-        $usecaseId     = '' === $request->getParam('usecaseId')     ? null : $request->getParam('usecaseId');
-        $requestId     = '' === $request->getParam('requestId')     ? null : $request->getParam('requestId');
+        $applicationIds = $request->getParam('applicationId') ?? [];
+        $usecaseIds     = $request->getParam('usecaseId')     ?? [];
+        $requestIds     = $request->getParam('requestId')     ?? [];
 
         $viewParams = [
-            'applications'  => $analyzer->getAppplications($usecaseId),
-            'applicationId' => $applicationId,
-            'usecases'      => $analyzer->getUsecases(),
-            'usecaseId'     => $usecaseId,
-            'requests'      => $analyzer->getRequests($usecaseId, $applicationId),
-            'requestId'     => $requestId,
-            'files'         => $analyzer->getFiles($applicationId, $usecaseId, $requestId),
-            'services'      => $this->ci->settings['soarce']['services'],
+            'applications'   => $analyzer->getAppplications($usecaseIds),
+            'applicationIds' => $applicationIds,
+            'usecases'       => $analyzer->getUsecases(),
+            'usecaseIds'     => $usecaseIds,
+            'requests'       => $analyzer->getRequests($usecaseIds, $applicationIds),
+            'requestIds'     => $requestIds,
+            'files'          => $analyzer->getFiles($applicationIds, $usecaseIds, $requestIds),
+            'services'       => $this->ci->settings['soarce']['services'],
         ];
         return $this->ci->view->render($response, 'coverage/index.twig', $viewParams);
 	}
@@ -59,25 +59,25 @@ class CoverageController
     {
         $analyzer = new Coverage($this->ci);
 
-        $applicationId = '' === $request->getParam('applicationId') ? null : $request->getParam('applicationId');
-        $usecaseId     = '' === $request->getParam('usecaseId')     ? null : $request->getParam('usecaseId');
-        $requestId     = '' === $request->getParam('requestId')     ? null : $request->getParam('requestId');
-        $fileId        = (int)($params['file'] ?? 0);
+        $applicationIds = $request->getParam('applicationId') ?? [];
+        $usecaseIds     = $request->getParam('usecaseId')     ?? [];
+        $requestIds     = $request->getParam('requestId')     ?? [];
+        $fileId         = (int)($params['file'] ?? 0);
 
         if (0 === $fileId) {
             throw new \InvalidArgumentException('needs a fileId');
         }
 
         $viewParams = [
-            'fileId'        => $fileId,
-            'applicationId' => $applicationId,
-            'usecaseId'     => $usecaseId,
-            'requestId'     => $requestId,
-            'file'          => $analyzer->getFile($fileId),
-            'usecases'      => $analyzer->getUsecases($fileId),
-            'requests'      => $analyzer->getRequests($usecaseId, null, $fileId),
-            'source'        => $analyzer->getSource($fileId),
-            'coverage'      => $analyzer->getCoverage($fileId, $usecaseId, $requestId),
+            'fileId'         => $fileId,
+            'applicationIds' => $applicationIds,
+            'usecaseIds'     => $usecaseIds,
+            'requestIds'     => $requestIds,
+            'file'           => $analyzer->getFile($fileId),
+            'usecases'       => $analyzer->getUsecases($fileId),
+            'requests'       => $analyzer->getRequests($usecaseIds, null, $fileId),
+            'source'         => $analyzer->getSource($fileId),
+            'coverage'       => $analyzer->getCoverage($fileId, $usecaseIds, $requestIds),
         ];
         return $this->ci->view->render($response, 'coverage/file.twig', $viewParams);
     }

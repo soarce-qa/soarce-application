@@ -25,19 +25,22 @@ abstract class AbstractAnalyzer
     }
 
     /**
-     * @param  int   $file
-     * @param  int   $function
+     * @param  int[] $files
+     * @param  int[] $functions
      * @return array
      */
-    public function getUsecases($file = null, $function = null): array
+    public function getUsecases($files = [], $functions = []): array
     {
+        $fileList     = $this->buildInStatementBody($files);
+        $functionList = $this->buildInStatementBody($functions);
+
         $sql = 'SELECT u.`id`, u.`name`
             FROM `usecase` u ';
-        if ($file !== null || $function !== null) {
+        if ($fileList !== '' || $functionList !== '') {
             $sql .= 'JOIN `request` r on r.`usecase_id` = u.`id` '
                 . ' JOIN `function_call` f ON f.`request_id` = r.`id` '
-                . ($file     === null ? '' : " and f.`file_id` = {$file} ")
-                . ($function === null ? '' : " and f.`id`      = {$function} ");
+                . ($fileList     === null ? '' : " and f.`file_id` in ({$fileList}) ")
+                . ($functionList === null ? '' : " and f.`id`      in ({$functionList}) ");
         }
 
         $sql .= ' WHERE 1 GROUP BY u.`id` ORDER BY u.`name` ASC';
@@ -55,14 +58,16 @@ abstract class AbstractAnalyzer
     }
 
     /**
-     * @param  int $usecase
+     * @param  int[] $usecases
      * @return array
      */
-    public function getAppplications($usecase = null): array
+    public function getAppplications($usecases = []): array
     {
+        $usecaseList = $this->buildInStatementBody($usecases);
+
         $sql = 'SELECT a.`id`, a.`name`
             FROM `application` a
-            ' . ($usecase !== null ? "JOIN `request` r on r.`application_id` = a.id and r.`usecase_id` = {$usecase} " : '') . '
+            ' . ($usecaseList !== '' ? "JOIN `request` r on r.`application_id` = a.id and r.`usecase_id` in ({$usecaseList}) " : '') . '
             WHERE 1 GROUP BY a.`id` ORDER BY a.`name` ASC';
         $ret = [];
         $result = $this->mysqli->query($sql);
@@ -78,18 +83,22 @@ abstract class AbstractAnalyzer
     }
 
     /**
-     * @param  int $usecase
-     * @param  int $application
-     * @param  int $file
+     * @param  int[] $usecases
+     * @param  int[] $applications
+     * @param  int[] $files
      * @return array
      */
-    public function getRequests($usecase = null, $application = null, $file = null): array
+    public function getRequests($usecases = [], $applications = [], $files = []): array
     {
+        $applicationList = $this->buildInStatementBody($applications);
+        $usecaseList     = $this->buildInStatementBody($usecases);
+        $fileList        = $this->buildInStatementBody($files);
+
         $sql = 'SELECT r.`id`, r.`request_id` as `name`
             FROM `request` r
-            JOIN `application` a on r.`application_id` = a.`id` ' . ($application !== null ? " and r.`application_id` = {$application} " : '')
-                                                                  . ($usecase     !== null ? " and r.`usecase_id`     = {$usecase}     " : '') . '
-            JOIN `coverage` c    ON c.`request_id`     = r.`id` ' . ($file        !== null ? " and c.`file_id`        = {$file}        " : '') . '
+            JOIN `application` a on r.`application_id` = a.`id` ' . ($applicationList !== '' ? " and r.`application_id` in ({$applicationList}) " : '')
+                                                                  . ($usecaseList     !== '' ? " and r.`usecase_id`     in ({$usecaseList})     " : '') . '
+            JOIN `coverage` c    ON c.`request_id`     = r.`id` ' . ($fileList        !== '' ? " and c.`file_id`        in ({$fileList})        " : '') . '
             WHERE 1 GROUP BY r.`id` ORDER BY `name` ASC';
         $ret = [];
         $result = $this->mysqli->query($sql);
@@ -102,5 +111,19 @@ abstract class AbstractAnalyzer
             $ret[$row['id']] = $row;
         }
         return $ret;
+    }
+
+    /**
+     * @param  int[]|int $ids
+     * @return string
+     */
+    protected function buildInStatementBody($ids): string
+    {
+        if (!is_array($ids)) {
+            return (string)$ids;
+        }
+
+        array_walk($ids, 'intval');
+        return implode(',', $ids);
     }
 }

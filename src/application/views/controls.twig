@@ -1,9 +1,9 @@
 
 {% macro select(name, current, list) %}
-    <select name="{{ name }}" class="form-control select2">
+    <select multiple name="{{ name }}[]" class="form-control select2">
         <option value="">-- all -- please choose</option>
         {% for id, row in list %}
-            {% if id == current %}
+            {% if id in current %}
                 <option value="{{ id }}" selected="selected">{{ row.name }}</option>
             {% else %}
                 <option value="{{ id }}">{{ row.name }}</option>

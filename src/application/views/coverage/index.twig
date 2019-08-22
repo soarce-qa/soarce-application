@@ -19,15 +19,15 @@
         {% import 'controls.twig' as controls %}
         <div class="form-group">
             <label for="">Application:</label>
-            {{ controls.select('applicationId', applicationId, applications) }}
+            {{ controls.select('applicationId', applicationIds, applications) }}
         </div>
         <div class="form-group">
             <label for="">Usecases:</label>
-            {{ controls.select('usecaseId',     usecaseId,     usecases) }}
+            {{ controls.select('usecaseId',     usecaseIds,     usecases) }}
         </div>
         <div class="form-group">
             <label for="">Requests:</label>
-            {{ controls.select('requestId',     requestId,     requests) }}
+            {{ controls.select('requestId',     requestIds,     requests) }}
         </div>
         <div class="form-group">
             <div class="btn-group">
@@ -56,7 +56,7 @@
                     <tr>
                         <td>{{ file.applicationName }}</td>
                         <td>
-                            <a href="/coverage/file/{{ file.fileId }}?usecaseId={{ usecaseId }}&requestId={{ requestId }}&applicationId={{ applicationId }}">
+                            <a href="/coverage/file/{{ file.fileId }}?{{ {'applicationId': applicationIds, 'usecaseId': usecaseIds, 'requestId': requestIds}|url_encode }}">
                                 {{ file.fileName | stripCommonPath(services[file.applicationName].commonPath) }}
                             </a>
                         </td>

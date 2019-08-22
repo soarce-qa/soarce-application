@@ -9,17 +9,21 @@ class Coverage extends AbstractAnalyzer
 {
 
     /**
-     * @param int $application
-     * @param int $usecase
-     * @param int $request
+     * @param int[] $applications
+     * @param int[] $usecases
+     * @param int[] $requests
      * @return array
      */
-    public function getFiles($application = null, $usecase = null, $request = null): array
+    public function getFiles($applications = [], $usecases = [], $requests = []): array
     {
+        $applicationList = $this->buildInStatementBody($applications);
+        $usecaseList     = $this->buildInStatementBody($usecases);
+        $requestList     = $this->buildInStatementBody($requests);
+
         $sql = 'SELECT a.`id` as `applicationId`, a.`name` as `applicationName`, f.`id` as `fileId`, f.`filename` as `fileName`, COUNT(distinct c.`line`) as `lines`
             FROM `file`        f
-            JOIN `application` a ON a.`id`             = f.`application_id` ' . ($application !== null ? " and a.`id` = {$application} " : '') . '
-            JOIN `request`     r ON r.`application_id` = a.`id` ' . ($usecase !== null ? " and r.`usecase_id` = {$usecase} " : '') . ($request !== null ? " and r.`id` = {$request} " : '') . '
+            JOIN `application` a ON a.`id`             = f.`application_id` ' . ($applicationList !== '' ? " and a.`id` in ({$applicationList}) " : '') . '
+            JOIN `request`     r ON r.`application_id` = a.`id` ' . ($usecaseList !== '' ? " and r.`usecase_id` in ({$usecaseList}) " : '') . ($requestList !== '' ? " and r.`id` in ({$requestList}) " : '') . '
             JOIN `coverage`    c ON c.`request_id`     = r.`id` and c.`file_id` = f.`id` and c.`covered` = 1
             WHERE 1
             GROUP BY a.id, f.filename
@@ -63,18 +67,21 @@ class Coverage extends AbstractAnalyzer
     }
 
     /**
-     * @param int $fileId
-     * @param int $usecaseId
-     * @param int $requestId
+     * @param  int   $fileId
+     * @param  int[] $usecaseIds
+     * @param  int[] $requestIds
      * @return int[]
      */
-    public function getCoverage($fileId, $usecaseId = null, $requestId = null): array
+    public function getCoverage($fileId, $usecaseIds = null, $requestIds = null): array
     {
+        $usecaseList = $this->buildInStatementBody($usecaseIds);
+        $requestList = $this->buildInStatementBody($requestIds);
+
         $sql = 'SELECT c.`line`, MAX(c.`covered`) as `coverageLevel`
             FROM `coverage` c
             JOIN `request`  r ON r.`id` = c.`request_id` '
-                . ($usecaseId !== null ? " and r.`usecase_id` = {$usecaseId} " : '')
-                . ($requestId !== null ? " and r.`id` = {$requestId} " : '') . '
+                . ($usecaseList !== '' ? " and r.`usecase_id` in ({$usecaseList}) " : '')
+                . ($requestList !== '' ? " and r.`id` in ({$requestList}) " : '') . '
             WHERE c.`file_id` = ' . (int)$fileId . '
             GROUP BY c.`line` ';
 
