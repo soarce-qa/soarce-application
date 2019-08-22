@@ -1,11 +1,14 @@
 # soarce/application [![Packagist](https://img.shields.io/packagist/dt/soarce/application.svg)](https://packagist.org/packages/soarce/application)
 
-## Version: 0.7.0
+## Version: 0.7.1
 
 ## Overview
 
-This package is the application part of SOARCE - a tool for collecting, reading and analyzing PHP code coverage
+This package is the application part of SOARCE - a tool for collecting, reading and analyzing (PHP) code coverage
 and function call traces within a service oriented architecture / microservice environment.
+The application receives and stores the information from all services and allows filtering the coverage by usecase
+and even request within a use case. And reverse search is also possible by seeing which usecases touch a certain
+line of code or call a certain function.
 The client (soarce/client) has to be installed per service as a dev requirement - see it's documentation.
 This main application comes with a docker-container for each PHP, NginX, MySQL and Redis server.
 
