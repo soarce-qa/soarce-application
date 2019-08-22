@@ -18,15 +18,15 @@
             {% import 'controls.twig' as controls %}
             <div class="form-group">
                 <label for="">Application:</label>
-                {{ controls.select('applicationId', applicationId, applications) }}
+                {{ controls.select('applicationId', applicationIds, applications) }}
             </div>
             <div class="form-group">
                 <label for="">Originating File:</label>
-                {{ controls.select('fileId',        fileId,        files) }}
+                {{ controls.select('fileId',        fileIds,        files) }}
             </div>
             <div class="form-group">
                 <label for="">Function Call:</label>
-                {{ controls.select('functionId',    functionId,    functions) }}
+                {{ controls.select('functionId',    functionIds,    functions) }}
             </div>
             <div class="form-group">
                 <div class="btn-group">

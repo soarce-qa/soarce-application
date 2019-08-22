@@ -44,21 +44,21 @@ class TraceController
 
         $analyzer = new Trace($this->ci);
 
-        $applicationId = '' === $request->getParam('applicationId') ? null : $request->getParam('applicationId');
-        $usecaseId     = '' === $request->getParam('usecaseId')     ? null : $request->getParam('usecaseId');
-        $requestId     = '' === $request->getParam('requestId')     ? null : $request->getParam('requestId');
-        $fileId        = '' === $request->getParam('fileId')        ? null : $request->getParam('fileId');
+        $applicationIds = $request->getParam('applicationId') ?? [];
+        $usecaseIds     = $request->getParam('usecaseId')     ?? [];
+        $requestIds     = $request->getParam('requestId')     ?? [];
+        $fileIds        = $request->getParam('fileId')        ?? [];
 
         $viewParams = [
-            'applications'  => $analyzer->getAppplications($usecaseId),
-            'applicationId' => $applicationId,
-            'usecases'      => $analyzer->getUsecases(),
-            'usecaseId'     => $usecaseId,
-            'requests'      => $analyzer->getRequests($usecaseId, $applicationId),
-            'requestId'     => $requestId,
-            'files'         => $analyzer->getFiles($applicationId, $usecaseId, $requestId),
-            'fileId'        => $fileId,
-            'functionCalls' => $analyzer->getFunctionCalls($applicationId, $usecaseId, $requestId, $fileId),
+            'applications'   => $analyzer->getAppplications($usecaseIds),
+            'applicationIds' => $applicationIds,
+            'usecases'       => $analyzer->getUsecases(),
+            'usecaseIds'     => $usecaseIds,
+            'requests'       => $analyzer->getRequests($usecaseIds, $applicationIds),
+            'requestIds'     => $requestIds,
+            'files'          => $analyzer->getFiles($applicationIds, $usecaseIds, $requestIds),
+            'fileIds'        => $fileIds,
+            'functionCalls'  => $analyzer->getFunctionCalls($applicationIds, $usecaseIds, $requestIds, $fileIds),
         ];
         return $this->ci->view->render($response, 'trace/calls.twig', $viewParams);
 	}
@@ -74,18 +74,18 @@ class TraceController
 
         $analyzer = new Trace($this->ci);
 
-        $applicationId = '' === $request->getParam('applicationId') ? null : $request->getParam('applicationId');
-        $fileId        = '' === $request->getParam('fileId')        ? null : $request->getParam('fileId');
-        $functionId    = '' === $request->getParam('functionId')    ? null : $request->getParam('functionId');
+        $applicationIds = $request->getParam('applicationId') ?? [];
+        $fileIds        = $request->getParam('fileId')        ?? [];
+        $functionIds    = $request->getParam('functionId')    ?? [];
 
         $viewParams = [
-            'applications'  => $analyzer->getAppplications(),
-            'applicationId' => $applicationId,
-            'files'         => $analyzer->getFiles($applicationId),
-            'fileId'        => $fileId,
-            'functions'     => $analyzer->getFunctionCallsForSelect($applicationId, $fileId),
-            'functionId'    => $functionId,
-            'usecases'      => $analyzer->getUsecases($fileId, $functionId),
+            'applications'   => $analyzer->getAppplications(),
+            'applicationIds' => $applicationIds,
+            'files'          => $analyzer->getFiles($applicationIds),
+            'fileIds'        => $fileIds,
+            'functions'      => $analyzer->getFunctionCallsForSelect($applicationIds, $fileIds),
+            'functionIds'    => $functionIds,
+            'usecases'       => $analyzer->getUsecases($fileIds, $functionIds),
         ];
         return $this->ci->view->render($response, 'trace/usecase.twig', $viewParams);
     }

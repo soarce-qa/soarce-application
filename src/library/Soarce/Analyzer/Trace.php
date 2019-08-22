@@ -5,19 +5,23 @@ namespace Soarce\Analyzer;
 class Trace extends AbstractAnalyzer
 {
     /**
-     * @param  int   $application
-     * @param  int   $usecase
-     * @param  int   $request
+     * @param  int[]   $applications
+     * @param  int[]   $usecases
+     * @param  int[]   $requests
      * @return array
      */
-    public function getFiles($application = null, $usecase = null, $request = null): array
+    public function getFiles($applications = [], $usecases = [], $requests = []): array
     {
+        $applicationList = $this->buildInStatementBody($applications);
+        $usecaseList     = $this->buildInStatementBody($usecases);
+        $requestList     = $this->buildInStatementBody($requests);
+
         $sql = 'SELECT f.id, f.filename as `name`, COUNT(distinct c.id) as `calls`
             FROM `file`          f
             JOIN `function_call` c ON c.`file_id` = f.`id`
-            JOIN `request`       r ON r.`id`      = c.`request_id` '     . ($usecase     !== null ? " and r.`usecase_id`     = {$usecase} "     : '')
-                                                                         . ($request     !== null ? " and r.`id`             = {$request} "     : '')
-                                                                         . ($application !== null ? " and r.`application_id` = {$application} " : '') . '
+            JOIN `request`       r ON r.`id`      = c.`request_id` '     . ($usecaseList     !== '' ? " and r.`usecase_id`     in ({$usecaseList}) "     : '')
+                                                                         . ($requestList     !== '' ? " and r.`id`             in ({$requestList}) "     : '')
+                                                                         . ($applicationList !== '' ? " and r.`application_id` in ({$applicationList}) " : '') . '
             WHERE 1
             GROUP BY f.filename
             ORDER BY f.filename ASC';
@@ -35,20 +39,25 @@ class Trace extends AbstractAnalyzer
     }
 
     /**
-     * @param  int   $application
-     * @param  int   $usecase
-     * @param  int   $request
-     * @param  int   $file
+     * @param  int[] $applications
+     * @param  int[] $usecases
+     * @param  int[] $requests
+     * @param  int[] $files
      * @return array
      */
-    public function getFunctionCalls($application, $usecase, $request, $file): array
+    public function getFunctionCalls($applications, $usecases, $requests, $files): array
     {
+        $applicationList = $this->buildInStatementBody($applications);
+        $usecaseList     = $this->buildInStatementBody($usecases);
+        $requestList     = $this->buildInStatementBody($requests);
+        $fileList        = $this->buildInStatementBody($files);
+
         $sql = 'SELECT c.`id`, c.`class`, c.`function`, c.`type`
             FROM `function_call` c
-            JOIN `file`          f ON c.`file_id` = f.`id` '             . ($file        !== null ? " and f.`id`             = {$file} "        : '') . '
-            JOIN `request`       r ON r.`id`      = c.`request_id` '     . ($usecase     !== null ? " and r.`usecase_id`     = {$usecase} "     : '')
-                                                                         . ($request     !== null ? " and r.`id`             = {$request} "     : '')
-                                                                         . ($application !== null ? " and r.`application_id` = {$application} " : '') . '
+            JOIN `file`          f ON c.`file_id` = f.`id` '             . ($fileList        !== '' ? " and f.`id`             in ({$fileList}) "        : '') . '
+            JOIN `request`       r ON r.`id`      = c.`request_id` '     . ($usecaseList     !== '' ? " and r.`usecase_id`     in ({$usecaseList}) "     : '')
+                                                                         . ($requestList     !== '' ? " and r.`id`             in ({$requestList}) "     : '')
+                                                                         . ($applicationList !== '' ? " and r.`application_id` in ({$applicationList}) " : '') . '
             WHERE 1
             GROUP BY c.class, c.function
             ORDER BY c.class ASC, c.function ASC';
@@ -65,14 +74,14 @@ class Trace extends AbstractAnalyzer
     }
 
     /**
-     * @param  int   $application
-     * @param  int   $file
+     * @param  int[] $application
+     * @param  int[] $file
      * @return array
      */
     public function getFunctionCallsForSelect($application, $file): array
     {
         $ret = [];
-        foreach ($this->getFunctionCalls($application, null, null, $file) as $id => $row) {
+        foreach ($this->getFunctionCalls($application, [], [], $file) as $id => $row) {
             $ret[$row['id']] = [
                 'id'   => $row['id'],
                 'name' => "{$row['class']} - {$row['function']}",
