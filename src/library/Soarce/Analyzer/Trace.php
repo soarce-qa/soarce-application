@@ -5,9 +5,9 @@ namespace Soarce\Analyzer;
 class Trace extends AbstractAnalyzer
 {
     /**
-     * @param  int[]   $applications
-     * @param  int[]   $usecases
-     * @param  int[]   $requests
+     * @param  int[] $applications
+     * @param  int[] $usecases
+     * @param  int[] $requests
      * @return array
      */
     public function getFiles($applications = [], $usecases = [], $requests = []): array

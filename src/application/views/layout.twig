@@ -78,6 +78,16 @@
                         <li class="{% if activeSubMenu == "usecases" %}active{% endif %}"><a href="/trace/usecase"><i class="fa fa-handshake-o"></i> usecases</a></li>
                     </ul>
                 </li>
+                <li class="treeview {% if activeMainMenu == "requests" %}active{% endif %}">
+                    <a href="/request"><i class="fa fa-exchange"></i> <span>Request Analysis</span>
+                        <span class="pull-right-container">
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li class="{% if activeSubMenu == "overview" %}active{% endif %}"><a href="/request/overview"><i class="fa fa-eye"></i> overview</a></li>
+                    </ul>
+                </li>
                 <li class="treeview {% if activeMainMenu == "control" %}active{% endif %}">
                     <a href="/control"><i class="fa fa-cogs"></i> <span>Control</span>
                         <span class="pull-right-container">

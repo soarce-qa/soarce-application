@@ -25,11 +25,11 @@ class ReceiveController
     }
 
     /**
-	 * @param  Request $request
-	 * @param  Response $response
-	 * @return Response
-	 */
-  	public function index(Request $request, Response $response): Response
+     * @param  Request $request
+     * @param  Response $response
+     * @return Response
+     */
+    public function index(Request $request, Response $response): Response
     {
         $json = json_decode((string)$request->getBody(), JSON_OBJECT_AS_ARRAY);
         if (null === $json) {
@@ -64,5 +64,5 @@ class ReceiveController
         }
 
         return $response;
-	}
+    }
 }

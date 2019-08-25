@@ -25,14 +25,14 @@ class ControlController
     }
 
     /**
-	 * @param  Request $request
-	 * @param  Response $response
-	 * @return Response
-	 */
-  	public function index(Request $request, Response $response): Response
+     * @param  Request $request
+     * @param  Response $response
+     * @return Response
+     */
+    public function index(Request $request, Response $response): Response
     {
         return $this->ci->view->render($response, 'control/index.twig');
-	}
+    }
 
     /**
      * @param  Request  $request
@@ -40,7 +40,7 @@ class ControlController
      * @param  array    $args
      * @return Response
      */
-	public function service(Request $request, Response $response, $args): Response
+    public function service(Request $request, Response $response, $args): Response
     {
         $this->ci->view['activeSubMenu'] = 'services';
 
@@ -78,7 +78,7 @@ class ControlController
      * @param  array    $args
      * @return Response
      */
-	public function usecase(Request $request, Response $response, $args): Response
+    public function usecase(Request $request, Response $response, $args): Response
     {
         $this->ci->view['activeSubMenu'] = 'usecases';
 

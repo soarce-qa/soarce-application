@@ -24,27 +24,26 @@ class DocsController
     }
 
     /**
-	 * @param  Request  $request
-	 * @param  Response $response
-	 * @param  array    $params
-	 * @return Response
-	 */
-	public function index(Request $request, Response $response, $params): Response
+     * @param  Request  $request
+     * @param  Response $response
+     * @param  array    $params
+     * @return Response
+     */
+    public function index(Request $request, Response $response, $params): Response
     {
         $page = $params['page'] ?? 'index';
         $this->ci->view['activeSubMenu'] = $page;
-		return $this->ci->view->render($response, 'docs/' . $page . '.twig');
-	}
+        return $this->ci->view->render($response, 'docs/' . $page . '.twig');
+    }
 
     /**
-	 * @param  Request  $request
-	 * @param  Response $response
-	 * @return Response
-	 */
-	public function license(Request $request, Response $response): Response
+     * @param  Request  $request
+     * @param  Response $response
+     * @return Response
+     */
+    public function license(Request $request, Response $response): Response
     {
         $this->ci->view['activeSubMenu'] = 'license';
-		return $this->ci->view->render($response, 'docs/license.twig', ['licenseText' => file_get_contents(__DIR__ . '/../../../LICENSE')]);
-	}
-
+        return $this->ci->view->render($response, 'docs/license.twig', ['licenseText' => file_get_contents(__DIR__ . '/../../../LICENSE')]);
+    }
 }

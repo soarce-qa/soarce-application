@@ -23,11 +23,11 @@ class MaintenanceController
     }
 
     /**
-	 * @param  Request $request
-	 * @param  Response $response
-	 * @return Response
-	 */
-	public function index(Request $request, Response $response): Response
+     * @param  Request $request
+     * @param  Response $response
+     * @return Response
+     */
+    public function index(Request $request, Response $response): Response
     {
         $databaseMaintenance = new \Soarce\Maintenance\Database($this->ci);
 
@@ -39,7 +39,6 @@ class MaintenanceController
             }
         }
 
-		return $this->ci->view->render($response, 'maintenance/index.twig');
-	}
-
+        return $this->ci->view->render($response, 'maintenance/index.twig');
+    }
 }
