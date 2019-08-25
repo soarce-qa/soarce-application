@@ -39,8 +39,8 @@ abstract class AbstractAnalyzer
         if ($fileList !== '' || $functionList !== '') {
             $sql .= 'JOIN `request` r on r.`usecase_id` = u.`id` '
                 . ' JOIN `function_call` f ON f.`request_id` = r.`id` '
-                . ($fileList     === null ? '' : " and f.`file_id` in ({$fileList}) ")
-                . ($functionList === null ? '' : " and f.`id`      in ({$functionList}) ");
+                . ($fileList     === '' ? '' : " and f.`file_id` in ({$fileList}) ")
+                . ($functionList === '' ? '' : " and f.`id`      in ({$functionList}) ");
         }
 
         $sql .= ' WHERE 1 GROUP BY u.`id` ORDER BY u.`name` ASC';

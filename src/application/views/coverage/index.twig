@@ -48,11 +48,30 @@
                     <tr>
                         <th>application</th>
                         <th>file</th>
+                        <th>lines</th>
                         <th>lines covered</th>
+                        <th>---</th>
+                        <th>%</th>
                     </tr>
                 </thead>
                 <tbody>
                 {% for file in files %}
+                    {% if file.lines != 0 %}
+                        {% set percentage = file.coveredLines / file.lines %}
+                    {% else %}
+                        {% set percentage = 1 %}
+                    {% endif %}
+
+                    {% if percentage < 0.5 %}
+                        {% set color = "red" %}
+                    {% elseif percentage < 0.75 %}
+                        {% set color = "yellow" %}
+                    {% else %}
+                        {% set color = "green" %}
+                    {% endif %}
+
+
+
                     <tr>
                         <td>{{ file.applicationName }}</td>
                         <td>
@@ -61,6 +80,11 @@
                             </a>
                         </td>
                         <td style="text-align: right">{{ file.lines }}</td>
+                        <td style="text-align: right">{{ file.coveredLines }}</td>
+                        <td style="text-align: right; width: 160px"><div class="progress progress-xs">
+                                <div class="progress-bar progress-bar-{{ color }}" style="width: {{ (percentage * 100)|number_format(1) }}%"></div>
+                            </div></td>
+                        <td style="text-align: center"><span class="badge bg-{{ color }}">{{ (percentage * 100)|number_format }}%</span></td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -68,7 +92,10 @@
                     <tr>
                         <th>application</th>
                         <th>file</th>
+                        <th>lines</th>
                         <th>lines covered</th>
+                        <th>---</th>
+                        <th>%</th>
                     </tr>
                 </tfoot>
             </table>

@@ -20,11 +20,12 @@ class Coverage extends AbstractAnalyzer
         $usecaseList     = $this->buildInStatementBody($usecases);
         $requestList     = $this->buildInStatementBody($requests);
 
-        $sql = 'SELECT a.`id` as `applicationId`, a.`name` as `applicationName`, f.`id` as `fileId`, f.`filename` as `fileName`, COUNT(distinct c.`line`) as `lines`
+        $sql = 'SELECT a.`id` as `applicationId`, a.`name` as `applicationName`, f.`id` as `fileId`, f.`filename` as `fileName`,
+                COUNT(distinct c.`line`) as `coveredLines`, f.`lines`
             FROM `file`        f
-            JOIN `application` a ON a.`id`             = f.`application_id` ' . ($applicationList !== '' ? " and a.`id` in ({$applicationList}) " : '') . '
-            JOIN `request`     r ON r.`application_id` = a.`id` ' . ($usecaseList !== '' ? " and r.`usecase_id` in ({$usecaseList}) " : '') . ($requestList !== '' ? " and r.`id` in ({$requestList}) " : '') . '
-            JOIN `coverage`    c ON c.`request_id`     = r.`id` and c.`file_id` = f.`id` and c.`covered` = 1
+            JOIN `application` a  ON a.`id`             = f.`application_id` ' . ($applicationList !== '' ? " and a.`id` in ({$applicationList}) " : '') . '
+            JOIN `request`     r  ON r.`application_id` = a.`id` ' . ($usecaseList !== '' ? " and r.`usecase_id` in ({$usecaseList}) " : '') . ($requestList !== '' ? " and r.`id` in ({$requestList}) " : '') . '
+            JOIN `coverage`    c  ON c.`request_id`     = r.`id` and c.`file_id`  = f.`id` and c.`covered` = 1
             WHERE 1
             GROUP BY a.id, f.filename
             ORDER BY a.name ASC, f.filename ASC';

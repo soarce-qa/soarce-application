@@ -54,15 +54,18 @@ CREATE TABLE IF NOT EXISTS `dump` (
 -- Data exporting was unselected.
 
 -- Dumping structure for table soarce.file
-CREATE TABLE IF NOT EXISTS `file` (
-                                      `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-                                      `application_id` smallint(5) unsigned NOT NULL,
-                                      `filename` varchar(510) DEFAULT NULL,
-                                      `md5` binary(16) DEFAULT NULL,
-                                      PRIMARY KEY (`id`),
-                                      UNIQUE KEY `application_id_filename` (`application_id`,`filename`),
-                                      CONSTRAINT `FK__requests` FOREIGN KEY (`application_id`) REFERENCES `application` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+CREATE TABLE `file` (
+                        `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+                        `application_id` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+                        `filename` VARCHAR(510) NULL DEFAULT NULL,
+                        `md5` BINARY(16) NULL DEFAULT NULL,
+                        `lines` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+                        PRIMARY KEY (`id`),
+                        UNIQUE INDEX `application_id_filename` (`application_id`, `filename`),
+                        INDEX `filename` (`filename`),
+                        CONSTRAINT `application` FOREIGN KEY (`application_id`) REFERENCES `application` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+)   COLLATE='utf8mb4_general_ci' ENGINE=InnoDB ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1;
+
 
 -- Data exporting was unselected.
 
