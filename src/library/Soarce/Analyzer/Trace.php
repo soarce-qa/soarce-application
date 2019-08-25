@@ -52,7 +52,7 @@ class Trace extends AbstractAnalyzer
         $requestList     = $this->buildInStatementBody($requests);
         $fileList        = $this->buildInStatementBody($files);
 
-        $sql = 'SELECT c.`id`, c.`class`, c.`function`, c.`type`
+        $sql = 'SELECT c.`id`, c.`class`, c.`function`, c.`type`, sum(c.`calls`) as `calls`, sum(c.`walltime`) as `walltime`
             FROM `function_call` c
             JOIN `file`          f ON c.`file_id` = f.`id` '             . ($fileList        !== '' ? " and f.`id`             in ({$fileList}) "        : '') . '
             JOIN `request`       r ON r.`id`      = c.`request_id` '     . ($usecaseList     !== '' ? " and r.`usecase_id`     in ({$usecaseList}) "     : '')
