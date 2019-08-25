@@ -74,6 +74,8 @@ CREATE TABLE IF NOT EXISTS `function_call` (
                                                `class` varchar(382) DEFAULT NULL,
                                                `function` varchar(382) NOT NULL,
                                                `type` enum('internal','user-defined') NOT NULL,
+                                               `calls` INT(10) UNSIGNED NOT NULL DEFAULT '0',
+                                               `walltime` FLOAT UNSIGNED NOT NULL DEFAULT '0',
                                                PRIMARY KEY (`id`),
                                                UNIQUE KEY `file_id_class_function` (`file_id`,`request_id`,`class`,`function`),
                                                KEY `fi__files` (`file_id`),

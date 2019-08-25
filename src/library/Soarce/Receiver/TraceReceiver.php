@@ -38,18 +38,22 @@ class TraceReceiver extends ReceiverAbstract
             return;
         }
 
-        $sql = 'INSERT IGNORE INTO `function_call` (`file_id`, `request_id`, `class`, `function`, `type`) VALUES ';
+        $sql = 'INSERT IGNORE INTO `function_call` (`file_id`, `request_id`, `class`, `function`, `type`, `calls`, `walltime`) VALUES ';
         $fileId = $this->createFile($filename);
         $requestId = $this->getRequestId();
 
         $rows = [];
-        foreach ($functions as $functionName => $userDefined) {
+        foreach ($functions as $functionName => $info) {
             $split = preg_split('/(->|::)/', $functionName);
             if (count($split) === 1) {
                 $rows[] = "({$fileId}, {$requestId}, '', '"
                     . mysqli_real_escape_string($this->mysqli, $split[0])
                     . "', '"
-                    . (1 == $userDefined ? 'user-defined' : 'internal')
+                    . (1 == $info['type'] ? 'user-defined' : 'internal')
+                    . "', '"
+                    . mysqli_real_escape_string($this->mysqli, $info['count'])
+                    . "', '"
+                    . mysqli_real_escape_string($this->mysqli, $info['walltime'])
                     . "')";
                 continue;
             }
@@ -59,7 +63,11 @@ class TraceReceiver extends ReceiverAbstract
                 . "', '"
                 . mysqli_real_escape_string($this->mysqli, $split[1])
                 . "', '"
-                . (1 == $userDefined ? 'user-defined' : 'internal')
+                . (1 == $info['type'] ? 'user-defined' : 'internal')
+                . "', '"
+                . mysqli_real_escape_string($this->mysqli, $info['count'])
+                . "', '"
+                . mysqli_real_escape_string($this->mysqli, $info['walltime'])
                 . "')";
         }
 

@@ -52,6 +52,8 @@
                         <th>class / none</th>
                         <th>function / method</th>
                         <th>type</th>
+                        <th>calls</th>
+                        <th>walltime (seconds)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -60,6 +62,8 @@
                         <td>{{ call.class }}</td>
                         <td>{{ call.function }}</td>
                         <td>{{ call.type }}</td>
+                        <td style="text-align: right">{{ call.calls }}</td>
+                        <td style="text-align: right">{{ call.walltime }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -68,6 +72,8 @@
                         <th>class / none</th>
                         <th>function / method</th>
                         <th>type</th>
+                        <th>calls</th>
+                        <th>walltime (seconds)</th>
                     </tr>
                 </tfoot>
             </table>
