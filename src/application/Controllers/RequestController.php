@@ -23,21 +23,21 @@ class RequestController
     }
 
     /**
-	 * @param  Request  $request
-	 * @param  Response $response
-	 * @return Response
-	 */
-  	public function index(Request $request, Response $response): Response
+     * @param  Request  $request
+     * @param  Response $response
+     * @return Response
+     */
+    public function index(Request $request, Response $response): Response
     {
         return $this->ci->view->render($response, 'trace/index.twig');
-	}
+    }
 
     /**
-	 * @param  Request  $request
-	 * @param  Response $response
-	 * @return Response
-	 */
-  	public function overview(Request $request, Response $response): Response
+     * @param  Request  $request
+     * @param  Response $response
+     * @return Response
+     */
+    public function overview(Request $request, Response $response): Response
     {
         $this->ci->view['activeSubMenu'] = 'overview';
 
@@ -54,15 +54,15 @@ class RequestController
             'requests'       => $analyzer->getRequestsOverview($usecaseIds, $applicationIds),
         ];
         return $this->ci->view->render($response, 'request/overview.twig', $viewParams);
-	}
+    }
 
     /**
-	 * @param  Request  $request
-	 * @param  Response $response
+     * @param  Request  $request
+     * @param  Response $response
      * @param  array    $params
-	 * @return Response
-	 */
-  	public function request(Request $request, Response $response, $params): Response
+     * @return Response
+     */
+    public function request(Request $request, Response $response, $params): Response
     {
         $this->ci->view['activeSubMenu'] = 'overview';
 
@@ -82,14 +82,14 @@ class RequestController
             'request'        => $analyzer->getRequest($requestId),
         ];
         return $this->ci->view->render($response, 'request/request.twig', $viewParams);
-	}
+    }
 
     /**
      * @param  Request  $request
      * @param  Response $response
      * @return Response
      */
-	public function sequence(Request $request, Response $response): Response
+    public function sequence(Request $request, Response $response): Response
     {
         return $this->ci->view->render($response, 'request/sequence.twig');
     }

@@ -24,11 +24,11 @@ class CoverageController
     }
 
     /**
-	 * @param  Request  $request
-	 * @param  Response $response
-	 * @return Response
-	 */
-  	public function index(Request $request, Response $response): Response
+     * @param  Request  $request
+     * @param  Response $response
+     * @return Response
+     */
+    public function index(Request $request, Response $response): Response
     {
         $analyzer = new Coverage($this->ci);
 
@@ -47,7 +47,7 @@ class CoverageController
             'services'       => $this->ci->settings['soarce']['services'],
         ];
         return $this->ci->view->render($response, 'coverage/index.twig', $viewParams);
-	}
+    }
 
     /**
      * @param  Request  $request
@@ -55,7 +55,7 @@ class CoverageController
      * @param  array    $params
      * @return Response
      */
-	public function file(Request $request, Response $response, $params): Response
+    public function file(Request $request, Response $response, $params): Response
     {
         $analyzer = new Coverage($this->ci);
 
@@ -88,7 +88,7 @@ class CoverageController
      * @param  array    $params
      * @return Response
      */
-	public function line(Request $request, Response $response, $params): Response
+    public function line(Request $request, Response $response, $params): Response
     {
         $analyzer = new Coverage($this->ci);
 

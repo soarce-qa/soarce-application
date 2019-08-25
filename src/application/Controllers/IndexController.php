@@ -24,11 +24,11 @@ class IndexController
     }
 
     /**
-	 * @param  Request $request
-	 * @param  Response $response
-	 * @return Response
-	 */
-	public function index(Request $request, Response $response): Response
+      * @param  Request $request
+      * @param  Response $response
+      * @return Response
+      */
+     public function index(Request $request, Response $response): Response
     {
         $this->ci->view['configIsValid'] = Config::isValid(__DIR__ . '/../../../soarce.json');
         $this->ci->view['configErrorMessage'] = Config::$validationError;
@@ -36,7 +36,6 @@ class IndexController
         $dbstatistics = new Database($this->ci);
         $this->ci->view['DatabaseStatistics'] = $dbstatistics->getMysqlStats();
 
-		return $this->ci->view->render($response, 'index/index.twig');
-	}
-
+        return $this->ci->view->render($response, 'index/index.twig');
+    }
 }

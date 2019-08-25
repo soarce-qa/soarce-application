@@ -24,21 +24,21 @@ class TraceController
     }
 
     /**
-	 * @param  Request  $request
-	 * @param  Response $response
-	 * @return Response
-	 */
-  	public function index(Request $request, Response $response): Response
+     * @param  Request  $request
+     * @param  Response $response
+     * @return Response
+     */
+    public function index(Request $request, Response $response): Response
     {
         return $this->ci->view->render($response, 'trace/index.twig');
-	}
+    }
 
     /**
-	 * @param  Request  $request
-	 * @param  Response $response
-	 * @return Response
-	 */
-  	public function calls(Request $request, Response $response): Response
+     * @param  Request  $request
+     * @param  Response $response
+     * @return Response
+     */
+    public function calls(Request $request, Response $response): Response
     {
         $this->ci->view['activeSubMenu'] = 'calls';
 
@@ -61,14 +61,14 @@ class TraceController
             'functionCalls'  => $analyzer->getFunctionCalls($applicationIds, $usecaseIds, $requestIds, $fileIds),
         ];
         return $this->ci->view->render($response, 'trace/calls.twig', $viewParams);
-	}
+    }
 
     /**
      * @param  Request  $request
      * @param  Response $response
      * @return Response
      */
-	public function usecase(Request $request, Response $response): Response
+    public function usecase(Request $request, Response $response): Response
     {
         $this->ci->view['activeSubMenu'] = 'usecases';
 
