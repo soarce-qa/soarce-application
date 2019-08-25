@@ -9,7 +9,6 @@ class Request extends AbstractAnalyzer
         $applicationList = $this->buildInStatementBody($applications);
         $usecaseList     = $this->buildInStatementBody($usecases);
 
-
         $sql = 'SELECT r.`id`, r.`request_id`, FROM_UNIXTIME(r.`request_started`) AS `request_started`, u.`name` as `usecaseName`, a.`name` as `applicationName`
             FROM `request` r
             JOIN `application` a ON r.`application_id` = a.`id`
@@ -28,5 +27,33 @@ class Request extends AbstractAnalyzer
             return $result->fetch_all(MYSQLI_ASSOC);
         }
         return [];
+    }
+
+    /**
+     * @param  int $requestId
+     * @return mixed[]
+     */
+    public function getRequest($requestId): array
+    {
+        $sql = 'SELECT r.`id`, r.`request_id`, FROM_UNIXTIME(r.`request_started`) AS `request_started`, r.`get`, r.`post`, r.`server`, r.`env`,
+                u.`name` as `usecaseName`, a.`name` as `applicationName`
+            FROM `request` r
+            JOIN `application` a ON r.`application_id` = a.`id`
+            JOIN `usecase` u     ON r.`usecase_id`     = u.`id`
+            WHERE r.`id` = ' . (int)$requestId;
+
+        $result = $this->mysqli->query($sql);
+
+        if (!$result) {
+            throw new AnalyzerException($this->mysqli->error, $this->mysqli->errno);
+        }
+
+        $temp = $result->fetch_assoc();
+        $temp['get']    = json_decode($temp['get'],    JSON_OBJECT_AS_ARRAY);
+        $temp['post']   = json_decode($temp['post'],   JSON_OBJECT_AS_ARRAY);
+        $temp['server'] = json_decode($temp['server'], JSON_OBJECT_AS_ARRAY);
+        $temp['env']    = json_decode($temp['env'],    JSON_OBJECT_AS_ARRAY);
+
+        return $temp;
     }
 }

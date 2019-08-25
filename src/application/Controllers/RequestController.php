@@ -57,6 +57,34 @@ class RequestController
 	}
 
     /**
+	 * @param  Request  $request
+	 * @param  Response $response
+     * @param  array    $params
+	 * @return Response
+	 */
+  	public function request(Request $request, Response $response, $params): Response
+    {
+        $this->ci->view['activeSubMenu'] = 'overview';
+
+        $analyzer = new \Soarce\Analyzer\Request($this->ci);
+
+        $applicationIds = $request->getParam('applicationId') ?? [];
+        $usecaseIds     = $request->getParam('usecaseId')     ?? [];
+        $requestId      = (int)($params['request'] ?? 0);
+
+        if (0 === $requestId) {
+            throw new \InvalidArgumentException('needs a requestId');
+        }
+
+        $viewParams = [
+            'applicationIds' => $applicationIds,
+            'usecaseIds'     => $usecaseIds,
+            'request'        => $analyzer->getRequest($requestId),
+        ];
+        return $this->ci->view->render($response, 'request/request.twig', $viewParams);
+	}
+
+    /**
      * @param  Request  $request
      * @param  Response $response
      * @return Response
