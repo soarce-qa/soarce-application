@@ -59,18 +59,21 @@ abstract class ReceiverAbstract
 
     /**
      * @param  string $filename
+     * @param  int    $coverableLines
      * @param  string $md5
      * @return int
      */
-    protected function createFile($filename, $md5 = null): int
+    protected function createFile($filename, $coverableLines = 0, $md5 = null): int
     {
         $escapedFilename = mysqli_real_escape_string($this->mysqli, $filename);
-        $sql = 'INSERT IGNORE INTO `file` (`application_id`, `filename`, `md5`) VALUES ('
+        $sql = 'INSERT IGNORE INTO `file` (`application_id`, `filename`, `md5`, `lines`) VALUES ('
             . $this->getApplicationId() . ', "' . $escapedFilename
             . '", '
             . ($md5 !== null ? "0x{$md5}" : 'null')
+            . ', ' . (int)$coverableLines
             . ') ON DUPLICATE KEY UPDATE `id` = LAST_INSERT_ID(`id`)'
-            . ($md5 !== null ? ", `md5` = 0x{$md5}" : '')
+            . ($md5            !== null ? ", `md5` = 0x{$md5}"            : '')
+            . ($coverableLines !== 0    ? ", `lines` = {$coverableLines}" : '')
             . ';';
         $this->mysqli->query($sql);
 
