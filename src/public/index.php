@@ -24,6 +24,10 @@ $app->group('/trace',      function() {
     $this->get('/calls',   '\Soarce\Application\Controllers\TraceController:calls');
     $this->get('/usecase', '\Soarce\Application\Controllers\TraceController:usecase');
 });
+$app->group('/request',      function() {
+    $this->get('',             '\Soarce\Application\Controllers\RequestController:index');
+    $this->get('/overview',    '\Soarce\Application\Controllers\RequestController:overview');
+});
 $app->get('/docs/license',  '\Soarce\Application\Controllers\DocsController:license');
 $app->get('/docs[/{page}]', '\Soarce\Application\Controllers\DocsController:index');
 

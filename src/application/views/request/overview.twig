@@ -1,0 +1,92 @@
+{% extends "layout.twig" %}
+{% import 'controls.twig' as controls %}
+
+{%  block head %}
+    <title>SOARCE</title>
+{%  endblock %}
+
+{%  block header %}
+    Request Analysis Overview
+{% endblock %}
+
+{% block main %}
+
+    <p>The list can be filtered with the following controls:</p>
+
+    {% embed "filterbox.twig" %}
+        {% block filters %}
+            {% import 'controls.twig' as controls %}
+            <div class="form-group">
+                <label for="">Usecases:</label>
+                {{ controls.select('usecaseId',     usecaseIds,     usecases) }}
+            </div>
+            <div class="form-group">
+                <label for="">Application:</label>
+                {{ controls.select('applicationId', applicationIds, applications) }}
+            </div>
+            <div class="form-group">
+                <div class="btn-group">
+                    <a href="/" class="btn btn-default"><i class="fa fa-angle-left"></i> back</a>
+                    <button type="submit" value="update" name="whatever" class="btn btn-default btn-primary"><i class="fa fa-refresh"></i> update</button>
+                </div>
+            </div>
+        {% endblock %}
+    {% endembed %}
+
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Filtered Function Calls</h3>
+        </div>
+        <div class="box-body">
+            <table id="filesTable" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>usecase</th>
+                        <th>application</th>
+                        <th>request</th>
+                        <th>start</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for request in requests %}
+                    <tr>
+                        <td>{{ request.usecaseName }}</td>
+                        <td>{{ request.applicationName }}</td>
+                        <td><a href="/request/{{ request.id }}?{{ {'applicationId': applicationIds, 'usecaseId': usecaseIds}|url_encode }}">{{ request.request_id }}</a></td>
+                        <td>{{ request.request_started }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>usecase</th>
+                        <th>application</th>
+                        <th>request</th>
+                        <th>start</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block pageEnd %}
+    <script>
+        $(function () {
+            $('#filesTable').DataTable({
+                'paging'      : true,
+                'pageLength'  : 25,
+                'lengthChange': true,
+                "lengthMenu"  : [ 10, 25, 50, 100, 250 ],
+                'searching'   : true,
+                'ordering'    : true,
+                'info'        : true,
+                'autoWidth'   : true,
+                'order'       : [[3, 'asc']]
+            });
+
+            $('.select2').select2();
+        })
+    </script>
+{% endblock %}
