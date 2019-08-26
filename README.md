@@ -25,7 +25,7 @@ composer install --prefer-dist
 
 Or use composer to install the project directly:
 ```
-composer create-project "source/application" --prefer-dist
+composer create-project "soarce/application" --prefer-dist
 ```
 
 Then build and start the containers with a simple invocation of
