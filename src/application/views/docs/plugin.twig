@@ -103,6 +103,9 @@ $ composer require --dev --prefer-dist "soarce/client"</pre>
                         source code and library paths - a good start is usually the `common_path` parameter in the application's config,
                         for example "/var/www". As with the IP whitelist, an empty path whitelist disables the feature as SOARCE should
                         only be used in closed environments.</li>
+                    <li>string `SOARCE_PRESHARED_SECRET` = "": an arbitrary string which - if used - has to be identical to the
+                        respective config key in the application's config. It is being sent as a HTTP header to effectively reduce
+                        drive-by or XSS attacks as well as brute-force attempts to guess how to access SOARCE on a certain system.</li>
                 </ul>
                 <h4>X-Debug</h4>
                 <pre>

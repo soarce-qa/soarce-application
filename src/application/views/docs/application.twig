@@ -82,12 +82,14 @@ networks:
     "myAwesomeMainApplication": {
       "url": "http://myawesomemainapplication.local/",
       "parameter_name": "SOARCE",
-      "common_path": "/var/www/"
+      "common_path": "/var/www/",
+      "preshared_secret": "abcdefg"
     },
     "mySneakyBackgroundService": {
       "url": "http://mysneakybackgroundservice.local/",
       "parameter_name": "SOARCE",
-      "common_path": "/var/www/"
+      "common_path": "/var/www/",
+      "preshared_secret": "qwertyuiop"
     }
   }
 }</pre>
@@ -102,6 +104,8 @@ networks:
                         config.</li>
                     <li>The `common_path` parameter is used to strip paths in the web frontend that will be common for all requests for that application to reduce visual noise.
                         This is for example the document root of the web server or the application root.</li>
+                    <li>The `preshared_secret` parameter is sent as a HTTP header to the client/plugin as a form of authentication. It's value has to be identical in the client's
+                        config file.</li>
                 </ul>
             </div>
         </div>

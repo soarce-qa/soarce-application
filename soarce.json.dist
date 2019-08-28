@@ -1,0 +1,10 @@
+{
+  "services": {
+    "MyApplication": {
+      "url": "http://my-project.local/",
+      "parameter_name": "SOARCE",
+      "common_path": "/var/www/",
+      "preshared_secret": "something_secret"
+    }
+  }
+}

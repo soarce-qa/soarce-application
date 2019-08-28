@@ -10,6 +10,8 @@ class Actionable
 
     private const CHECKSUM_HEADER = 'X-SOARCE-FileChecksum';
 
+    private const PRESHARED_SECRET_HEADER = 'X-SOARCE-Preshared-Secret';
+
     /** @var Service */
     private $serviceConfig;
 
@@ -39,7 +41,7 @@ class Actionable
      */
     public function ping(): bool
     {
-        return self::PING__EXPECTED_RESPONSE === file_get_contents($this->buildUrl('ping'));
+        return self::PING__EXPECTED_RESPONSE === file_get_contents($this->buildUrl('ping'), false, $this->getStreamContext());
     }
 
     /**
@@ -47,7 +49,7 @@ class Actionable
      */
     public function getDetails(): array
     {
-        return json_decode(file_get_contents($this->buildUrl('details')), JSON_OBJECT_AS_ARRAY);
+        return json_decode(file_get_contents($this->buildUrl('details'), false, $this->getStreamContext()), JSON_OBJECT_AS_ARRAY);
     }
 
     /**
@@ -55,7 +57,7 @@ class Actionable
      */
     public function collectPreconditions(): void
     {
-        $this->preconditions = json_decode(file_get_contents($this->buildUrl('preconditions')), JSON_OBJECT_AS_ARRAY);
+        $this->preconditions = json_decode(file_get_contents($this->buildUrl('preconditions'), false, $this->getStreamContext()), JSON_OBJECT_AS_ARRAY);
     }
 
     /**
@@ -63,7 +65,7 @@ class Actionable
      */
     public function start(): string
     {
-        return file_get_contents($this->buildUrl('start'));
+        return file_get_contents($this->buildUrl('start'), false, $this->getStreamContext());
     }
 
     /**
@@ -71,7 +73,7 @@ class Actionable
      */
     public function end(): string
     {
-        return file_get_contents($this->buildUrl('end'));
+        return file_get_contents($this->buildUrl('end'), false, $this->getStreamContext());
     }
 
     /**
@@ -88,7 +90,7 @@ class Actionable
      */
     public function getFile($filename): FileContent
     {
-        $fileContent = file_get_contents($this->buildUrl('readfile') . '&' . http_build_query(['filename' => $filename]));
+        $fileContent = file_get_contents($this->buildUrl('readfile') . '&' . http_build_query(['filename' => $filename]), false, $this->getStreamContext());
 
         $md5 = '';
         foreach ($http_response_header as $header) {
@@ -97,7 +99,7 @@ class Actionable
                 continue;
             }
             if ($line[0] === self::CHECKSUM_HEADER) {
-                echo $md5 = trim($line[1]); break;
+                $md5 = trim($line[1]); break;
             }
         }
 
@@ -120,4 +122,18 @@ class Actionable
             . $action;
     }
 
+    /**
+     * @return resource
+     */
+    private function getStreamContext()
+    {
+        $opts = [
+            'http' => [
+                'method' => 'GET',
+                'header' => self::PRESHARED_SECRET_HEADER . ': ' . $this->serviceConfig->getPresharedSecret(),
+            ],
+        ];
+
+        return stream_context_create($opts);
+    }
 }
