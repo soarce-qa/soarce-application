@@ -9,3 +9,4 @@ vendor/
 temp/cache/
 build/\.phpunit\.result\.cache
 /docker-compose.override.yml
+soarce.json

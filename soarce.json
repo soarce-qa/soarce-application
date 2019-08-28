@@ -1,9 +1,0 @@
-{
-  "services": {
-    "segnitzNet": {
-      "url": "http://segnitz.local/",
-      "parameter_name": "SOARCE",
-      "common_path": "/var/www/"
-    }
-  }
-}
