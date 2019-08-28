@@ -16,12 +16,25 @@ class Service
     /** @var string */
     private $commonPath;
 
-    public function __construct($name, $url, $parameterName, $commonPath)
+    /** @var string */
+    private $presharedSecret;
+
+    /**
+     * Service constructor.
+     *
+     * @param string $name
+     * @param string $url
+     * @param string $parameterName
+     * @param string $commonPath
+     * @param string $presharedSecret
+     */
+    public function __construct($name, $url, $parameterName, $commonPath, $presharedSecret)
     {
-        $this->name          = $name;
-        $this->url           = $url;
-        $this->parameterName = $parameterName;
-        $this->commonPath    = $commonPath;
+        $this->name            = $name;
+        $this->url             = $url;
+        $this->parameterName   = $parameterName;
+        $this->commonPath      = $commonPath;
+        $this->presharedSecret = $presharedSecret;
     }
 
     /**
@@ -54,5 +67,13 @@ class Service
     public function getCommonPath(): string
     {
         return $this->commonPath;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPresharedSecret(): string
+    {
+        return $this->presharedSecret;
     }
 }
