@@ -23,7 +23,7 @@ class TraceReceiver extends ReceiverAbstract
             $header['env']
         );
 
-        foreach ($payload as $filename => $functions) {
+        foreach ($payload['functions'] as $filename => $functions) {
             $this->storeFunctionCallsForOneFile($filename, $functions);
         }
     }
