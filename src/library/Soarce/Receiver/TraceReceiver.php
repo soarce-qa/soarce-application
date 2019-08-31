@@ -38,7 +38,7 @@ class TraceReceiver extends ReceiverAbstract
             return;
         }
 
-        $sql = 'INSERT IGNORE INTO `function_call` (`file_id`, `request_id`, `class`, `function`, `type`, `calls`, `walltime`) VALUES ';
+        $sql = 'INSERT IGNORE INTO `function_call` (`file_id`, `request_id`, `class`, `function`, `type`, `calls`, `walltime`, `number`) VALUES ';
         $fileId = $this->createFile($filename);
         $requestId = $this->getRequestId();
 
@@ -54,6 +54,8 @@ class TraceReceiver extends ReceiverAbstract
                     . mysqli_real_escape_string($this->mysqli, $info['count'])
                     . "', '"
                     . mysqli_real_escape_string($this->mysqli, $info['walltime'])
+                    . "', '"
+                    . mysqli_real_escape_string($this->mysqli, $info['number'])
                     . "')";
                 continue;
             }
@@ -68,6 +70,8 @@ class TraceReceiver extends ReceiverAbstract
                 . mysqli_real_escape_string($this->mysqli, $info['count'])
                 . "', '"
                 . mysqli_real_escape_string($this->mysqli, $info['walltime'])
+                . "', '"
+                . mysqli_real_escape_string($this->mysqli, $info['number'])
                 . "')";
         }
 
