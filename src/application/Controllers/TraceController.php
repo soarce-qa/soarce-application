@@ -89,4 +89,36 @@ class TraceController
         ];
         return $this->ci->view->render($response, 'trace/usecase.twig', $viewParams);
     }
+
+    /**
+     * @param  Request  $request
+     * @param  Response $response
+     * @param  array    $params
+     * @return Response
+     */
+    public function callerCallee(Request $request, Response $response, $params): Response
+    {
+        $analyzer = new Trace($this->ci);
+
+        $applicationIds = $request->getParam('applicationId') ?? [];
+        $usecaseIds     = $request->getParam('usecaseId')     ?? [];
+        $requestIds     = $request->getParam('requestId')     ?? [];
+        $fileIds        = $request->getParam('fileId')        ?? [];
+        $class          = $request->getParam('class')         ?? '';
+        $function       = $request->getParam('function')      ?? '';
+
+        if ($params['direction'] === 'to') {
+            $calls = $analyzer->getCallees($class, $function, $applicationIds, $usecaseIds, $requestIds, $fileIds);
+        } elseif ($params['direction'] === 'from') {
+            $calls = $analyzer->getCallers($class, $function, $applicationIds, $usecaseIds, $requestIds, $fileIds);
+        } else {
+            throw new \RuntimeException('invalid direction');
+        }
+
+        $viewParams = [
+            'calls'  => $calls,
+        ];
+
+        return $this->ci->view->render($response, 'trace/callerCallee.twig', $viewParams);
+    }
 }

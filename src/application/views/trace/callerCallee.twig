@@ -1,0 +1,25 @@
+<table>
+    <thead>
+        <tr>
+            <th>class</th>
+            <th>function</th>
+            <th>calls</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for call in calls %}
+        <tr>
+            <td>{{ call.class }}</td>
+            <td>{{ call.function }}</td>
+            <td>{{ call.numcalls }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <th>class</th>
+            <th>function</th>
+            <th>calls</th>
+        </tr>
+    </tfoot>
+</table>
