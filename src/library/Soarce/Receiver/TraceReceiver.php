@@ -26,6 +26,53 @@ class TraceReceiver extends ReceiverAbstract
         foreach ($payload['functions'] as $filename => $functions) {
             $this->storeFunctionCallsForOneFile($filename, $functions);
         }
+
+        $this->storeFunctionCallMap($payload['calls']);
+    }
+
+    /**
+     * @param int[][] $map
+     */
+    private function storeFunctionCallMap($map): void
+    {
+        $functionIdMap = $this->getFunctionsIdMap();
+
+        $rows = [];
+        foreach ($map as $caller => $callees) {
+            if (!isset($functionIdMap[$caller])) {
+                continue;
+            }
+            $callerId = $functionIdMap[$caller];
+            foreach ($callees as $callee => $calls) {
+                if (!isset($functionIdMap[$callee])) {
+                    continue;
+                }
+                $calleeId = $functionIdMap[$callee];
+                $rows[] = "('{$callerId}', '{$calleeId}', '{$calls}')";
+            }
+        }
+
+        $sqlStart = 'INSERT IGNORE INTO `function_map` (`caller`, `callee`, `calls`) VALUES ';
+        foreach (array_chunk($rows, 1000) as $block) {
+            $this->mysqli->query($sqlStart . implode(',', $block));
+        }
+    }
+
+    /**
+     * @return int[]
+     */
+    private function getFunctionsIdMap(): array
+    {
+        $requestId = $this->getRequestId();
+        $sql = "SELECT `id`, `number` FROM `function_call` WHERE `request_id` = {$requestId};";
+        $result = $this->mysqli->query($sql);
+
+        $map = [];
+        while ($row = $result->fetch_assoc()) {
+            $map[$row['number']] = $row['id'];
+        }
+
+        return $map;
     }
 
     /**
