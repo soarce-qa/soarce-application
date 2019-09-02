@@ -96,9 +96,13 @@ abstract class ReceiverAbstract
 
     /**
      * @return int
+     * @throws Exception
      */
     protected function getRequestId(): int
     {
+        if (null === $this->requestId) {
+            throw new Exception('race condition: trying to get ID of request before it was written to database');
+        }
         return $this->requestId;
     }
 

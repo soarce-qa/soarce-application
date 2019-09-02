@@ -23,9 +23,56 @@ class TraceReceiver extends ReceiverAbstract
             $header['env']
         );
 
-        foreach ($payload as $filename => $functions) {
+        foreach ($payload['functions'] as $filename => $functions) {
             $this->storeFunctionCallsForOneFile($filename, $functions);
         }
+
+        $this->storeFunctionCallMap($payload['calls']);
+    }
+
+    /**
+     * @param int[][] $map
+     */
+    private function storeFunctionCallMap($map): void
+    {
+        $functionIdMap = $this->getFunctionsIdMap();
+
+        $rows = [];
+        foreach ($map as $caller => $callees) {
+            if (!isset($functionIdMap[$caller])) {
+                continue;
+            }
+            $callerId = $functionIdMap[$caller];
+            foreach ($callees as $callee => $calls) {
+                if (!isset($functionIdMap[$callee])) {
+                    continue;
+                }
+                $calleeId = $functionIdMap[$callee];
+                $rows[] = "('{$callerId}', '{$calleeId}', '{$calls}')";
+            }
+        }
+
+        $sqlStart = 'INSERT IGNORE INTO `function_map` (`caller`, `callee`, `calls`) VALUES ';
+        foreach (array_chunk($rows, 1000) as $block) {
+            $this->mysqli->query($sqlStart . implode(',', $block));
+        }
+    }
+
+    /**
+     * @return int[]
+     */
+    private function getFunctionsIdMap(): array
+    {
+        $requestId = $this->getRequestId();
+        $sql = "SELECT `id`, `number` FROM `function_call` WHERE `request_id` = {$requestId};";
+        $result = $this->mysqli->query($sql);
+
+        $map = [];
+        while ($row = $result->fetch_assoc()) {
+            $map[$row['number']] = $row['id'];
+        }
+
+        return $map;
     }
 
     /**
@@ -38,7 +85,7 @@ class TraceReceiver extends ReceiverAbstract
             return;
         }
 
-        $sql = 'INSERT IGNORE INTO `function_call` (`file_id`, `request_id`, `class`, `function`, `type`, `calls`, `walltime`) VALUES ';
+        $sql = 'INSERT IGNORE INTO `function_call` (`file_id`, `request_id`, `class`, `function`, `type`, `calls`, `walltime`, `number`) VALUES ';
         $fileId = $this->createFile($filename);
         $requestId = $this->getRequestId();
 
@@ -54,6 +101,8 @@ class TraceReceiver extends ReceiverAbstract
                     . mysqli_real_escape_string($this->mysqli, $info['count'])
                     . "', '"
                     . mysqli_real_escape_string($this->mysqli, $info['walltime'])
+                    . "', '"
+                    . mysqli_real_escape_string($this->mysqli, $info['number'])
                     . "')";
                 continue;
             }
@@ -68,6 +117,8 @@ class TraceReceiver extends ReceiverAbstract
                 . mysqli_real_escape_string($this->mysqli, $info['count'])
                 . "', '"
                 . mysqli_real_escape_string($this->mysqli, $info['walltime'])
+                . "', '"
+                . mysqli_real_escape_string($this->mysqli, $info['number'])
                 . "')";
         }
 

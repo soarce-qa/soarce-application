@@ -54,6 +54,7 @@
                         <th>type</th>
                         <th>calls</th>
                         <th>walltime (seconds)</th>
+                        <th style="width: 130px;">actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -63,7 +64,14 @@
                         <td>{{ call.function }}</td>
                         <td>{{ call.type }}</td>
                         <td style="text-align: right">{{ call.calls }}</td>
-                        <td style="text-align: right">{{ call.walltime }}</td>
+                        <td style="text-align: right"><span title="{{ call.walltime|number_format(9) }}">{{ call.walltime|number_format(3) }}</span></td>
+                        <td>
+                            <div class="btn-group">
+                                {% set dataUrl = {'applicationId':applicationIds, 'usecaseId':usecaseIds, 'requestId':requestIds, 'fileId':fileIds, 'class':call.class, 'function':call.function}|url_encode %}
+                                <button type="button" data-toggle="modal" data-target="#callercalleeModal" data-url="/trace/calls/from?{{ dataUrl }}" data-title="Callers" class="btn btn-xs btn-default btn-success"><i class="fa fa-outdent"></i> called from</button>
+                                <button type="button" data-toggle="modal" data-target="#callercalleeModal" data-url="/trace/calls/to?{{ dataUrl }}"   data-title="Callees" class="btn btn-xs btn-default btn-primary"><i class="fa fa-indent"></i> calls</button>
+                            </div>
+                        </td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -74,6 +82,7 @@
                         <th>type</th>
                         <th>calls</th>
                         <th>walltime (seconds)</th>
+                        <th>actions</th>
                     </tr>
                 </tfoot>
             </table>
@@ -99,4 +108,14 @@
             $('.select2').select2();
         })
     </script>
+
+    {% include "trace/modal.twig" with {
+        'type':        'warning',
+        'title':       'Restart Usecase',
+        'message':     'Do you really want to restart the usecase? This will delete all the data of the usecase.',
+        'actionLabel': '<i class="fa fa-refresh"></i> restart',
+        'actionName':  'action',
+        'actionValue': 'restart',
+    } %}
+
 {% endblock %}

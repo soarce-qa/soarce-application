@@ -20,9 +20,10 @@ $app->group('/coverage',   function() {
     $this->get('/file/{file:[0-9]+}/line/{line:[0-9]+}', '\Soarce\Application\Controllers\CoverageController:line');
 });
 $app->group('/trace',      function() {
-    $this->get('',         '\Soarce\Application\Controllers\TraceController:index');
-    $this->get('/calls',   '\Soarce\Application\Controllers\TraceController:calls');
-    $this->get('/usecase', '\Soarce\Application\Controllers\TraceController:usecase');
+    $this->get('',            '\Soarce\Application\Controllers\TraceController:index');
+    $this->get('/calls',      '\Soarce\Application\Controllers\TraceController:calls');
+    $this->get('/calls/{direction:[a-z]+}', '\Soarce\Application\Controllers\TraceController:callerCallee');
+    $this->get('/usecase',    '\Soarce\Application\Controllers\TraceController:usecase');
 });
 $app->group('/request',      function() {
     $this->get('',                  '\Soarce\Application\Controllers\RequestController:index');
