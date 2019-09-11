@@ -172,17 +172,16 @@ networks:
             <div class="box-body with-border">
                 <h4>Security</h4>
                 <ul>
-                    <li>Currently, nothing prevents anybody from accessing the SOARCE functionality apart from parameter obfuscation,
-                        see roadmap for planned countermeasures.</li>
                     <li>Component requires xdebug to be active</li>
                     <li><strong>DO NOT USE IN PRODUCTION!</strong></li>
                 </ul>
 
                 <h4>Separating Requests</h4>
-                <p>We plan to group requests which are passed on further to subsequent services by the topmost request
-                    to the initial application/service - and we'll aim for working them up. This will require passing on
-                    request IDs manually through the respective SDKs or adaptors. We'll provide functionality to help with
-                    that task.</p>
+                <p>For within a service architecture we just added a feature that automatically detects the request-id
+                    of the parent request and the sequence number of child requests within that parent request.</p>
+                <p>This currently only works in it's zero-conf mode when each service is running in it's own VM or docker container - having
+                    a separate IP address - and without having gaps inbetween - like loadbalancers or services not equipped with an active
+                    SOARCE client. We'll add additional support options in the future.</p>
             </div>
         </div>
 

@@ -46,6 +46,8 @@
                     change this function, what feature do I need to test?". It can also be used to see what services are involved and what code inside them is executed for a
                     singular page load of the main application.</p>
 
+                <p>As of application version 0.13.0 and client version 0.7.0 we're even able to track requests between services and draw a sequence diagram.</p>
+
                 <p>To be perfectly honest, this project was perceived out of necessity. After many years of taking over one legacy software after the other and trying
                     to make a sense out of them, we took it upon us to finally create the tool, we would have wanted to have back then.</p>
 
@@ -121,16 +123,9 @@
 
             <div class="box-body with-border">
                 <ul>
-                    <li>Display a sequence of requests filterable by use case</li>
-                    <li>Display details of request</li>
-                    <li>Collect "coverable lines" too, so that not everying uncovered is immediately bad (e.g. whitespace).</li>
-                    <li>Backport client to PHP5.6 as too many still use that</li>
-                    <li>Collect trace metrics</li>
+                    <li>Backport client to PHP5.3 as too many still use that</li>
                     <li>Write data directly to redis as a buffer and only write single-threaded into database</li>
                     <li>Solve large auto_increment values due to insert ignore side-effects</li>
-                    <li>Make Select Fields Multiselects where applicable</li>
-                    <li>Properly trace service calls by passing along IDs and adding to them - draw call diagrams</li>
-                    <li>Collect more tracing information (what function calls which how often)</li>
                     <li>Clients for different languages</li>
                 </ul>
             </div>
