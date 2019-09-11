@@ -1,10 +1,28 @@
 {
   "services": {
-    "MyApplication": {
-      "url": "http://my-project.local/",
+    "billingApplication": {
+      "url": "http://billing-application/",
       "parameter_name": "SOARCE",
-      "common_path": "/var/www/",
-      "preshared_secret": "something_secret"
+      "common_path": "/var/www/html",
+      "preshared_secret": "K25NZK0whQeu~**qbp0"
+    },
+    "addingService": {
+      "url": "http://adding/",
+      "parameter_name": "SOARCE",
+      "common_path": "/var/www/html",
+      "preshared_secret": "j7eS@&w5.MtHTNdPl(7m"
+    },
+    "clientService": {
+      "url": "http://client/",
+      "parameter_name": "SOARCE",
+      "common_path": "/var/www/html",
+      "preshared_secret": "P{SN=9^Fzf4J.Xm_<O,j"
+    },
+    "invoiceService": {
+      "url": "http://invoice/",
+      "parameter_name": "SOARCE",
+      "common_path": "/var/www/html",
+      "preshared_secret": "{&O0R?M,;u&=N.R%XDRl"
     }
   }
 }
