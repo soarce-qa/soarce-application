@@ -20,15 +20,16 @@ $app->group('/coverage',   function() {
     $this->get('/file/{file:[0-9]+}/line/{line:[0-9]+}', '\Soarce\Application\Controllers\CoverageController:line');
 });
 $app->group('/trace',      function() {
-    $this->get('',            '\Soarce\Application\Controllers\TraceController:index');
-    $this->get('/calls',      '\Soarce\Application\Controllers\TraceController:calls');
+    $this->get('',                          '\Soarce\Application\Controllers\TraceController:index');
+    $this->get('/calls',                    '\Soarce\Application\Controllers\TraceController:calls');
     $this->get('/calls/{direction:[a-z]+}', '\Soarce\Application\Controllers\TraceController:callerCallee');
-    $this->get('/usecase',    '\Soarce\Application\Controllers\TraceController:usecase');
+    $this->get('/usecase',                  '\Soarce\Application\Controllers\TraceController:usecase');
 });
-$app->group('/request',      function() {
-    $this->get('',                  '\Soarce\Application\Controllers\RequestController:index');
-    $this->get('/{request:[0-9]+}', '\Soarce\Application\Controllers\RequestController:request');
-    $this->get('/overview',         '\Soarce\Application\Controllers\RequestController:overview');
+$app->group('/request',    function() {
+    $this->get('',                           '\Soarce\Application\Controllers\RequestController:index');
+    $this->get('/{request:[0-9]+}',          '\Soarce\Application\Controllers\RequestController:request');
+    $this->get('/overview',                  '\Soarce\Application\Controllers\RequestController:overview');
+    $this->get('/sequence/{request:[0-9]+}', '\Soarce\Application\Controllers\RequestController:sequence');
 });
 $app->get('/docs/license',  '\Soarce\Application\Controllers\DocsController:license');
 $app->get('/docs[/{page}]', '\Soarce\Application\Controllers\DocsController:index');
