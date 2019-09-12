@@ -55,8 +55,13 @@
                         <td>{{ request.applicationName }}</td>
                         <td>{{ request.request_id }}</td>
                         <td>{{ request.request_started }}</td>
-                        <td><a href="/request/{{ request.id }}?{{ {'applicationId': applicationIds, 'usecaseId': usecaseIds}|url_encode }}">show details</a>
-                            if original request: <a href="/request/{{ request.id }}?{{ {'applicationId': applicationIds, 'usecaseId': usecaseIds}|url_encode }}">show sequence diagram</a></td>
+                        <td>
+                            <div class="btn-group">
+                                <a href="/request/{{ request.id }}?{{ {'applicationId': applicationIds, 'usecaseId': usecaseIds}|url_encode }}" class="btn btn-xs btn-default"><i class="fa fa-search"></i> show details</a>
+                                {% if request.request_id matches '/^[^\-]*$/' %}
+                                    <a href="/request/sequence/{{ request.id }}" class="btn btn-xs btn-default"><i class="fa fa-exchange"></i> show sequence diagram</a>
+                                {% endif %}
+                            </div>
                     </tr>
                 {% endfor %}
                 </tbody>
