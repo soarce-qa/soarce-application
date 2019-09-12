@@ -9,6 +9,7 @@ use Slim\Views\TwigExtension;
 use Soarce\View\Helper\Bytes;
 use Soarce\View\Helper\StripCommonPath;
 use Twig\TwigFilter;
+use function Sentry\captureException;
 use function Sentry\init;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
@@ -62,17 +63,16 @@ $container['view'] = static function (Container $container): Twig {
 
 $container['errorHandler'] = static function (Container $container) {
     return static function (Request $request, Response $response, Throwable $exception) use ($container) {
-        file_put_contents('/var/www/error.log', $exception->getMessage() . "\n" . $exception->getTraceAsString() . "\n");
+        captureException($exception);
         return $response;
     };
 };
 
 $container['phpErrorHandler'] = static function (Container $container) {
     return static function (Request $request, Response $response, Throwable $error) use ($container) {
-        file_put_contents('/var/www/error.log', $error->getMessage() . "\n" . $error->getTraceAsString() . "\n");
+        captureException($error);
         return $response;
     };
 };
-
 
 return $container;
