@@ -4,6 +4,8 @@ services:
     app-soarce:
         networks:
             soarcedemo_default:
+        environment:
+            SENTRY_DSN: ""
     redis-soarce:
         networks:
             soarcedemo_default:
