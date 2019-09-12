@@ -45,6 +45,7 @@
                         <th>application</th>
                         <th>request</th>
                         <th>start</th>
+                        <th>actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -52,8 +53,10 @@
                     <tr>
                         <td>{{ request.usecaseName }}</td>
                         <td>{{ request.applicationName }}</td>
-                        <td><a href="/request/{{ request.id }}?{{ {'applicationId': applicationIds, 'usecaseId': usecaseIds}|url_encode }}">{{ request.request_id }}</a></td>
+                        <td>{{ request.request_id }}</td>
                         <td>{{ request.request_started }}</td>
+                        <td><a href="/request/{{ request.id }}?{{ {'applicationId': applicationIds, 'usecaseId': usecaseIds}|url_encode }}">show details</a>
+                            if original request: <a href="/request/{{ request.id }}?{{ {'applicationId': applicationIds, 'usecaseId': usecaseIds}|url_encode }}">show sequence diagram</a></td>
                     </tr>
                 {% endfor %}
                 </tbody>
