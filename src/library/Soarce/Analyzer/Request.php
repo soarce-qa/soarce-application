@@ -56,4 +56,32 @@ class Request extends AbstractAnalyzer
 
         return $temp;
     }
+
+    /**
+     * @param  string $requestId
+     * @return mixed[][]
+     */
+    public function getSequence($requestId): array
+    {
+        $sql = 'SELECT r.`id`, r.`request_id`, FROM_UNIXTIME(r.`request_started`) AS `request_started`, a.`name` as `applicationName`
+            FROM `request` r
+            JOIN `application` a ON r.`application_id` = a.`id`
+            WHERE r.`request_id` LIKE "' . $requestId . '%"
+            ORDER BY r.`request_id`';
+
+        $result = $this->mysqli->query($sql);
+
+        if (!$result) {
+            throw new AnalyzerException($this->mysqli->error, $this->mysqli->errno);
+        }
+
+        $list = [];
+        while ($temp = $result->fetch_assoc()) {
+            $list[$temp['request_id']] = $temp;
+        }
+
+        return $list;
+    }
+
+
 }

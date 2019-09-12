@@ -87,10 +87,27 @@ class RequestController
     /**
      * @param  Request  $request
      * @param  Response $response
+     * @param  array    $params
      * @return Response
      */
-    public function sequence(Request $request, Response $response): Response
+    public function sequence(Request $request, Response $response, $params): Response
     {
-        return $this->ci->view->render($response, 'request/sequence.twig');
+        $this->ci->view['activeSubMenu'] = 'overview';
+
+        $analyzer = new \Soarce\Analyzer\Request($this->ci);
+        $requestId = (int)($params['request'] ?? 0);
+        $originalRequest = $analyzer->getRequest($requestId);
+        $requests        = $analyzer->getSequence($originalRequest['request_id']);
+
+        if (0 === $requestId) {
+            throw new \InvalidArgumentException('needs a requestId');
+        }
+
+        $viewParams = [
+            'originalRequest' => $originalRequest,
+            'requests'        => $requests,
+        ];
+
+        return $this->ci->view->render($response, 'request/sequence.twig', $viewParams);
     }
 }
