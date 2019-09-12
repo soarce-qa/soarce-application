@@ -1,13 +1,27 @@
 <?php
 
+use Sentry\ErrorHandler;
 use Slim\Container;
 use Slim\Views\Twig;
 use Slim\Views\TwigExtension;
 use Soarce\View\Helper\Bytes;
 use Soarce\View\Helper\StripCommonPath;
 use Twig\TwigFilter;
+use function Sentry\init;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
+
+if (isset($_ENV['SENTRY_DSN']) && $_ENV['SENTRY_DSN'] !== '') {
+    init([
+        'dsn' => $_ENV['SENTRY_DSN'],
+#        'release' => (string)PROJECT_VERSION,
+        'attach_stacktrace' => true,
+    ]);
+
+    ErrorHandler::registerOnceErrorHandler();
+    ErrorHandler::registerOnceExceptionHandler();
+    ErrorHandler::registerOnceFatalErrorHandler();
+}
 
 $container = new Container(require __DIR__ . '/../settings.php');
 

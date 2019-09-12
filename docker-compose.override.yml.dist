@@ -8,6 +8,8 @@ services:
         networks:
             custom_network1:
             custom_network2:
+        environment:
+            SENTRY_DSN: ""
 
 networks:
     custom_network1:
