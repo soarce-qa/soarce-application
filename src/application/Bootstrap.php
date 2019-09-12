@@ -75,19 +75,4 @@ $container['view'] = static function (Container $container): Twig {
     return $view;
 };
 
-$container['errorHandler'] = static function (Container $container) {
-    return static function (Request $request, Response $response, Throwable $exception) use ($container) {
-        file_put_contents('/var/www/error.log', $exception->getMessage() . "\n" . $exception->getTraceAsString() . "\n");
-        return $response;
-    };
-};
-
-$container['phpErrorHandler'] = static function (Container $container) {
-    return static function (Request $request, Response $response, Throwable $error) use ($container) {
-        file_put_contents('/var/www/error.log', $error->getMessage() . "\n" . $error->getTraceAsString() . "\n");
-        return $response;
-    };
-};
-
-
 return $container;
