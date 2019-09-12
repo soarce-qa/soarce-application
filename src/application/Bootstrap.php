@@ -14,6 +14,8 @@ use function Sentry\init;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
+$container = new Container(require __DIR__ . '/../settings.php');
+
 if (isset($_ENV['SENTRY_DSN']) && $_ENV['SENTRY_DSN'] !== '') {
     init([
         'dsn' => $_ENV['SENTRY_DSN'],
@@ -24,9 +26,21 @@ if (isset($_ENV['SENTRY_DSN']) && $_ENV['SENTRY_DSN'] !== '') {
     ErrorHandler::registerOnceErrorHandler();
     ErrorHandler::registerOnceExceptionHandler();
     ErrorHandler::registerOnceFatalErrorHandler();
-}
 
-$container = new Container(require __DIR__ . '/../settings.php');
+    $container['errorHandler'] = static function (Container $container) {
+        return static function (Request $request, Response $response, Throwable $exception) use ($container) {
+            captureException($exception);
+            return $response;
+        };
+    };
+
+    $container['phpErrorHandler'] = static function (Container $container) {
+        return static function (Request $request, Response $response, Throwable $error) use ($container) {
+            captureException($error);
+            return $response;
+        };
+    };
+}
 
 $container['mysqli'] = static function ($container): mysqli {
     $mysqli = mysqli_connect(
@@ -59,20 +73,6 @@ $container['view'] = static function (Container $container): Twig {
     $twig->addFilter($filter);
 
     return $view;
-};
-
-$container['errorHandler'] = static function (Container $container) {
-    return static function (Request $request, Response $response, Throwable $exception) use ($container) {
-        captureException($exception);
-        return $response;
-    };
-};
-
-$container['phpErrorHandler'] = static function (Container $container) {
-    return static function (Request $request, Response $response, Throwable $error) use ($container) {
-        captureException($error);
-        return $response;
-    };
 };
 
 return $container;
