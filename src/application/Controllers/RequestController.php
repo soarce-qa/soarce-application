@@ -96,16 +96,18 @@ class RequestController
 
         $analyzer = new \Soarce\Analyzer\Request($this->ci);
         $requestId = (int)($params['request'] ?? 0);
-        $originalRequest = $analyzer->getRequest($requestId);
-        $requests        = $analyzer->getSequence($originalRequest['request_id']);
 
         if (0 === $requestId) {
             throw new \InvalidArgumentException('needs a requestId');
         }
 
+        $originalRequest = $analyzer->getRequest($requestId);
+        $requests        = $analyzer->getSequence($originalRequest['request_id']);
+
         $viewParams = [
             'originalRequest' => $originalRequest,
             'requests'        => $requests,
+            'applications'    => array_unique(array_column($originalRequest, 'application')),
         ];
 
         return $this->ci->view->render($response, 'request/sequence.twig', $viewParams);
