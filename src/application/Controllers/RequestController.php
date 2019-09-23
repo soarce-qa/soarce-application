@@ -107,7 +107,7 @@ class RequestController
         $viewParams = [
             'originalRequest' => $originalRequest,
             'requests'        => $requests,
-            'applications'    => array_unique(array_column($originalRequest, 'application')),
+            'applications'    => array_unique(array_column($requests, 'applicationName', 'applicationId')),
         ];
 
         return $this->ci->view->render($response, 'request/sequence.twig', $viewParams);

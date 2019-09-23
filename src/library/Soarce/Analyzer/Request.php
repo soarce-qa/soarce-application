@@ -63,7 +63,7 @@ class Request extends AbstractAnalyzer
      */
     public function getSequence($requestId): array
     {
-        $sql = 'SELECT r.`id`, r.`request_id`, FROM_UNIXTIME(r.`request_started`) AS `request_started`, a.`name` as `applicationName`
+        $sql = 'SELECT r.`id`, r.`request_id`, FROM_UNIXTIME(r.`request_started`) AS `request_started`, a.`name` as `applicationName`, a.`id` as `applicationId`
             FROM `request` r
             JOIN `application` a ON r.`application_id` = a.`id`
             WHERE r.`request_id` LIKE "' . $requestId . '%"

@@ -45,16 +45,21 @@
         <div class="box-body">
             <table id="filesTable" class="table table-bordered table-hover">
                 <thead>
-                <tr>
-                    <th>key</th>
-                    <th>value</th>
-                </tr>
+                    <tr>
+                        <th colspan="1">v Requests \ Applications &gt;</th>
+                        {% for key, application in applications %}
+                            <th colspan="2" style="text-align: center;">{{ application }}</th>
+                        {% endfor %}
+                    </tr>
                 </thead>
                 <tbody>
-                {% for key, value in request.get %}
+                {% set currentApplication = applications|keys|first %}
+                {{ currentApplication }}
+
+                {% for key, value in requests %}
                     <tr>
                         <td>{{ key }}</td>
-                        <td>
+                        <td colspan="1">
                             {% if value is iterable %}
                                 {{ value | json_encode(constant('JSON_PRETTY_PRINT'))}}
                             {% else %}
@@ -66,8 +71,10 @@
                 </tbody>
                 <tfoot>
                 <tr>
-                    <th>key</th>
-                    <th>value</th>
+                    <th>^ Requests / Applications &gt;</th>
+                    {% for key, application in applications %}
+                        <th colspan="2" style="text-align: center;">{{ application }}</th>
+                    {% endfor %}
                 </tr>
                 </tfoot>
             </table>
