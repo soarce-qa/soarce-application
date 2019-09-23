@@ -3,7 +3,6 @@
 namespace Soarce\Model;
 
 use DateTimeImmutable;
-use Exception;
 
 class SequenceRequest
 {
@@ -29,9 +28,9 @@ class SequenceRequest
     private $children;
 
     /**
-     * @param  array $flatList
+     * @param array $flatList
      * @return static|null
-     * @throws Exception
+     * @throws \Exception
      */
     public static function buildTree(array $flatList): ?self
     {
@@ -46,16 +45,34 @@ class SequenceRequest
             $request = new self($rawRequest);
             $internalLookupList[$request->getRequestId()] = $request;
 
+            if ($request->getRequestId() !== $rootKey) {
+                $parent = self::findParent($request, $internalLookupList);
+                $parent->addChild($request);
+            }
         }
 
         return $internalLookupList[$rootKey];
     }
 
     /**
+     * @param  SequenceRequest   $request
+     * @param  SequenceRequest[] $internalLookupList
+     * @return SequenceRequest
+     */
+    private static function findParent(self $request, array $internalLookupList): self
+    {
+        $parentKey = substr($request->getRequestId(), 0, strrpos($request->getRequestId(), '-'));
+        if (!isset($internalLookupList[$parentKey])) {
+            throw new Exception('Cannot find parent request to (' . $request->getRequestId() . ')');
+        }
+        return $internalLookupList[$parentKey];
+    }
+
+    /**
      * SequenceRequest constructor.
      *
-     * @param  array $rawRequest
-     * @throws Exception
+     * @param array $rawRequest
+     * @throws \Exception
      */
     private function __construct(array $rawRequest)
     {

@@ -11,6 +11,6 @@ class SequenceRequestHeap extends \SplHeap
      */
     protected function compare($value1, $value2)
     {
-        return strnatcmp($value1->getRequestId(), $value2->getRequestId());
+        return strnatcmp($value2->getRequestId(), $value1->getRequestId());
     }
 }
