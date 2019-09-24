@@ -40,61 +40,32 @@
 
     <div class="box">
         <div class="box-header with-border">
-            <h3 class="box-title">Sequence of ({{ requests|length }}) requests</h3>
+            <h3 class="box-title">Sequence of ({{ sequence.flatList|length }}) requests</h3>
         </div>
         <div class="box-body">
-            <table id="filesTable" class="table table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th colspan="1">v Requests \ Applications &gt;</th>
-                        <th colspan="2" style="text-align: center;">Client (0)</th>
-                        {% for key, application in applications %}
-                            <th colspan="2" style="text-align: center;">{{ application }} ({{ key }})</th>
-                        {% endfor %}
-                    </tr>
-                </thead>
-                <tbody>
-                {% set maxCol = max(colPositions) %}
-                {% for key, request in sequence.flatList %}
-                    {% set parentApplicationId = 0 %}
-                    {% if request.parent %}{% set parentApplicationId = request.parent.applicationId %}{% endif %}
-
-                    <tr>
-                        <td>{{ key }}</td>
-                        {% for colNum in range(0, maxCol) %}
-                            {% if colNum is not divisible by(2) %}
-                                {% if colNum == colPositions[parentApplicationId] %}
-                                    {% set startCol = colNum %}
-                                    <td><div style="border-left: solid 1px black;">----------</div></td>
-                                {% elseif colNum == colPositions[request.applicationId] %}
-                                    {% set endCol = colNum %}
-                                    <td><div style="border-left: solid 1px black;">&nbsp;</div></td>
-                                {% else %}
-                                    <td><div style="border-left: dotted 1px black;">&nbsp;</div></td>
-                                {% endif %}
-                            {% elseif (colNum+1) == colPositions[request.applicationId] %}
-                                <td style="text-align: right">----------&gt;</td>
-                            {% else %}
-                                <td>&nbsp;</td>
-                            {% endif %}
-                        {% endfor %}
-                    </tr>
-
-
+            <div class="mermaid">
+                sequenceDiagram
+                    participant Client
+                {% for application in applications %}
+                    participant {{ application }}
                 {% endfor %}
-                </tbody>
-                <tfoot>
-                <tr>
-                    <th>^ Requests / Applications &gt;</th>
-                    <th colspan="2" style="text-align: center;">Client (0)</th>
-                    {% for key, application in applications %}
-                        <th colspan="2" style="text-align: center;">{{ application }} ({{ key }})</th>
-                    {% endfor %}
-                </tr>
-                </tfoot>
-            </table>
+
+                {% for key, request in sequence.flatList %}
+                    {% if not request.parent %}
+                        Client->>{{ request.applicationName }}: {{ key }}
+                    {% else %}
+                        {{ request.parent.applicationName }}->>{{ request.applicationName }}: {{ key }}
+                    {% endif %}
+
+
+                    {% if not request.hasChildren %}
+                        {{ request.applicationName }}->>{{ request.parent.applicationName }}: response
+                    {% endif %}
+                {% endfor %}
+            </div>
         </div>
     </div>
 
-
+    <script src="/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
 {% endblock %}
