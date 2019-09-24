@@ -65,9 +65,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% set maxRows          = max(DatabaseStatistics|column('TABLE_ROWS')) %}
-                    {% set maxLength        = max(DatabaseStatistics|column('TOTAL_LENGTH')) %}
-                    {% set maxAutoIncrement = max(DatabaseStatistics|column('AUTO_INCREMENT')) %}
+                    {% set maxRows          = max(1, max(DatabaseStatistics|column('TABLE_ROWS'))) %}
+                    {% set maxLength        = max(1, max(DatabaseStatistics|column('TOTAL_LENGTH'))) %}
+                    {% set maxAutoIncrement = max(1, max(DatabaseStatistics|column('AUTO_INCREMENT'))) %}
 
                     {% for id,table in DatabaseStatistics %}
                     <tr>
