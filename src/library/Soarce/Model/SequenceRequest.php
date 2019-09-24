@@ -27,6 +27,9 @@ class SequenceRequest
     /** @var SequenceRequestHeap */
     private $children;
 
+    /** @var self[] */
+    private $flatList;
+
     /**
      * @param array $flatList
      * @return static|null
@@ -38,6 +41,7 @@ class SequenceRequest
             return null;
         }
 
+        /** @var self[] $internalLookupList */
         $internalLookupList = [];
         $rootKey = key($flatList);
 
@@ -51,7 +55,10 @@ class SequenceRequest
             }
         }
 
-        return $internalLookupList[$rootKey];
+        $root = $internalLookupList[$rootKey];
+        $root->setFlatList($internalLookupList);
+
+        return $root;
     }
 
     /**
@@ -162,5 +169,29 @@ class SequenceRequest
         }
 
         return $temp;
+    }
+
+    /**
+     * @param self[] $flatList
+     */
+    public function setFlatList(array $flatList): void
+    {
+        $this->flatList = $flatList;
+    }
+
+    /**
+     * @return self[]
+     */
+    public function getFlatList(): array
+    {
+        return $this->flatList;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasChildren(): bool
+    {
+        return count($this->children) > 0;
     }
 }

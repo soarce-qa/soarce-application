@@ -47,33 +47,48 @@
                 <thead>
                     <tr>
                         <th colspan="1">v Requests \ Applications &gt;</th>
+                        <th colspan="2" style="text-align: center;">Client (0)</th>
                         {% for key, application in applications %}
-                            <th colspan="2" style="text-align: center;">{{ application }}</th>
+                            <th colspan="2" style="text-align: center;">{{ application }} ({{ key }})</th>
                         {% endfor %}
                     </tr>
                 </thead>
                 <tbody>
-                {% set currentApplication = applications|keys|first %}
-                {{ currentApplication }}
+                {% set maxCol = max(colPositions) %}
+                {% for key, request in sequence.flatList %}
+                    {% set parentApplicationId = 0 %}
+                    {% if request.parent %}{% set parentApplicationId = request.parent.applicationId %}{% endif %}
 
-                {% for key, value in requests %}
                     <tr>
                         <td>{{ key }}</td>
-                        <td colspan="1">
-                            {% if value is iterable %}
-                                {{ value | json_encode(constant('JSON_PRETTY_PRINT'))}}
+                        {% for colNum in range(0, maxCol) %}
+                            {% if colNum is not divisible by(2) %}
+                                {% if colNum == colPositions[parentApplicationId] %}
+                                    {% set startCol = colNum %}
+                                    <td><div style="border-left: solid 1px black;">----------</div></td>
+                                {% elseif colNum == colPositions[request.applicationId] %}
+                                    {% set endCol = colNum %}
+                                    <td><div style="border-left: solid 1px black;">&nbsp;</div></td>
+                                {% else %}
+                                    <td><div style="border-left: dotted 1px black;">&nbsp;</div></td>
+                                {% endif %}
+                            {% elseif (colNum+1) == colPositions[request.applicationId] %}
+                                <td style="text-align: right">----------&gt;</td>
                             {% else %}
-                                {{ value }}
+                                <td>&nbsp;</td>
                             {% endif %}
-                        </td>
+                        {% endfor %}
                     </tr>
+
+
                 {% endfor %}
                 </tbody>
                 <tfoot>
                 <tr>
                     <th>^ Requests / Applications &gt;</th>
+                    <th colspan="2" style="text-align: center;">Client (0)</th>
                     {% for key, application in applications %}
-                        <th colspan="2" style="text-align: center;">{{ application }}</th>
+                        <th colspan="2" style="text-align: center;">{{ application }} ({{ key }})</th>
                     {% endfor %}
                 </tr>
                 </tfoot>
