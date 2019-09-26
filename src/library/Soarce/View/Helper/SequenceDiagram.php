@@ -33,7 +33,11 @@ class SequenceDiagram
         return $output;
     }
 
-    private static function renderSequence(SequenceRequest $request)
+    /**
+     * @param SequenceRequest $request
+     * @return string
+     */
+    private static function renderSequence(SequenceRequest $request): string
     {
         $out = '    ';
         if (null === $request->getParent()) {
@@ -50,12 +54,11 @@ class SequenceDiagram
 
         $out .= '    ';
         if (null === $request->getParent()) {
-            $out .= $request->getApplicationName() . self::ARROW . self::CLIENT . ": return \n";
+            $out .= $request->getApplicationName() . self::ARROW . self::CLIENT . ": return\n";
         } else {
-            $out .= $request->getApplicationName() . self::ARROW . $request->getParent()->getApplicationName() . ": return \n";
+            $out .= $request->getApplicationName() . self::ARROW . $request->getParent()->getApplicationName() . ": return\n";
         }
 
         return $out;
     }
-
 }
