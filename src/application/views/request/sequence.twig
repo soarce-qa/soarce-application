@@ -44,24 +44,7 @@
         </div>
         <div class="box-body">
             <div class="mermaid">
-                sequenceDiagram
-                    participant Client
-                {% for application in applications %}
-                    participant {{ application }}
-                {% endfor %}
-
-                {% for key, request in sequence.flatList %}
-                    {% if not request.parent %}
-                        Client->>{{ request.applicationName }}: {{ key }}
-                    {% else %}
-                        {{ request.parent.applicationName }}->>{{ request.applicationName }}: {{ key }}
-                    {% endif %}
-
-
-                    {% if not request.hasChildren %}
-                        {{ request.applicationName }}->>{{ request.parent.applicationName }}: response
-                    {% endif %}
-                {% endfor %}
+{{ sequence|sequenceDiagram(applications) }}
             </div>
         </div>
     </div>
