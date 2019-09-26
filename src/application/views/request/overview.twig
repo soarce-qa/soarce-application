@@ -45,6 +45,7 @@
                         <th>application</th>
                         <th>request</th>
                         <th>start</th>
+                        <th>actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -52,8 +53,15 @@
                     <tr>
                         <td>{{ request.usecaseName }}</td>
                         <td>{{ request.applicationName }}</td>
-                        <td><a href="/request/{{ request.id }}?{{ {'applicationId': applicationIds, 'usecaseId': usecaseIds}|url_encode }}">{{ request.request_id }}</a></td>
+                        <td>{{ request.request_id }}</td>
                         <td>{{ request.request_started }}</td>
+                        <td>
+                            <div class="btn-group">
+                                <a href="/request/{{ request.id }}?{{ {'applicationId': applicationIds, 'usecaseId': usecaseIds}|url_encode }}" class="btn btn-xs btn-default"><i class="fa fa-search"></i> show details</a>
+                                {% if request.request_id matches '/^[^\-]*$/' %}
+                                    <a href="/request/sequence/{{ request.id }}" class="btn btn-xs btn-default"><i class="fa fa-exchange"></i> show sequence diagram</a>
+                                {% endif %}
+                            </div>
                     </tr>
                 {% endfor %}
                 </tbody>

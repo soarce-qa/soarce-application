@@ -5,6 +5,7 @@ namespace Soarce\Application\Controllers;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Slim\Container;
+use Soarce\Model\SequenceRequest;
 
 class RequestController
 {
@@ -87,10 +88,41 @@ class RequestController
     /**
      * @param  Request  $request
      * @param  Response $response
+     * @param  array    $params
      * @return Response
      */
-    public function sequence(Request $request, Response $response): Response
+    public function sequence(Request $request, Response $response, $params): Response
     {
-        return $this->ci->view->render($response, 'request/sequence.twig');
+        $this->ci->view['activeSubMenu'] = 'overview';
+
+        $analyzer = new \Soarce\Analyzer\Request($this->ci);
+        $requestId = (int)($params['request'] ?? 0);
+
+        if (0 === $requestId) {
+            throw new \InvalidArgumentException('needs a requestId');
+        }
+
+        $originalRequest = $analyzer->getRequest($requestId);
+        $requests        = $analyzer->getSequence($originalRequest['request_id']);
+        $sequence        = SequenceRequest::buildTree($requests);
+        $applications    = array_unique(array_column($requests, 'applicationName', 'applicationId'));
+
+        $colPositions = [
+            0 => 1,
+        ];
+        $colPos = 3;
+        foreach (array_keys($applications) as $appKey) {
+            $colPositions[$appKey] = $colPos;
+            $colPos += 2;
+        }
+
+        $viewParams = [
+            'originalRequest' => $originalRequest,
+            'sequence'        => $sequence,
+            'applications'    => $applications,
+            'colPositions'    => $colPositions,
+        ];
+
+        return $this->ci->view->render($response, 'request/sequence.twig', $viewParams);
     }
 }

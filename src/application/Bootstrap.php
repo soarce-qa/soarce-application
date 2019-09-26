@@ -6,7 +6,9 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Slim\Views\Twig;
 use Slim\Views\TwigExtension;
+use Soarce\Model\SequenceRequest;
 use Soarce\View\Helper\Bytes;
+use Soarce\View\Helper\SequenceDiagram;
 use Soarce\View\Helper\StripCommonPath;
 use Twig\TwigFilter;
 use function Sentry\captureException;
@@ -70,6 +72,11 @@ $container['view'] = static function (Container $container): Twig {
     $filter = new TwigFilter('stripCommonPath', static function ($path, $commonPath) {
         return StripCommonPath::filter($path, $commonPath);
     });
+    $twig->addFilter($filter);
+
+    $filter = new TwigFilter('sequenceDiagram', static function (SequenceRequest $rootElement, $applications) {
+        return SequenceDiagram::filter($rootElement, $applications);
+    }, ['is_safe' => ['html']]);
     $twig->addFilter($filter);
 
     return $view;

@@ -70,7 +70,7 @@ class TraceController
      */
     public function usecase(Request $request, Response $response): Response
     {
-        $this->ci->view['activeSubMenu'] = 'usecases';
+        $this->ci->view['activeSubMenu'] = 'trace-usecases';
 
         $analyzer = new Trace($this->ci);
 

@@ -80,7 +80,7 @@ class ControlController
      */
     public function usecase(Request $request, Response $response, $args): Response
     {
-        $this->ci->view['activeSubMenu'] = 'usecases';
+        $this->ci->view['activeSubMenu'] = 'control-usecases';
 
         $usecaseControl = new Usecase($this->ci);
         $usecase = $args['usecase'] ?? '';

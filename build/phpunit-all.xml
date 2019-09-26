@@ -21,7 +21,7 @@
 
     <testsuites>
         <testsuite name="unittests">
-            <directory>../tests/PhpUnit/UnitTests/</directory>
+            <directory>../tests/PhpUnit_UnitTests/</directory>
         </testsuite>
     </testsuites>
 

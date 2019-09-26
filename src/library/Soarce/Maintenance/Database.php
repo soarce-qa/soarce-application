@@ -26,7 +26,7 @@ class Database
 
     public function purgeAll(): void
     {
-        foreach (['usecases', 'application'] as $table) {
+        foreach (['usecase', 'application'] as $table) {
             echo $sql = "DELETE FROM `{$table}` WHERE 1;";
             $this->mysqli->query($sql);
             if ($this->mysqli->error) {
