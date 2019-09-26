@@ -35,6 +35,8 @@ class Bytes
         }
 
         if (count(self::DEFINITIONS) < $depth + 1) {
+            // @TODO just let the above loop end after count(DEFINITIONS) iterations and this remove the need for this
+            // Exception!
             throw new OutOfRangeException('We don\'t know more than DiB');
         }
 
