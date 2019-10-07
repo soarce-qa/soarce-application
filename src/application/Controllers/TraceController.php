@@ -85,7 +85,7 @@ class TraceController
             'fileIds'        => $fileIds,
             'functions'      => $analyzer->getFunctionCallsForSelect($applicationIds, $fileIds),
             'functionIds'    => $functionIds,
-            'usecases'       => $analyzer->getUsecases($fileIds, $functionIds),
+            'usecases'       => $analyzer->getUsecases($fileIds, $functionIds, $applicationIds),
         ];
         return $this->ci->view->render($response, 'trace/usecase.twig', $viewParams);
     }
