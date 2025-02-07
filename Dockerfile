@@ -1,4 +1,4 @@
-FROM php:7.2-fpm
+FROM php:8.4-fpm
 
 MAINTAINER Holger Segnitz <holger@segnitz.net>
 
