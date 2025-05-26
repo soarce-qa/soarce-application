@@ -4,23 +4,14 @@ namespace Soarce\Control\Service;
 
 class FileContent
 {
-    /** @var string (hex) */
-    private $md5;
-
-    /** @var string[] */
-    private $lines;
-
     /**
      * FileContent constructor.
      *
      * @param string[] $lines
      * @param string   $md5
      */
-    public function __construct(array $lines, $md5)
-    {
-        $this->lines = $lines;
-        $this->md5   = $md5;
-    }
+    public function __construct(private array $lines, private string $md5)
+    {}
 
     /**
      * @return string

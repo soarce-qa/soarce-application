@@ -14,7 +14,7 @@ class Coverage extends AbstractAnalyzer
      * @param int[] $requests
      * @return array
      */
-    public function getFiles($applications = [], $usecases = [], $requests = []): array
+    public function getFiles(array $applications = [], array $usecases = [], array $requests = []): array
     {
         $applicationList = $this->buildInStatementBody($applications);
         $usecaseList     = $this->buildInStatementBody($usecases);
@@ -46,7 +46,7 @@ class Coverage extends AbstractAnalyzer
      * @param int $fileId
      * @return FileContent
      */
-    public function getSource($fileId): FileContent
+    public function getSource(int $fileId): FileContent
     {
         $controlService = new Service($this->container);
 
@@ -68,12 +68,12 @@ class Coverage extends AbstractAnalyzer
     }
 
     /**
-     * @param  int   $fileId
-     * @param  int[] $usecaseIds
-     * @param  int[] $requestIds
+     * @param int $fileId
+     * @param int[]|null $usecaseIds
+     * @param int[]|null $requestIds
      * @return int[]
      */
-    public function getCoverage($fileId, $usecaseIds = null, $requestIds = null): array
+    public function getCoverage(int $fileId, array $usecaseIds = null, array $requestIds = null): array
     {
         $usecaseList = $this->buildInStatementBody($usecaseIds);
         $requestList = $this->buildInStatementBody($requestIds);
@@ -101,10 +101,10 @@ class Coverage extends AbstractAnalyzer
     }
 
     /**
-     * @param  int    $fileId
-     * @return mixed[]
+     * @param int $fileId
+     * @return array
      */
-    public function getFile($fileId): array
+    public function getFile(int $fileId): array
     {
         $sql = 'SELECT f.`id`, f.`application_id`, f.`filename`, LOWER(HEX(f.`md5`)) as `md5`
             FROM `file` f
@@ -120,11 +120,11 @@ class Coverage extends AbstractAnalyzer
     }
 
     /**
-     * @param  int   $fileId
-     * @param  int   $line
+     * @param int $fileId
+     * @param int $line
      * @return array
      */
-    public function getRequestsForLoc($fileId, $line): array
+    public function getRequestsForLoc(int $fileId, int $line): array
     {
         $sql = 'SELECT DISTINCT r.`id`, r.`request_id`
             FROM `coverage` c 
@@ -146,11 +146,11 @@ class Coverage extends AbstractAnalyzer
     }
 
     /**
-     * @param  int   $fileId
-     * @param  int   $line
+     * @param int $fileId
+     * @param int $line
      * @return array
      */
-    public function getUsecasesForLoC($fileId, $line): array
+    public function getUsecasesForLoC(int $fileId, int $line): array
     {
         $sql = 'SELECT u.`id`, u.`name`
             FROM `coverage` c 

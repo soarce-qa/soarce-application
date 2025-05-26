@@ -4,37 +4,8 @@ namespace Soarce\Config;
 
 class Service
 {
-    /** @var string */
-    private $name;
-
-    /** @var string */
-    private $url;
-
-    /** @var string */
-    private $parameterName;
-
-    /** @var string */
-    private $commonPath;
-
-    /** @var string */
-    private $presharedSecret;
-
-    /**
-     * Service constructor.
-     *
-     * @param string $name
-     * @param string $url
-     * @param string $parameterName
-     * @param string $commonPath
-     * @param string $presharedSecret
-     */
-    public function __construct($name, $url, $parameterName, $commonPath, $presharedSecret)
+    public function __construct(private string $name, private string $url, private string $parameterName, private string $commonPath, private string $presharedSecret)
     {
-        $this->name            = $name;
-        $this->url             = $url;
-        $this->parameterName   = $parameterName;
-        $this->commonPath      = $commonPath;
-        $this->presharedSecret = $presharedSecret;
     }
 
     /**

@@ -5,12 +5,9 @@ namespace Soarce\Receiver;
 class CoverageReceiver extends ReceiverAbstract
 {
     /** @var string[] */
-    private $fileMd5Hashes;
+    private array $fileMd5Hashes;
 
-    /**
-     * @param array $json
-     */
-    public function persist($json): void
+    public function persist(array $json): void
     {
         $header  = $json['header'];
         $payload = $json['payload'];
@@ -34,11 +31,11 @@ class CoverageReceiver extends ReceiverAbstract
 
     /**
      * @param string $filename
-     * @param int[]  $coveredLines
+     * @param int[] $coveredLines
      */
-    private function storeCoverageForOneFile($filename, $coveredLines): void
+    private function storeCoverageForOneFile(string $filename, array $coveredLines): void
     {
-        if (strpos($filename, "eval()'d code") !== false) {
+        if (str_contains($filename, "eval()'d code")) {
             return;
         }
 

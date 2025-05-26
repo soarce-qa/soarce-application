@@ -2,27 +2,17 @@
 
 namespace Soarce\Control;
 
-use Slim\Container;
 use Soarce\Config\Service as ServiceConfig;
 use Soarce\Control\Service\Actionable;
 
 class Service
 {
-    /** @var Container */
-    protected $container;
-
     /** @var ServiceConfig[] */
     protected $serviceConfig;
 
-    /**
-     * Usecase constructor.
-     *
-     * @param Container $container
-     */
-    public function __construct(Container $container)
+    public function __construct()
     {
-        $this->container = $container;
-        $this->serviceConfig = $this->container->settings['soarce']['services'];
+        $this->serviceConfig = $this->container->settings['soarce']['services'];  //@TODO
     }
 
     /**

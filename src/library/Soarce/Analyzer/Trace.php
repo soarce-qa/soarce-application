@@ -5,12 +5,12 @@ namespace Soarce\Analyzer;
 class Trace extends AbstractAnalyzer
 {
     /**
-     * @param  int[] $applications
-     * @param  int[] $usecases
-     * @param  int[] $requests
+     * @param int[] $applications
+     * @param int[] $usecases
+     * @param int[] $requests
      * @return array
      */
-    public function getFiles($applications = [], $usecases = [], $requests = []): array
+    public function getFiles(array $applications = [], array $usecases = [], array $requests = []): array
     {
         $applicationList = $this->buildInStatementBody($applications);
         $usecaseList     = $this->buildInStatementBody($usecases);
@@ -39,13 +39,13 @@ class Trace extends AbstractAnalyzer
     }
 
     /**
-     * @param  int[] $applications
-     * @param  int[] $usecases
-     * @param  int[] $requests
-     * @param  int[] $files
+     * @param int[] $applications
+     * @param int[] $usecases
+     * @param int[] $requests
+     * @param int[] $files
      * @return array
      */
-    public function getFunctionCalls($applications, $usecases, $requests, $files): array
+    public function getFunctionCalls(array $applications, array $usecases, array $requests, array $files): array
     {
         $applicationList = $this->buildInStatementBody($applications);
         $usecaseList     = $this->buildInStatementBody($usecases);
@@ -74,15 +74,15 @@ class Trace extends AbstractAnalyzer
     }
 
     /**
-     * @param  string $class
-     * @param  string $function
-     * @param  int[]  $applications
-     * @param  int[]  $usecases
-     * @param  int[]  $requests
-     * @param  int[]  $files
+     * @param string $class
+     * @param string $function
+     * @param int[] $applications
+     * @param int[] $usecases
+     * @param int[] $requests
+     * @param int[] $files
      * @return array[]
      */
-    public function getCallees($class, $function, $applications, $usecases, $requests, $files): array
+    public function getCallees(string $class, string $function, array $applications, array $usecases, array $requests, array $files): array
     {
         $sql = 'SELECT b.class, b.`function`, SUM(m.calls) numcalls
             FROM `function_map` m
@@ -104,15 +104,15 @@ class Trace extends AbstractAnalyzer
     }
 
     /**
-     * @param  string $class
-     * @param  string $function
-     * @param  int[]  $applications
-     * @param  int[]  $usecases
-     * @param  int[]  $requests
-     * @param  int[]  $files
+     * @param string $class
+     * @param string $function
+     * @param int[] $applications
+     * @param int[] $usecases
+     * @param int[] $requests
+     * @param int[] $files
      * @return array[]
      */
-    public function getCallers($class, $function, $applications, $usecases, $requests, $files): array
+    public function getCallers(string $class, string $function, array $applications, array $usecases, array $requests, array $files): array
     {
         $sql = 'SELECT b.class, b.`function`, SUM(m.calls) numcalls
             FROM `function_map` m
@@ -134,15 +134,15 @@ class Trace extends AbstractAnalyzer
     }
 
     /**
-     * @param  string $class
-     * @param  string $function
-     * @param  int[]  $applications
-     * @param  int[]  $usecases
-     * @param  int[]  $requests
-     * @param  int[]  $files
+     * @param string $class
+     * @param string $function
+     * @param int[] $applications
+     * @param int[] $usecases
+     * @param int[] $requests
+     * @param int[] $files
      * @return int[]
      */
-    private function getFunctionIds($class, $function, $applications, $usecases, $requests, $files): array
+    private function getFunctionIds(string $class, string $function, array $applications, array $usecases, array $requests, array $files): array
     {
         $applicationList = $this->buildInStatementBody($applications);
         $usecaseList     = $this->buildInStatementBody($usecases);
@@ -172,11 +172,11 @@ class Trace extends AbstractAnalyzer
     }
 
     /**
-     * @param  int[] $application
-     * @param  int[] $file
+     * @param int[] $application
+     * @param int[] $file
      * @return array
      */
-    public function getFunctionCallsForSelect($application, $file): array
+    public function getFunctionCallsForSelect(array $application, array $file): array
     {
         $ret = [];
         foreach ($this->getFunctionCalls($application, [], [], $file) as $id => $row) {

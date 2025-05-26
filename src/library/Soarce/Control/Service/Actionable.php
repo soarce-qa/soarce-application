@@ -12,33 +12,22 @@ class Actionable
 
     private const PRESHARED_SECRET_HEADER = 'X-SOARCE-Preshared-Secret';
 
-    /** @var Service */
-    private $serviceConfig;
-
     /** @var bool[] */
-    private $preconditions;
+    private array $preconditions;
 
     /**
      * Actionable constructor.
      *
      * @param Service $serviceConfig
      */
-    public function __construct(Service $serviceConfig)
-    {
-        $this->serviceConfig = $serviceConfig;
-    }
+    public function __construct(private Service $serviceConfig)
+    {}
 
-    /**
-     * @return Service
-     */
     public function getServiceConfig(): Service
     {
         return $this->serviceConfig;
     }
 
-    /**
-     * @return bool
-     */
     public function ping(): bool
     {
         return self::PING__EXPECTED_RESPONSE === file_get_contents($this->buildUrl('ping'), false, $this->getStreamContext());
@@ -52,25 +41,16 @@ class Actionable
         return json_decode(file_get_contents($this->buildUrl('details'), false, $this->getStreamContext()), JSON_OBJECT_AS_ARRAY);
     }
 
-    /**
-     *
-     */
     public function collectPreconditions(): void
     {
         $this->preconditions = json_decode(file_get_contents($this->buildUrl('preconditions'), false, $this->getStreamContext()), JSON_OBJECT_AS_ARRAY);
     }
 
-    /**
-     * @return string
-     */
     public function start(): string
     {
         return file_get_contents($this->buildUrl('start'), false, $this->getStreamContext());
     }
 
-    /**
-     * @return string
-     */
     public function end(): string
     {
         return file_get_contents($this->buildUrl('end'), false, $this->getStreamContext());
@@ -84,11 +64,7 @@ class Actionable
         return $this->preconditions;
     }
 
-    /**
-     * @param  string $filename
-     * @return FileContent
-     */
-    public function getFile($filename): FileContent
+    public function getFile(string $filename): FileContent
     {
         $fileContent = file_get_contents($this->buildUrl('readfile') . '&' . http_build_query(['filename' => $filename]), false, $this->getStreamContext());
 
@@ -109,11 +85,7 @@ class Actionable
         );
     }
 
-    /**
-     * @param  string $action
-     * @return string
-     */
-    private function buildUrl($action): string
+    private function buildUrl(string $action): string
     {
         return $this->serviceConfig->getUrl()
             . '?'

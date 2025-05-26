@@ -8,13 +8,13 @@ use Swaggest\JsonSchema\Schema;
 class Config
 {
     /** @var string */
-    public static $validationError;
+    public static string $validationError;
 
     /**
-     * @param  string $filename
+     * @param string $filename
      * @return bool
      */
-    public static function isValid($filename): bool
+    public static function isValid(string $filename): bool
     {
         return true;
 /*        try {
@@ -28,10 +28,10 @@ class Config
     }
 
     /**
-     * @param  string $filename
+     * @param string $filename
      * @return Service[]
      */
-    public static function load($filename): array
+    public static function load(string $filename): array
     {
         $services = [];
         foreach (json_decode(file_get_contents($filename), JSON_OBJECT_AS_ARRAY)['services'] as $name => $rawService) {

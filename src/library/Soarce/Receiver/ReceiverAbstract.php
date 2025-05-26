@@ -3,16 +3,9 @@
 namespace Soarce\Receiver;
 
 use mysqli;
-use Slim\Container;
 
 abstract class ReceiverAbstract
 {
-    /** @var Container */
-    protected $container;
-
-    /** @var mysqli */
-    protected $mysqli;
-
     /** @var int */
     protected $applicationId;
 
@@ -22,21 +15,10 @@ abstract class ReceiverAbstract
     /** @var int */
     protected $requestId;
 
-    /**
-     * CoverageReceiver constructor.
-     *
-     * @param Container $container
-     */
-    public function __construct(Container $container)
-    {
-        $this->container = $container;
-        $this->mysqli = $this->container->mysqli;
-    }
+    public function __construct(protected mysqli $mysqli)
+    {}
 
-    /**
-     * @param array $coverage
-     */
-    abstract public function persist($coverage);
+    abstract public function persist(array $json);
 
     /**
      * @return int
@@ -46,10 +28,7 @@ abstract class ReceiverAbstract
         return $this->applicationId;
     }
 
-    /**
-     * @param string $name
-     */
-    protected function createApplication($name): void
+    protected function createApplication(string $name): void
     {
         $escapedName = mysqli_real_escape_string($this->mysqli, $name);
         $sql = 'INSERT INTO `application` SET `name` = "' . $escapedName . '" ON DUPLICATE KEY UPDATE `id` = LAST_INSERT_ID(`id`);';
@@ -57,13 +36,7 @@ abstract class ReceiverAbstract
         $this->applicationId = $this->mysqli->insert_id;
     }
 
-    /**
-     * @param  string $filename
-     * @param  int    $coverableLines
-     * @param  string $md5
-     * @return int
-     */
-    protected function createFile($filename, $coverableLines = 0, $md5 = null): int
+    protected function createFile(string $filename, int $coverableLines = 0, string $md5 = null): int
     {
         $escapedFilename = mysqli_real_escape_string($this->mysqli, $filename);
         $sql = 'INSERT IGNORE INTO `file` (`application_id`, `filename`, `md5`, `lines`) VALUES ('
@@ -80,9 +53,6 @@ abstract class ReceiverAbstract
         return $this->mysqli->insert_id;
     }
 
-    /**
-     * @return int
-     */
     protected function getUsecaseId(): int
     {
         if (null === $this->usecaseId) {
@@ -94,10 +64,6 @@ abstract class ReceiverAbstract
         return $this->usecaseId;
     }
 
-    /**
-     * @return int
-     * @throws Exception
-     */
     protected function getRequestId(): int
     {
         if (null === $this->requestId) {
@@ -106,15 +72,7 @@ abstract class ReceiverAbstract
         return $this->requestId;
     }
 
-    /**
-     * @param string $requestId
-     * @param string $requestStarted
-     * @param array  $get
-     * @param array  $post
-     * @param array  $server
-     * @param array  $env
-     */
-    protected function createRequest($requestId, $requestStarted, $get, $post, $server, $env): void
+    protected function createRequest(string $requestId, string $requestStarted, array $get, array $post, array $server, array $env): void
     {
         $sql = 'INSERT IGNORE INTO `request` (`usecase_id`, `application_id`, `request_id`, `request_started`, `get`, `post`, `server`, `env`) VALUES ('
             . mysqli_real_escape_string($this->mysqli, $this->getUsecaseId())

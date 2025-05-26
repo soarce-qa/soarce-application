@@ -7,7 +7,7 @@ class TraceReceiver extends ReceiverAbstract
     /**
      * @param array $json
      */
-    public function persist($json): void
+    public function persist(array $json): void
     {
         $header  = $json['header'];
         $payload = $json['payload'];
@@ -33,7 +33,7 @@ class TraceReceiver extends ReceiverAbstract
     /**
      * @param int[][] $map
      */
-    private function storeFunctionCallMap($map): void
+    private function storeFunctionCallMap(array $map): void
     {
         $functionIdMap = $this->getFunctionsIdMap();
 
@@ -77,9 +77,9 @@ class TraceReceiver extends ReceiverAbstract
 
     /**
      * @param string $filename
-     * @param int[]  $functions
+     * @param int[] $functions
      */
-    private function storeFunctionCallsForOneFile($filename, $functions): void
+    private function storeFunctionCallsForOneFile(string $filename, array $functions): void
     {
         if (strpos($filename, "eval()'d code") !== false) {
             return;

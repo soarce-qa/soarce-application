@@ -3,34 +3,19 @@
 namespace Soarce\Analyzer;
 
 use mysqli;
-use Slim\Container;
 
 abstract class AbstractAnalyzer
 {
-    /** @var Container */
-    protected $container;
-
-    /** @var mysqli */
-    protected $mysqli;
+    public function __construct(protected mysqli $mysqli)
+    {}
 
     /**
-     * Usecase constructor.
-     *
-     * @param Container $container
-     */
-    public function __construct(Container $container)
-    {
-        $this->container = $container;
-        $this->mysqli = $this->container->mysqli;
-    }
-
-    /**
-     * @param  int[] $files
-     * @param  int[] $functions
-     * @param  int[] $applications
+     * @param int[] $files
+     * @param int[] $functions
+     * @param int[] $applications
      * @return array
      */
-    public function getUsecases($files = [], $functions = [], $applications = []): array
+    public function getUsecases(array $files = [], array $functions = [], array $applications = []): array
     {
         $fileList        = $this->buildInStatementBody($files);
         $applicationList = $this->buildInStatementBody($applications);
@@ -61,10 +46,10 @@ abstract class AbstractAnalyzer
     }
 
     /**
-     * @param  int[] $usecases
+     * @param int[] $usecases
      * @return array
      */
-    public function getAppplications($usecases = []): array
+    public function getAppplications(array $usecases = []): array
     {
         $usecaseList = $this->buildInStatementBody($usecases);
 
@@ -86,12 +71,12 @@ abstract class AbstractAnalyzer
     }
 
     /**
-     * @param  int[] $usecases
-     * @param  int[] $applications
-     * @param  int[] $files
+     * @param int[] $usecases
+     * @param int[] $applications
+     * @param int[] $files
      * @return array
      */
-    public function getRequests($usecases = [], $applications = [], $files = []): array
+    public function getRequests(array $usecases = [], array $applications = [], array $files = []): array
     {
         $applicationList = $this->buildInStatementBody($applications);
         $usecaseList     = $this->buildInStatementBody($usecases);
@@ -117,10 +102,10 @@ abstract class AbstractAnalyzer
     }
 
     /**
-     * @param  int[]|int $ids
+     * @param int|int[] $ids
      * @return string
      */
-    protected function buildInStatementBody($ids): string
+    protected function buildInStatementBody(array|int $ids): string
     {
         if (!is_array($ids)) {
             return (string)$ids;
@@ -131,10 +116,10 @@ abstract class AbstractAnalyzer
     }
 
     /**
-     * @param  int[] $selectedFunctionIds
+     * @param int[] $selectedFunctionIds
      * @return int[]
      */
-    private function getIdsForAllFunctionCalls($selectedFunctionIds = []): array
+    private function getIdsForAllFunctionCalls(array $selectedFunctionIds = []): array
     {
         if ($selectedFunctionIds === []) {
             return [];
