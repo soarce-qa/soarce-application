@@ -35,10 +35,12 @@
     "slim/twig-view": "^3.4",
     "symfony/dotenv": "^7.2",
     "swaggest/json-schema": "^0.12.43",
-    "almasaeed2010/adminlte": "^3.2",
+    "almasaeed2010/adminlte": "3.*",
     "sentry/sentry": "^4.10",
     "php-http/curl-client": "^2.3",
-    "http-interop/http-factory-guzzle": "^1.1"
+    "http-interop/http-factory-guzzle": "^1.1",
+    "php-di/php-di": "^7.0",
+    "twig/intl-extra": "^3.20"
   },
   "autoload": {
     "psr-4": {
