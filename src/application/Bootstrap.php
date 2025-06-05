@@ -1,85 +1,105 @@
 <?php
 
+use DI\Container;
+use DI\ContainerBuilder;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Sentry\ErrorHandler;
-use Slim\Container;
-use Slim\Http\Request;
-use Slim\Http\Response;
 use Slim\Views\Twig;
-use Slim\Views\TwigExtension;
-use Soarce\Model\SequenceRequest;
-use Soarce\View\Helper\Bytes;
-use Soarce\View\Helper\SequenceDiagram;
-use Soarce\View\Helper\StripCommonPath;
-use Twig\TwigFilter;
+use Soarce\Twig\TwigExtension;
+use Symfony\Component\Dotenv\Dotenv;
+use Twig\Extra\Intl\IntlExtension;
 use function Sentry\captureException;
 use function Sentry\init;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
-$container = new Container(require __DIR__ . '/../settings.php');
+$builder = new ContainerBuilder();
+$builder->addDefinitions([
+    'view' => DI\get(Twig::class),
+]);
 
+// Make environment variables stored in them accessible via getenv(), $_SERVER or $_ENV
+new Dotenv()->load(__DIR__ . '/../../.env');
+
+$container = $builder->build();
+
+$container->set(
+    Slim\Views\Twig::class,
+    static function(): Twig
+    {
+        $cache = 'development' === $_ENV['ENV'] ? false : __DIR__ . '/../../temp/cache/twig';
+        $view = Twig::create(
+            __DIR__ . '/views',
+            ['cache' => $cache]
+        );
+
+        $environment = $view->getEnvironment();
+        TwigExtension::registerFilters($environment);
+
+        $view->addExtension(new IntlExtension());
+
+        return $view;
+    }
+);
+
+// Initialise Sentry and push it to the DI container.
 if (isset($_ENV['SENTRY_DSN']) && $_ENV['SENTRY_DSN'] !== '') {
-    init([
-        'dsn' => $_ENV['SENTRY_DSN'],
-#        'release' => (string)PROJECT_VERSION,
+    $sentryParams = [
+        'dsn'               => $_ENV['SENTRY_DSN'],
         'attach_stacktrace' => true,
-    ]);
+        'environment'       => $_ENV['SENTRY_ENV'] ?? 'localdev',
+    ];
+
+    if (defined('PROJECT_VERSION')) {
+        $sentryParams['release'] = PROJECT_VERSION;
+    }
+
+    init($sentryParams);
 
     ErrorHandler::registerOnceErrorHandler();
     ErrorHandler::registerOnceExceptionHandler();
     ErrorHandler::registerOnceFatalErrorHandler();
 
-    $container['errorHandler'] = static function (Container $container) {
-        return static function (Request $request, Response $response, Throwable $exception) use ($container) {
-            captureException($exception);
-            return $response;
-        };
-    };
-
-    $container['phpErrorHandler'] = static function (Container $container) {
-        return static function (Request $request, Response $response, Throwable $error) use ($container) {
-            captureException($error);
-            return $response;
-        };
-    };
-}
-
-$container['mysqli'] = static function ($container): mysqli {
-    $mysqli = mysqli_connect(
-        $container->settings['database']['host'],
-        $container->settings['database']['user'],
-        $container->settings['database']['password'],
-        $container->settings['database']['database']
+    $container->set(
+        'errorHandler',
+        static function (Container $container)
+        {
+            return static function (Request $request, Response $response, Throwable $exception) use ($container): Response
+            {
+                captureException($exception);
+                return $response;
+            };
+        }
     );
 
-    return $mysqli;
-};
+    $container->set(
+        'phpErrorHandler',
+        static function (Container $container)
+        {
+            return static function (Request $request, Response $response, Throwable $error) use ($container): Response
+            {
+                captureException($error);
+                return $response;
+            };
+        }
+    );
+}
 
-$container['view'] = static function (Container $container): Twig {
-    $view = new Twig(__DIR__ . '/views/', [__DIR__ . '/temp/cache/twig']);
+$container->set(
+    mysqli::class,
+    static function (): mysqli {
+        return mysqli_connect(
+            $_ENV['MYSQL_HOST'],
+            $_ENV['MYSQL_USER'],
+            $_ENV['MYSQL_PASSWORD'],
+            $_ENV['MYSQL_DATABASE']
+        );
+    }
+);
 
-    // Instantiate and add Slim specific extension
-    $basePath = rtrim(str_ireplace('index.php', '', $container['request']->getUri()->getBasePath()), '/');
-    $view->addExtension(new TwigExtension($container['router'], $basePath));
 
-    $twig = $view->getEnvironment();
 
-    $filter = new TwigFilter('byte', static function ($bytes) {
-        return Bytes::filter($bytes);
-    });
-    $twig->addFilter($filter);
-
-    $filter = new TwigFilter('stripCommonPath', static function ($path, $commonPath) {
-        return StripCommonPath::filter($path, $commonPath);
-    });
-    $twig->addFilter($filter);
-
-    $filter = new TwigFilter('sequenceDiagram', static function (SequenceRequest $rootElement, $applications) {
-        return SequenceDiagram::filter($rootElement, $applications);
-    }, ['is_safe' => ['html']]);
-    $twig->addFilter($filter);
-
-    return $view;
-};
+$GLOBALS['container'] = $container;
 
 return $container;

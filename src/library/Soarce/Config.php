@@ -8,7 +8,7 @@ use Swaggest\JsonSchema\Schema;
 class Config
 {
     /** @var string */
-    public static string $validationError;
+    public static string $validationError = '';
 
     /**
      * @param string $filename

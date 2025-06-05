@@ -7,7 +7,7 @@ RUN apt-get update -y && apt-get install -y libxslt-dev
 # RUN pecl install -f -o redis xdebug
 # RUN docker-php-ext-enable redis.so xdebug.so
 
-RUN docker-php-ext-install mysqli xsl
+RUN docker-php-ext-install mysqli xsl intl
 # RUN docker-php-ext-configure gd --with-jpeg-dir --with-png-dir --with-webp--dir
 # RUN docker-php-ext-install gd
 
