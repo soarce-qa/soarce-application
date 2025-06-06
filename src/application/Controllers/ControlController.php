@@ -2,36 +2,17 @@
 
 namespace Soarce\Application\Controllers;
 
-use Slim\Http\Request;
-use Slim\Http\Response;
-use Slim\Container;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Soarce\Control\Service;
 use Soarce\Control\Usecase;
+use Soarce\Mvc\WebApplicationController;
 
-class ControlController
+class ControlController extends WebApplicationController
 {
-    /** @var Container */
-    protected $ci;
-
-    /**
-     * BaseController constructor.
-     *
-     * @param Container $dependencyInjectionContainer
-     */
-    public function __construct(Container $dependencyInjectionContainer)
+    public function index(Request $request, Response $response, array $args): Response
     {
-        $this->ci = $dependencyInjectionContainer;
-        $this->ci->view['activeMainMenu'] = 'control';
-    }
-
-    /**
-     * @param  Request $request
-     * @param  Response $response
-     * @return Response
-     */
-    public function index(Request $request, Response $response): Response
-    {
-        return $this->ci->view->render($response, 'control/index.twig');
+        return $this->view->render($response, 'control/index.twig');
     }
 
     /**
@@ -42,34 +23,45 @@ class ControlController
      */
     public function service(Request $request, Response $response, $args): Response
     {
-        $this->ci->view['activeSubMenu'] = 'services';
-
-        $serviceControl = new Service($this->ci);
+        $serviceControl = $this->container->get(Service::class);
         $service = $args['service'] ?? '';
-        $action  = $request->getParam('action');
+        $postParams = $request->getParsedBody();
+        $action  = $postParams['action'] ?? '';
 
-        if ($request->isPost()) {
+        if ($request->getMethod() === 'POST') {
             switch ($action) {
                 case 'preconditions':
-                    $this->ci->view['services'] = $serviceControl->checkPreconditons();
-                    return $this->ci->view->render($response, 'control/preconditions.twig');
+                    return $this->view->render(
+                        $response,
+                        'control/preconditions.twig',
+                        ['services' => $serviceControl->checkPreconditions()]
+                    );
                 case 'details':
-                    $this->ci->view['service'] = $serviceControl->getServiceActionable($service);
-                    return $this->ci->view->render($response, 'control/details.twig');
+                    return $this->view->render(
+                        $response,
+                        'control/details.twig',
+                        ['services' => $serviceControl->getServiceActionable($service)]
+                    );
                 case 'start':
-                    $this->ci->view['services'] = $serviceControl->start();
-                    return $this->ci->view->render($response, 'control/startstop.twig');
-                    break;
+                    return $this->view->render(
+                        $response,
+                        'control/startstop.twig',
+                        ['services' => $serviceControl->start()]
+                    );
                 case 'end':
-                    $this->ci->view['services'] = $serviceControl->end();
-                    return $this->ci->view->render($response, 'control/startstop.twig');
-                    break;
+                    return $this->view->render(
+                        $response,
+                        'control/startstop.twig',
+                        ['services' => $serviceControl->end()]
+                    );
             }
         }
 
-        $this->ci->view['services'] = $serviceControl->getAllServiceActionables();
-
-        return $this->ci->view->render($response, 'control/service.twig');
+        return $this->view->render(
+            $response,
+            'control/service.twig',
+            ['services' => $serviceControl->getAllServiceActionables()],
+        );
     }
 
     /**
@@ -80,16 +72,16 @@ class ControlController
      */
     public function usecase(Request $request, Response $response, $args): Response
     {
-        $this->ci->view['activeSubMenu'] = 'control-usecases';
-
-        $usecaseControl = new Usecase($this->ci);
+        $usecaseControl = $this->container->get(Usecase::class);
         $usecase = $args['usecase'] ?? '';
-        $action  = $request->getParam('action');
 
-        if (null !== $usecase && $request->isPost()) {
+        $postParams = $request->getParsedBody();
+        $action  = $postParams['action'] ?? '';
+
+        if ($request->getMethod() === 'POST') {
             switch ($action) {
                 case 'create':
-                    $usecaseControl->create($request->getParam('usecase'));
+                    $usecaseControl->create($postParams['usecase']);
                     break;
                 case 'activate':
                     $usecaseControl->activate($usecase);
@@ -103,8 +95,11 @@ class ControlController
             }
         }
 
-        $this->ci->view['usecases'] = $usecaseControl->getAllUsecases();
+        $viewParams = [
+            'usecases' => $usecaseControl->getAllUsecases(),
+        ];
 
-        return $this->ci->view->render($response, 'control/usecase.twig');
+
+        return $this->view->render($response, 'control/usecase.twig', $viewParams);
     }
 }

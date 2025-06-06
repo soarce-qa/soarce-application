@@ -13,8 +13,8 @@ class IndexController extends WebApplicationController
      public function index(Request $request, Response $response): Response
     {
         $viewVars = [
-            'configIsValid' => Config::isValid(__DIR__ . '/../../../soarce.json'),
-            'configErrorMessage' => Config::$validationError,
+#            'configIsValid' => Config::isValid(__DIR__ . '/../../../soarce.json'),
+#            'configErrorMessage' => Config::$validationError,
             'DatabaseStatistics' => $this->container->get(Database::class)->getMysqlStats(),
         ];
 

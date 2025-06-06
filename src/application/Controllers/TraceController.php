@@ -2,52 +2,27 @@
 
 namespace Soarce\Application\Controllers;
 
-use Slim\Http\Request;
-use Slim\Http\Response;
-use Slim\Container;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Soarce\Analyzer\Trace;
+use Soarce\Mvc\WebApplicationController;
 
-class TraceController
+class TraceController extends WebApplicationController
 {
-    /** @var Container */
-    protected $ci;
-
-    /**
-     * BaseController constructor.
-     *
-     * @param Container $dependencyInjectionContainer
-     */
-    public function __construct(Container $dependencyInjectionContainer)
+    public function index(Request $request, Response $response, array $args): Response
     {
-        $this->ci = $dependencyInjectionContainer;
-        $this->ci->view['activeMainMenu'] = 'traces';
+        return $this->view->render($response, 'trace/index.twig');
     }
 
-    /**
-     * @param  Request  $request
-     * @param  Response $response
-     * @return Response
-     */
-    public function index(Request $request, Response $response): Response
+    public function calls(Request $request, Response $response, array $args): Response
     {
-        return $this->ci->view->render($response, 'trace/index.twig');
-    }
+        $analyzer = $this->container->get(Trace::class);
+        $queryParams = $request->getQueryParams();
 
-    /**
-     * @param  Request  $request
-     * @param  Response $response
-     * @return Response
-     */
-    public function calls(Request $request, Response $response): Response
-    {
-        $this->ci->view['activeSubMenu'] = 'calls';
-
-        $analyzer = new Trace($this->ci);
-
-        $applicationIds = $request->getParam('applicationId') ?? [];
-        $usecaseIds     = $request->getParam('usecaseId')     ?? [];
-        $requestIds     = $request->getParam('requestId')     ?? [];
-        $fileIds        = $request->getParam('fileId')        ?? [];
+        $applicationIds = $queryParams['applicationId'] ?? [];
+        $usecaseIds     = $queryParams['usecaseId']     ?? [];
+        $requestIds     = $queryParams['requestId']     ?? [];
+        $fileIds        = $queryParams['fileId']        ?? [];
 
         $viewParams = [
             'applications'   => $analyzer->getAppplications($usecaseIds),
@@ -60,23 +35,17 @@ class TraceController
             'fileIds'        => $fileIds,
             'functionCalls'  => $analyzer->getFunctionCalls($applicationIds, $usecaseIds, $requestIds, $fileIds),
         ];
-        return $this->ci->view->render($response, 'trace/calls.twig', $viewParams);
+        return $this->view->render($response, 'trace/calls.twig', $viewParams);
     }
 
-    /**
-     * @param  Request  $request
-     * @param  Response $response
-     * @return Response
-     */
-    public function usecase(Request $request, Response $response): Response
+    public function usecase(Request $request, Response $response, array $args): Response
     {
-        $this->ci->view['activeSubMenu'] = 'trace-usecases';
+        $analyzer = $this->container->get(Trace::class);
+        $queryParams = $request->getQueryParams();
 
-        $analyzer = new Trace($this->ci);
-
-        $applicationIds = $request->getParam('applicationId') ?? [];
-        $fileIds        = $request->getParam('fileId')        ?? [];
-        $functionIds    = $request->getParam('functionId')    ?? [];
+        $applicationIds = $queryParams['applicationId'] ?? [];
+        $fileIds        = $queryParams['fileId']        ?? [];
+        $functionIds    = $queryParams['functionId']    ?? [];
 
         $viewParams = [
             'applications'   => $analyzer->getAppplications(),
@@ -87,25 +56,20 @@ class TraceController
             'functionIds'    => $functionIds,
             'usecases'       => $analyzer->getUsecases($fileIds, $functionIds, $applicationIds),
         ];
-        return $this->ci->view->render($response, 'trace/usecase.twig', $viewParams);
+        return $this->view->render($response, 'trace/usecase.twig', $viewParams);
     }
 
-    /**
-     * @param  Request  $request
-     * @param  Response $response
-     * @param  array    $params
-     * @return Response
-     */
-    public function callerCallee(Request $request, Response $response, $params): Response
+    public function callerCallee(Request $request, Response $response, array $params): Response
     {
-        $analyzer = new Trace($this->ci);
+        $analyzer = $this->container->get(Trace::class);
+        $queryParams = $request->getQueryParams();
 
-        $applicationIds = $request->getParam('applicationId') ?? [];
-        $usecaseIds     = $request->getParam('usecaseId')     ?? [];
-        $requestIds     = $request->getParam('requestId')     ?? [];
-        $fileIds        = $request->getParam('fileId')        ?? [];
-        $class          = $request->getParam('class')         ?? '';
-        $function       = $request->getParam('function')      ?? '';
+        $applicationIds = $queryParams['applicationId'] ?? [];
+        $usecaseIds     = $queryParams['usecaseId']     ?? [];
+        $requestIds     = $queryParams['requestId']     ?? [];
+        $fileIds        = $queryParams['fileId']        ?? [];
+        $class          = $queryParams['class']         ?? '';
+        $function       = $queryParams['function']      ?? '';
 
         if ($params['direction'] === 'to') {
             $calls = $analyzer->getCallees($class, $function, $applicationIds, $usecaseIds, $requestIds, $fileIds);
@@ -119,6 +83,6 @@ class TraceController
             'calls'  => $calls,
         ];
 
-        return $this->ci->view->render($response, 'trace/callerCallee.twig', $viewParams);
+        return $this->view->render($response, 'trace/callerCallee.twig', $viewParams);
     }
 }

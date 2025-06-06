@@ -5,8 +5,7 @@ namespace Soarce\Config;
 class Service
 {
     public function __construct(private string $name, private string $url, private string $parameterName, private string $commonPath, private string $presharedSecret)
-    {
-    }
+    {}
 
     /**
      * @return string

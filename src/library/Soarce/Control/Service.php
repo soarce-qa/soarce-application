@@ -2,25 +2,13 @@
 
 namespace Soarce\Control;
 
-use Soarce\Config\Service as ServiceConfig;
+use Soarce\Config;
 use Soarce\Control\Service\Actionable;
 
 class Service
 {
-    /** @var ServiceConfig[] */
-    protected $serviceConfig;
-
-    public function __construct()
+    public function __construct(private Config $config)
     {
-        $this->serviceConfig = $this->container->settings['soarce']['services'];  //@TODO
-    }
-
-    /**
-     * @return ServiceConfig[]
-     */
-    public function getAllServiceConfigs(): array
-    {
-        return $this->serviceConfig;
     }
 
     /**
@@ -29,7 +17,7 @@ class Service
     public function getAllServiceActionables(): array
     {
         $actionables = [];
-        foreach ($this->getAllServiceConfigs() as $serviceName => $service) {
+        foreach ($this->config->getServices() as $serviceName => $service) {
             $actionables[$serviceName] = new Actionable($service);
         }
 
@@ -40,19 +28,21 @@ class Service
      * @param  string     $serviceName
      * @return Actionable
      */
-    public function getServiceActionable($serviceName): Actionable
+    public function getServiceActionable(string $serviceName): Actionable
     {
-        return new Actionable($this->getAllServiceConfigs()[$serviceName]);
+        return new Actionable($this->config->getService($serviceName));
     }
 
     /**
      * @return Actionable[]
      */
-    public function checkPreconditons(): array
+    public function checkPreconditions(): array
     {
         $actionables = [];
         foreach ($this->getAllServiceActionables() as $serviceName => $actionable) {
-            $actionable->collectPreconditions();
+            if ($actionable->ping()) {
+                $actionable->collectPreconditions();
+            }
             $actionables[$serviceName] = $actionable;
         }
 

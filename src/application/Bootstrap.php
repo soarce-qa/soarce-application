@@ -6,6 +6,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Sentry\ErrorHandler;
 use Slim\Views\Twig;
+use Soarce\Config;
 use Soarce\Twig\TwigExtension;
 use Symfony\Component\Dotenv\Dotenv;
 use Twig\Extra\Intl\IntlExtension;
@@ -98,6 +99,12 @@ $container->set(
     }
 );
 
+$container->set(
+    Config::class,
+    static function (): Config {
+        return new Config(__DIR__ . '/../../soarce.json');
+    }
+);
 
 
 $GLOBALS['container'] = $container;

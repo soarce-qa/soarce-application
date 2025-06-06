@@ -10,12 +10,12 @@ abstract class AbstractAnalyzer
     {}
 
     /**
-     * @param int[] $files
+     * @param int|int[] $files
      * @param int[] $functions
      * @param int[] $applications
      * @return array
      */
-    public function getUsecases(array $files = [], array $functions = [], array $applications = []): array
+    public function getUsecases(int|array $files = [], array $functions = [], array $applications = []): array
     {
         $fileList        = $this->buildInStatementBody($files);
         $applicationList = $this->buildInStatementBody($applications);
@@ -76,7 +76,7 @@ abstract class AbstractAnalyzer
      * @param int[] $files
      * @return array
      */
-    public function getRequests(array $usecases = [], array $applications = [], array $files = []): array
+    public function getRequests(array $usecases = [], ?array $applications = [], int|array $files = []): array
     {
         $applicationList = $this->buildInStatementBody($applications);
         $usecaseList     = $this->buildInStatementBody($usecases);

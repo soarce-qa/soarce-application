@@ -16,7 +16,7 @@ class Trace extends AbstractAnalyzer
         $usecaseList     = $this->buildInStatementBody($usecases);
         $requestList     = $this->buildInStatementBody($requests);
 
-        $sql = 'SELECT f.id, f.filename as `name`, COUNT(distinct c.id) as `calls`
+        $sql = 'SELECT any_value(f.id), f.filename as `name`, COUNT(distinct c.id) as `calls`
             FROM `file`          f
             JOIN `function_call` c ON c.`file_id` = f.`id`
             JOIN `request`       r ON r.`id`      = c.`request_id` '     . ($usecaseList     !== '' ? " and r.`usecase_id`     in ({$usecaseList}) "     : '')
@@ -52,7 +52,7 @@ class Trace extends AbstractAnalyzer
         $requestList     = $this->buildInStatementBody($requests);
         $fileList        = $this->buildInStatementBody($files);
 
-        $sql = 'SELECT c.`id`, c.`class`, c.`function`, c.`type`, sum(c.`calls`) as `calls`, sum(c.`walltime`) as `walltime`
+        $sql = 'SELECT any_value(c.`id`), c.`class`, c.`function`, any_value(c.`type`), sum(c.`calls`) as `calls`, sum(c.`walltime`) as `walltime`
             FROM `function_call` c
             JOIN `file`          f ON c.`file_id` = f.`id` '             . ($fileList        !== '' ? " and f.`id`             in ({$fileList}) "        : '') . '
             JOIN `request`       r ON r.`id`      = c.`request_id` '     . ($usecaseList     !== '' ? " and r.`usecase_id`     in ({$usecaseList}) "     : '')

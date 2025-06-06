@@ -2,43 +2,27 @@
 
 namespace Soarce\Application\Controllers;
 
-use Slim\Http\Request;
-use Slim\Http\Response;
-use Slim\Container;
-use Soarce\Statistics\Database;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Soarce\Maintenance\Database;
+use Soarce\Mvc\WebApplicationController;
 
-class MaintenanceController
+class MaintenanceController extends WebApplicationController
 {
-    /** @var Container */
-    protected $ci;
-
-    /**
-     * BaseController constructor.
-     * @param Container $dependcyInjectionContainer
-     */
-    public function __construct(Container $dependcyInjectionContainer)
-    {
-        $this->ci = $dependcyInjectionContainer;
-        $this->ci->view['activeMainMenu'] = 'maintenance';
-    }
-
-    /**
-     * @param  Request $request
-     * @param  Response $response
-     * @return Response
-     */
     public function index(Request $request, Response $response): Response
     {
-        $databaseMaintenance = new \Soarce\Maintenance\Database($this->ci);
+        $databaseMaintenance = $this->container->get(Database::class);
 
-        if ($request->isPost()) {
-            if ($request->getParam('action') === 'reset autoincrement') {
+        if ($request->getMethod() === 'POST') {
+            $postParams = $request->getParsedBody();
+
+            if ($postParams['action'] === 'reset autoincrement') {
                 $databaseMaintenance->resetAutoIncrement();
-            } elseif ($request->getParam('action') === 'truncate') {
+            } elseif ($postParams['action'] === 'truncate') {
                 $databaseMaintenance->purgeAll();
             }
         }
 
-        return $this->ci->view->render($response, 'maintenance/index.twig');
+        return $this->view->render($response, 'maintenance/index.twig');
     }
 }

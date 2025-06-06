@@ -2,42 +2,23 @@
 
 namespace Soarce\Application\Controllers;
 
-use Slim\Http\Request;
-use Slim\Http\Response;
-use Slim\Container;
-use Slim\Http\StatusCode;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Soarce\Mvc\WebApplicationController;
 use Soarce\Receiver\CoverageReceiver;
 use Soarce\Receiver\TraceReceiver;
 
-class ReceiveController
+class ReceiveController extends WebApplicationController
 {
-    /** @var Container */
-    protected $ci;
-
-    /**
-     * BaseController constructor.
-     *
-     * @param Container $dependencyInjectionContainer
-     */
-    public function __construct(Container $dependencyInjectionContainer)
-    {
-        $this->ci = $dependencyInjectionContainer;
-    }
-
-    /**
-     * @param  Request $request
-     * @param  Response $response
-     * @return Response
-     */
     public function index(Request $request, Response $response): Response
     {
         $json = json_decode((string)$request->getBody(), JSON_OBJECT_AS_ARRAY);
         if (null === $json) {
-            return $response->withStatus(StatusCode::HTTP_BAD_REQUEST);
+            return $response->withStatus(400);
         }
 
         if (!isset($json['header'], $json['payload'])) {
-            return $response->withStatus(StatusCode::HTTP_PRECONDITION_FAILED);
+            return $response->withStatus(412);  //  precondition failed
         }
 
         /* * / //debug
@@ -54,12 +35,12 @@ class ReceiveController
 
 
         if ($json['header']['type'] === 'coverage') {
-            $coverageReceiver = new CoverageReceiver($this->ci);
+            $coverageReceiver = $this->container->get(CoverageReceiver::class);
             $coverageReceiver->persist($json);
         }
 
         if ($json['header']['type'] === 'trace') {
-            $traceReceiver = new TraceReceiver($this->ci);
+            $traceReceiver = $this->container->get(TraceReceiver::class);
             $traceReceiver->persist($json);
         }
 
