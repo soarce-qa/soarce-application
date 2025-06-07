@@ -20,7 +20,10 @@ class Usecase
 
     public function getUsecase(int|string $usecaseNameOrId): array
     {
-        return $this->mysqli->query('SELECT u.*, (SELECT COUNT(*) FROM `request` r WHERE r.usecase_id = u.id) as requests FROM `usecase` u WHERE `id` = "' . mysqli_real_escape_string($this->mysqli, $usecaseNameOrId) . '" OR `name` = "' . mysqli_real_escape_string($this->mysqli, $usecaseNameOrId) . '"')->fetch_assoc();
+        if (is_numeric($usecaseNameOrId)) {
+            return $this->mysqli->query('SELECT u.*, (SELECT COUNT(*) FROM `request` r WHERE r.usecase_id = u.id) as requests FROM `usecase` u WHERE `id` = "' . mysqli_real_escape_string($this->mysqli, $usecaseNameOrId) . '"')->fetch_assoc();
+        }
+        return $this->mysqli->query('SELECT u.*, (SELECT COUNT(*) FROM `request` r WHERE r.usecase_id = u.id) as requests FROM `usecase` u WHERE `name` = "' . mysqli_real_escape_string($this->mysqli, $usecaseNameOrId) . '"')->fetch_assoc();
     }
 
     public function create(string $usecaseName): void

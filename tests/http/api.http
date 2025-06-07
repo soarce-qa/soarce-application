@@ -24,6 +24,12 @@ POST http://soarce.local:8001/api/usecases
 
 POST http://soarce.local:8001/api/usecases/huuurz
 
+
+###
+
+
+GET http://soarce.local:8001/api/usecases/huuurz
+
 ###
 
 POST http://soarce.local:8001/api/usecases/huuurz/activate
