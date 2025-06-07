@@ -1,0 +1,42 @@
+# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection).
+#
+# Following HTTP Request Live Templates are available:
+# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
+# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
+# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
+
+GET http://soarce.local:8001/api
+
+
+###
+
+GET http://soarce.local:8001/api/usecases
+
+
+###
+
+POST http://soarce.local:8001/api/usecases
+
+{"usecase": "huuurz"}
+
+###
+# these two are equal.
+
+POST http://soarce.local:8001/api/usecases/huuurz
+
+###
+
+POST http://soarce.local:8001/api/usecases/huuurz/activate
+
+###
+
+POST http://soarce.local:8001/api/usecases/huuurz/restart
+
+###
+
+POST http://soarce.local:8001/api/usecases/huuurz/createOrRestart
+
+###
+
+
+DELETE http://soarce.local:8001/api/usecases/huuurz

@@ -3,6 +3,7 @@
 use DI\Container;
 use Slim\Factory\AppFactory;
 use Slim\Routing\RouteCollectorProxy;
+use Soarce\Application\Controllers\ApiController;
 use Soarce\Application\Controllers\ControlController;
 use Soarce\Application\Controllers\CoverageController;
 use Soarce\Application\Controllers\DocsController;
@@ -25,6 +26,11 @@ try {
     $app->get('/',            IndexController::class . ':index');
     $app->any('/receive',     ReceiveController::class . ':index');
     $app->any('/maintenance', MaintenanceController::class . ':index');
+    $app->group('/api',   function(RouteCollectorProxy $group) {
+        $group->get('',                              ApiController::class . ':index');
+        $group->any('/usecases[/{usecase}]',         ApiController::class . ':usecase');
+        $group->post('/usecases/{usecase}/{action}', ApiController::class . ':usecase');
+    });
     $app->group('/control',   function(RouteCollectorProxy $group) {
         $group->get('',                      ControlController::class . ':index');
         $group->any('/usecases[/{usecase}]', ControlController::class . ':usecase');

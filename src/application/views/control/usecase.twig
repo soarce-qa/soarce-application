@@ -73,10 +73,13 @@
             <div class="card-body">
                 <form method="post" action="/control/usecases">
                     <div class="input-group input-group mb-3">
-                        <input type="text" name="usecase" class="form-control" placeholder="Name for new Usecase">
+                        <input type="text" name="usecase" class="form-control {% if error %}is-invalid{% endif %}" placeholder="Name for new Usecase">
                         <span class="input-group-append">
                           <button type="submit" name="action" value="create" class="btn btn-info">Create</button>
                         </span>
+                        {% if error %}
+                        <span id="usecase-error" class="error invalid-feedback">{{ error }}</span>
+                        {% endif %}
                     </div>
                 </form>
             </div>

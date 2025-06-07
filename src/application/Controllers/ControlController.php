@@ -4,6 +4,7 @@ namespace Soarce\Application\Controllers;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Soarce\Control\Exception;
 use Soarce\Control\Service;
 use Soarce\Control\Usecase;
 use Soarce\Mvc\WebApplicationController;
@@ -81,7 +82,11 @@ class ControlController extends WebApplicationController
         if ($request->getMethod() === 'POST') {
             switch ($action) {
                 case 'create':
-                    $usecaseControl->create($postParams['usecase']);
+                    try {
+                        $usecaseControl->create($postParams['usecase']);
+                    } catch (Exception $e) {
+                        $error = $e->getMessage();
+                    }
                     break;
                 case 'activate':
                     $usecaseControl->activate($usecase);
@@ -97,8 +102,8 @@ class ControlController extends WebApplicationController
 
         $viewParams = [
             'usecases' => $usecaseControl->getAllUsecases(),
+            'error' => $error ?? '',
         ];
-
 
         return $this->view->render($response, 'control/usecase.twig', $viewParams);
     }
