@@ -1,5 +1,8 @@
 {% extends "layout.twig" %}
 
+{% set activeMainMenu = "control" %}
+{% set activeSubMenu = "services" %}
+
 {%  block head %}
     <title>SOARCE</title>
 {%  endblock %}
@@ -10,53 +13,57 @@
 
 {% block main %}
 
-    <div class="box">
-        <div class="box-header with-border">
-            <h3 class="box-title">Preconditions</h3>
-        </div>
-        <div class="box-body">
-            <table id="filesTable" class="table table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th style="text-align: left;">name</th>
-                        <th style="text-align: center;">xdebug_installed</th>
-                        <th style="text-align: center;">autotrace_off</th>
-                        <th style="text-align: center;">trace_format</th>
-                        <th style="text-align: center;">trace_output_name</th>
-                        <th style="text-align: center;">trace_trigger_enabled</th>
-                        <th style="text-align: center;">tracedir_readable</th>
-                        <th style="text-align: center;">datadir_writable</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for service in services %}
-                    <tr>
-                        <th>{{ service.serviceConfig.name }}</th>
-                        <td style="text-align: center;">{{ _self.yesno(service.preconditions.xdebug_installed) }}</td>
-                        <td style="text-align: center;">{{ _self.yesno(service.preconditions.autotrace_off) }}</td>
-                        <td style="text-align: center;">{{ _self.yesno(service.preconditions.trace_format) }}</td>
-                        <td style="text-align: center;">{{ _self.yesno(service.preconditions.trace_output_name) }}</td>
-                        <td style="text-align: center;">{{ _self.yesno(service.preconditions.trace_trigger_enabled) }}</td>
-                        <td style="text-align: center;">{{ _self.yesno(service.preconditions.tracedir_readable) }}</td>
-                        <td style="text-align: center;">{{ _self.yesno(service.preconditions.datadir_writable) }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <th style="text-align: left;">name</th>
-                        <th style="text-align: center;">xdebug_installed</th>
-                        <th style="text-align: center;">autotrace_off</th>
-                        <th style="text-align: center;">trace_format</th>
-                        <th style="text-align: center;">trace_output_name</th>
-                        <th style="text-align: center;">trace_trigger_enabled</th>
-                        <th style="text-align: center;">tracedir_readable</th>
-                        <th style="text-align: center;">datadir_writable</th>
-                    </tr>
-                </tfoot>
-            </table>
+<div class="row">
+    <div class="col-12">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title">Preconditions</h3>
+            </div>
+            <div class="card-body">
+                <table id="filesTable" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th style="text-align: left;">name</th>
+                            <th style="text-align: center;">xdebug_installed</th>
+                            <th style="text-align: center;">autotrace_off</th>
+                            <th style="text-align: center;">trace_format</th>
+                            <th style="text-align: center;">trace_output_name</th>
+                            <th style="text-align: center;">trace_trigger_enabled</th>
+                            <th style="text-align: center;">tracedir_readable</th>
+                            <th style="text-align: center;">datadir_writable</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for service in services %}
+                        <tr>
+                            <th>{{ service.serviceConfig.name }}</th>
+                            <td style="text-align: center;">{{ _self.yesno(service.preconditions.xdebug_installed) }}</td>
+                            <td style="text-align: center;">{{ _self.yesno(service.preconditions.autotrace_off) }}</td>
+                            <td style="text-align: center;">{{ _self.yesno(service.preconditions.trace_format) }}</td>
+                            <td style="text-align: center;">{{ _self.yesno(service.preconditions.trace_output_name) }}</td>
+                            <td style="text-align: center;">{{ _self.yesno(service.preconditions.trace_trigger_enabled) }}</td>
+                            <td style="text-align: center;">{{ _self.yesno(service.preconditions.tracedir_readable) }}</td>
+                            <td style="text-align: center;">{{ _self.yesno(service.preconditions.datadir_writable) }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th style="text-align: left;">name</th>
+                            <th style="text-align: center;">xdebug_installed</th>
+                            <th style="text-align: center;">autotrace_off</th>
+                            <th style="text-align: center;">trace_format</th>
+                            <th style="text-align: center;">trace_output_name</th>
+                            <th style="text-align: center;">trace_trigger_enabled</th>
+                            <th style="text-align: center;">tracedir_readable</th>
+                            <th style="text-align: center;">datadir_writable</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
         </div>
     </div>
+</div>
 
 {% endblock %}
 

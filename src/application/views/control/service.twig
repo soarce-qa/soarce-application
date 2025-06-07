@@ -1,4 +1,5 @@
 {% extends "layout.twig" %}
+
 {% set activeMainMenu = "control" %}
 {% set activeSubMenu = "services" %}
 
@@ -12,50 +13,54 @@
 
 {% block main %}
 
-    <div class="box">
-        <div class="box-header with-border">
-            <h3 class="box-title">Overview // All Services</h3>
-        </div>
-        <div class="box-body with-border">
-            <table id="filesTable" class="table table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th>name</th>
-                        <th>url</th>
-                        <th>parameter_name</th>
-                        <th>available</th>
-                        <th>actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for service in services %}
-                    <tr>
-                        <th>{{ service.serviceConfig.name }}</th>
-                        <td>{{ service.serviceConfig.url }}</td>
-                        <td>{{ service.serviceConfig.parameterName }}</td>
-                        <td>{% if service.ping %}yes{% else %}no{% endif %}</td>
-                        <td>
-                            <form method="post" action="/control/services/{{ service.serviceConfig.name }}">
-                                <div class="btn-group">
-                                    <button class="btn btn-sm btn-primary" type="submit" name="action" value="details"><i class="fa fa-info-circle"></i> details</button>
-                                </div>
-                            </form>
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <div class="box-footer with-border">
-            <form method="post" action="/control/services">
-                <div class="btn-group">
-                    <button class="btn btn-primary" type="submit" name="action" value="preconditions"><i class="fa fa-question"></i> preconditions</button>
-                    <button class="btn btn-success" type="submit" name="action" value="start"><i class="fa fa-play"></i> start data collection</button>
-                    <button class="btn btn-danger"  type="submit" name="action" value="end"><i class="fa fa-stop"></i> end data collection</button>
-                </div>
-            </form>
+<div class="row">
+    <div class="col-12">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title">Overview // All Services</h3>
+            </div>
+            <div class="card-body">
+                <table id="filesTable" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>name</th>
+                            <th>url</th>
+                            <th>parameter_name</th>
+                            <th>available</th>
+                            <th>actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for service in services %}
+                        <tr>
+                            <th>{{ service.serviceConfig.name }}</th>
+                            <td>{{ service.serviceConfig.url }}</td>
+                            <td>{{ service.serviceConfig.parameterName }}</td>
+                            <td>{% if service.ping %}yes{% else %}no{% endif %}</td>
+                            <td>
+                                <form method="post" action="/control/services/{{ service.serviceConfig.name }}">
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-primary" type="submit" name="action" value="details"><i class="fa fa-info-circle"></i> details</button>
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer with-border">
+                <form method="post" action="/control/services">
+                    <div class="btn-group">
+                        <button class="btn btn-primary" type="submit" name="action" value="preconditions"><i class="fa fa-question"></i> preconditions</button>
+                        <button class="btn btn-success" type="submit" name="action" value="start"><i class="fa fa-play"></i> start data collection</button>
+                        <button class="btn btn-danger"  type="submit" name="action" value="end"><i class="fa fa-stop"></i> end data collection</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
+</div>
 
 {% endblock %}
 

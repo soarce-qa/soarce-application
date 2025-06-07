@@ -40,7 +40,7 @@ class ControlController extends WebApplicationController
                     return $this->view->render(
                         $response,
                         'control/details.twig',
-                        ['services' => $serviceControl->getServiceActionable($service)]
+                        ['service' => $serviceControl->getServiceActionable($service)]
                     );
                 case 'start':
                     return $this->view->render(
