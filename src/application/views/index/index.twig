@@ -12,39 +12,64 @@
 {% endblock %}
 
 {% block main %}
-{#
     <div class="row">
-    {% if configIsValid %}
-        <div class="col-lg-3 col-xs-6">
+        <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-green">
+            <div class="small-box bg-info">
                 <div class="inner">
-                    <h3>Config</h3>
-                    <p>valid</p>
+                    <h3>XXX</h3>
+                    <p>Configured Services</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-bag"></i>
+                </div>
+                <a href="/control/services" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-success">
+                <div class="inner">
+                    <h3>YYY</h3>
+                    <p>Usecases</p>
                 </div>
                 <div class="icon">
                     <i class="ion ion-stats-bars"></i>
                 </div>
-                <a href="/control/services" class="small-box-footer">Control Services <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
-    {% else %}
-        <div class="col-lg-3 col-xs-6">
+        <!-- ./col -->
+        <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-red">
+            <div class="small-box bg-warning">
                 <div class="inner">
-                    <h3>Config</h3>
-                    <p>invalid: {{ configErrorMessage }}</p>
+                    <h3>ZZZ</h3>
+                    <p>Requests</p>
                 </div>
                 <div class="icon">
-                    <i class="ion ion-stats-bars"></i>
+                    <i class="ion ion-person-add"></i>
                 </div>
-                <a href="/control/services" class="small-box-footer">Control Services <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
-    {% endif %}
+        <!-- ./col -->
+        <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-danger">
+                <div class="inner">
+                    <h3>0<sup style="font-size: 20px">%</sup></h3>
+                    <p>Code Coverage</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-pie-graph"></i>
+                </div>
+                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <!-- ./col -->
     </div>
-#}
 
     <div class="row">
         <div class="col-12">
