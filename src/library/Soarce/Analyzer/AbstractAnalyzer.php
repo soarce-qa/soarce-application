@@ -32,6 +32,7 @@ abstract class AbstractAnalyzer
         }
 
         $sql .= ' WHERE 1 GROUP BY u.`id` ORDER BY u.`name` ASC';
+
         $ret = [];
         $result = $this->mysqli->query($sql);
 
@@ -105,8 +106,12 @@ abstract class AbstractAnalyzer
      * @param int|int[] $ids
      * @return string
      */
-    protected function buildInStatementBody(array|int $ids): string
+    protected function buildInStatementBody(array|int|null $ids): string
     {
+        if (null === $ids) {
+            return '';
+        }
+
         if (!is_array($ids)) {
             return (string)$ids;
         }

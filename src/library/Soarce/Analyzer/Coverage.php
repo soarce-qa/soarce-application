@@ -2,11 +2,16 @@
 
 namespace Soarce\Analyzer;
 
+use mysqli;
 use Soarce\Control\Service;
 use Soarce\Control\Service\FileContent;
 
 class Coverage extends AbstractAnalyzer
 {
+    public function __construct(mysqli $mysqli, private Service $service)
+    {
+        parent::__construct($mysqli);
+    }
 
     /**
      * @param int[] $applications
@@ -48,8 +53,6 @@ class Coverage extends AbstractAnalyzer
      */
     public function getSource(int $fileId): FileContent
     {
-        $controlService = new Service($this->container);
-
         $sql = 'SELECT a.`name` as `applicationName`, f.`filename` as `fileName`
             FROM `file`        f
             JOIN `application` a ON a.`id` = f.`application_id` 
@@ -62,7 +65,7 @@ class Coverage extends AbstractAnalyzer
         }
 
         $row = $result->fetch_assoc();
-        $actionable = $controlService->getServiceActionable($row['applicationName']);
+        $actionable = $this->service->getServiceActionable($row['applicationName']);
 
         return $actionable->getFile($row['fileName']);
     }
