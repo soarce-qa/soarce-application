@@ -21,7 +21,7 @@ class Coverage extends AbstractAnalyzer
         $requestList     = $this->buildInStatementBody($requests);
 
         $sql = 'SELECT a.`id` as `applicationId`, a.`name` as `applicationName`, any_value(f.`id`) as `fileId`, f.`filename` as `fileName`,
-                COUNT(distinct c.`line`) as `coveredLines`, any_value(f.`lines`)
+                COUNT(distinct c.`line`) as `coveredLines`, any_value(f.`lines`) as `lines`
             FROM `file`        f
             JOIN `application` a  ON a.`id`             = f.`application_id` ' . ($applicationList !== '' ? " and a.`id` in ({$applicationList}) " : '') . '
             JOIN `request`     r  ON r.`application_id` = a.`id` ' . ($usecaseList !== '' ? " and r.`usecase_id` in ({$usecaseList}) " : '') . ($requestList !== '' ? " and r.`id` in ({$requestList}) " : '') . '
