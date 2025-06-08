@@ -1,6 +1,6 @@
 
 {% macro select(name, current, list) %}
-    <select multiple name="{{ name }}[]" class="form-control select2">
+    <select multiple="multiple" name="{{ name }}[]" class="select2" style="width: 100%;">
         <option value="">-- all -- please choose</option>
         {% for id, row in list %}
             {% if id in current %}
