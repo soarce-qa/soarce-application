@@ -21,16 +21,18 @@ class ReceiveController extends WebApplicationController
             return $response->withStatus(412);  //  precondition failed
         }
 
+        $mysqli = $this->container->get(\mysqli::class);
+
         /* * / //debug
         $sql = "INSERT INTO soarce.dump (raw, header, payload) VALUES ('"
-            . mysqli_real_escape_string($this->ci->mysqli, (string)$request->getBody())
+            . mysqli_real_escape_string($mysqli, (string)$request->getBody())
             . '\', \''
-            . mysqli_real_escape_string($this->ci->mysqli, json_encode($json['header'], JSON_PRETTY_PRINT))
+            . mysqli_real_escape_string($mysqli, json_encode($json['header'], JSON_PRETTY_PRINT))
             . '\', \''
-            . mysqli_real_escape_string($this->ci->mysqli, json_encode($json['payload'], JSON_PRETTY_PRINT))
+            . mysqli_real_escape_string($mysqli, json_encode($json['payload'], JSON_PRETTY_PRINT))
             . '\');';
 
-        $this->ci->mysqli->query($sql);
+        $mysqli->query($sql);
         /* */
 
 
