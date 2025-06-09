@@ -12,3 +12,5 @@ build/\.phpunit\.result\.cache
 soarce.json
 
 error.log
+
+tools/
