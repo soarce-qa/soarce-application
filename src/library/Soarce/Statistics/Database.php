@@ -36,6 +36,6 @@ class Database
             $table['INDEX_PERCENTAGE'] = $table['AUTO_INCREMENT'] / constant('self::MAX_' . strtoupper($temp['DATA_TYPE']));
         }
 
-        return $tables;
+        return array_column($tables, null, "TABLE_NAME");
     }
 }
