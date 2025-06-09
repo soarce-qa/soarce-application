@@ -131,6 +131,20 @@
                             </tr>
                         {% endfor %}
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <th style="width: 10px">-</th>
+                                <th>Table</th>
+                                <th style="text-align: right;">{{ DatabaseStatistics | column("TABLE_ROWS") | sum }}</th>
+                                <th style="width: 100px; text-align: right;">%</th>
+                                <th style="text-align: right;">{{ DatabaseStatistics | column("TOTAL_LENGTH") | sum | byte }}</th>
+                                <th style="width: 100px; text-align: right;">%</th>
+                                <th style="text-align: right;">-</th>
+                                <th style="width: 100px; text-align: right;">%</th>
+                                <th style="text-align: right;">-</th>
+                                <th style="width: 100px; text-align: right;">%</th>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
