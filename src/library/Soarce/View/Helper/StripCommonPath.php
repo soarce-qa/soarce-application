@@ -11,20 +11,15 @@ namespace Soarce\View\Helper;
  */
 class StripCommonPath
 {
-    public const REPLACEMENT = './';
+    public const string REPLACEMENT = './';
 
-    /**
-     * @param  string $path
-     * @param  string $common
-     * @return string
-     */
-    public static function filter($path, $common): string
+    public static function filter(string $path, string $common): string
     {
         if ($common === '' || $common === '/') {
             return $path;
         }
 
-        if (substr($common, -1) !== '/') {
+        if (!str_ends_with($common, '/')) {
             $common .= '/';
         }
 

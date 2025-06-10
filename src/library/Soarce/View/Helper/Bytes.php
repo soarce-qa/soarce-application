@@ -16,11 +16,11 @@ class Bytes
     public const DEFINITIONS = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB', 'NiB', 'DiB'];
 
     /**
-     * @param  int|float $bytes
+     * @param float|int $bytes
      * @return string
      * @throws OutOfRangeException
      */
-    public static function filter($bytes): string
+    public static function filter(float|int $bytes): string
     {
         if (!is_numeric($bytes)) {
             return '';

@@ -1,4 +1,6 @@
 {% extends "layout.twig" %}
+{% set activeMainMenu = "control" %}
+{% set activeSubMenu = "control-usecases" %}
 
 {%  block head %}
     <title>SOARCE</title>
@@ -10,72 +12,77 @@
 
 {% block main %}
 
-    <div class="box">
-        <div class="box-header with-border">
-            <h3 class="box-title">Control Usecases Manually</h3>
-        </div>
-        <div class="box-body with-border">
-            <table id="filesTable" class="table table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th>id</th>
-                        <th>name</th>
-                        <th>requests</th>
-                        <th>active</th>
-                        <th>created</th>
-                        <th>actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for usecase in usecases %}
-                    <tr>
-                        <th>{{ usecase.id }}</th>
-                        <td>{{ usecase.name }}</td>
-                        <td style="text-align: right;">{{ usecase.requests }}</td>
-                        <td>{% if usecase.active %}yes{% else %}no{% endif %}</td>
-                        <td>{{ usecase.created | date('Y-m-d H:i:s') }}</td>
-                        <td>
-                            <form action="/control/usecases/{{ usecase.id }}" method="post">
-                                <div class="btn-group">
-                                    <button type="submit" name="action" value="activate"  class="btn btn-sm btn-default btn-success {% if usecase.active %}disabled"  disabled="disabled{% endif %}"><i class="fa fa-play"></i> activate</button>
-                                    <button type="button" data-toggle="modal" data-target="#restartModal"  data-formaction="/control/usecases/{{ usecase.id }}" class="btn btn-sm btn-default btn-warning"><i class="fa fa-refresh"></i> restart</button>
-                                    <button type="button" data-toggle="modal" data-target="#deleteModal"   data-formaction="/control/usecases/{{ usecase.id }}" class="btn btn-sm btn-default btn-danger" ><i class="fa fa-trash"></i> delete</button>
-                                </div>
-                            </form>
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <div class="box-footer with-border">
-            <i class="fa fa-refresh"></i><strong> Restart</strong> will delete all requests and their data<br>
-            <i class="fa fa-trash"></i><strong> Delete</strong>    will delete the usecase as well
-        </div>
-    </div>
-
-    <div class="box">
-        <div class="box-header with-border">
-            <h3 class="box-title">Create New Usecase</h3>
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+<div class="row">
+    <div class="col-12">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title">Control Usecases Manually</h3>
+            </div>
+            <div class="card-body">
+                <table id="filesTable" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>name</th>
+                            <th>requests</th>
+                            <th>active</th>
+                            <th>created</th>
+                            <th>actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for usecase in usecases %}
+                        <tr>
+                            <th>{{ usecase.id }}</th>
+                            <td>{{ usecase.name }}</td>
+                            <td style="text-align: right;">{{ usecase.requests }}</td>
+                            <td>{% if usecase.active %}yes{% else %}no{% endif %}</td>
+                            <td>{{ usecase.created | date('Y-m-d H:i:s') }}</td>
+                            <td>
+                                <form action="/control/usecases/{{ usecase.id }}" method="post">
+                                    <div class="btn-group">
+                                        <button type="submit" name="action" value="activate"  class="btn btn-sm btn-success {% if usecase.active %}disabled"  disabled="disabled{% endif %}"><i class="fa fa-play"></i> activate</button>
+                                        <button type="button" data-toggle="modal" data-target="#restartModal"  data-formaction="/control/usecases/{{ usecase.id }}" class="btn btn-sm btn-warning"><i class="fas fa-redo"></i> restart</button>
+                                        <button type="button" data-toggle="modal" data-target="#deleteModal"   data-formaction="/control/usecases/{{ usecase.id }}" class="btn btn-sm btn-danger" ><i class="fa fa-trash"></i> delete</button>
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer with-border">
+                <i class="fa fa-refresh"></i><strong> Restart</strong> will delete all requests and their data<br>
+                <i class="fa fa-trash"></i><strong> Delete</strong>    will delete the usecase as well
             </div>
         </div>
-        <div class="box-body">
-            <div class="row">
-                <div class="col-md-6">
-                    <form method="post" action="/control/usecases">
-                        <div class="input-group input-group-sm">
-                            <input type="text" name="usecase" class="form-control" placeholder="Name for new Usecase">
-                            <span class="input-group-btn">
-                              <button type="submit" name="action" value="create" class="btn btn-info btn-flat">Create</button>
-                            </span>
-                        </div>
-                    </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title">Create New Usecase</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                    </button>
                 </div>
             </div>
+            <div class="card-body">
+                <form method="post" action="/control/usecases">
+                    <div class="input-group input-group mb-3">
+                        <input type="text" name="usecase" class="form-control" placeholder="Name for new Usecase">
+                        <span class="input-group-append">
+                          <button type="submit" name="action" value="create" class="btn btn-info">Create</button>
+                        </span>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
+</div>
 
 {% endblock %}
 

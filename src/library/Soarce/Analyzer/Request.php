@@ -4,7 +4,7 @@ namespace Soarce\Analyzer;
 
 class Request extends AbstractAnalyzer
 {
-    public function getRequestsOverview($usecases = [], $applications = []): array
+    public function getRequestsOverview(array $usecases = [], array $applications = []): array
     {
         $applicationList = $this->buildInStatementBody($applications);
         $usecaseList     = $this->buildInStatementBody($usecases);
@@ -30,10 +30,10 @@ class Request extends AbstractAnalyzer
     }
 
     /**
-     * @param  int $requestId
-     * @return mixed[]
+     * @param int $requestId
+     * @return array
      */
-    public function getRequest($requestId): array
+    public function getRequest(int $requestId): array
     {
         $sql = 'SELECT r.`id`, r.`request_id`, FROM_UNIXTIME(r.`request_started`) AS `request_started`, r.`get`, r.`post`, r.`server`, r.`env`,
                 u.`name` as `usecaseName`, a.`name` as `applicationName`
@@ -58,10 +58,10 @@ class Request extends AbstractAnalyzer
     }
 
     /**
-     * @param  string $requestId
-     * @return mixed[][]
+     * @param string $requestId
+     * @return array[]
      */
-    public function getSequence($requestId): array
+    public function getSequence(string $requestId): array
     {
         $sql = 'SELECT r.`id`, r.`request_id`, FROM_UNIXTIME(r.`request_started`) AS `request_started`, a.`name` as `applicationName`, a.`id` as `applicationId`
             FROM `request` r

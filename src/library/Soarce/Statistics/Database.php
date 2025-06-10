@@ -3,7 +3,7 @@
 namespace Soarce\Statistics;
 
 use mysqli;
-use Slim\Container;
+
 
 class Database
 {
@@ -13,23 +13,20 @@ class Database
     const MAX_INT       =           4294967295;
     const MAX_BIGINT    = 18446744073709551615;
 
-    /** @var Container */
-    private $container;
-
-    /** @var mysqli */
-    private $mysqli;
-
-    public function __construct(Container $container)
-    {
-        $this->container = $container;
-        $this->mysqli = $this->container->mysqli;
-    }
+    public function __construct(private mysqli $mysqli)
+    {}
 
     /**
      * @return array
      */
     public function getMysqlStats(): array
     {
+        // dirty hack against the hard caching of the table info (this is cached by MySQL for 1 day or so)
+        $tables = $this->mysqli->query("SELECT t.TABLE_NAME FROM information_schema.`TABLES` t WHERE t.TABLE_SCHEMA = 'soarce';")->fetch_all(MYSQLI_ASSOC);
+        foreach ($tables as $table) {
+            $this->mysqli->query('ANALYZE TABLE `' . $table['TABLE_NAME'] . '`');
+        }
+
         $tables = $this->mysqli->query('SELECT t.`TABLE_NAME`, t.TABLE_ROWS, (t.DATA_LENGTH+t.INDEX_LENGTH) as TOTAL_LENGTH, t.`AUTO_INCREMENT` FROM information_schema.`TABLES` t WHERE t.TABLE_SCHEMA = "soarce";')->fetch_all(MYSQLI_ASSOC);
         foreach ($tables as &$table) {
             $temp = $this->mysqli->query('SELECT count(*) as `TABLE_ROWS` FROM ' . $table['TABLE_NAME'] . ';')->fetch_assoc();
@@ -39,6 +36,6 @@ class Database
             $table['INDEX_PERCENTAGE'] = $table['AUTO_INCREMENT'] / constant('self::MAX_' . strtoupper($temp['DATA_TYPE']));
         }
 
-        return $tables;
+        return array_column($tables, null, "TABLE_NAME");
     }
 }

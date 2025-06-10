@@ -1,5 +1,7 @@
 {% extends "layout.twig" %}
 
+{% set activeMainMenu = "home" %}
+
 {%  block head %}
     <title>SOARCE</title>
 {%  endblock %}
@@ -10,98 +12,146 @@
 {% endblock %}
 
 {% block main %}
+    <div class="row">
+        <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-info">
+                <div class="inner">
+                    <h3>{{ DatabaseStatistics.application.TABLE_ROWS|format_number({grouping_used:true}, locale: 'en') }}</h3>
+                    <p>Configured Services</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-bag"></i>
+                </div>
+                <a href="/control/services" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-success">
+                <div class="inner">
+                    <h3>{{ DatabaseStatistics.usecase.TABLE_ROWS|format_number({grouping_used:true}, locale: 'en') }}</h3>
+                    <p>Usecases</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-stats-bars"></i>
+                </div>
+                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-warning">
+                <div class="inner">
+                    <h3>{{ DatabaseStatistics.request.TABLE_ROWS|format_number({grouping_used:true}, locale: 'en') }}</h3>
+                    <p>Requests</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-person-add"></i>
+                </div>
+                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-danger">
+                <div class="inner">
+                    <h3>{{ (totalCoverage * 100)|format_number({fraction_digit:2}, locale: 'en') }}<sup style="font-size: 20px">%</sup></h3>
+                    <p>Code Coverage</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-pie-graph"></i>
+                </div>
+                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <!-- ./col -->
+    </div>
 
     <div class="row">
-    {% if configIsValid %}
-        <div class="col-lg-3 col-xs-6">
-            <!-- small box -->
-            <div class="small-box bg-green">
-                <div class="inner">
-                    <h3>Config</h3>
-                    <p>valid</p>
+        <div class="col-12">
+            <div class="card card-primary card-outline">
+                <div class="card-header">
+                    <h3 class="card-title">MySQL Tables</h3>
                 </div>
-                <div class="icon">
-                    <i class="ion ion-stats-bars"></i>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="width: 10px">#</th>
+                                <th>Table</th>
+                                <th style="text-align: right;">Records</th>
+                                <th style="width: 100px; text-align: right;">%</th>
+                                <th style="text-align: right;">Size</th>
+                                <th style="width: 100px; text-align: right;">%</th>
+                                <th style="text-align: right;">Next Autoindex</th>
+                                <th style="width: 100px; text-align: right;">%</th>
+                                <th style="text-align: right;">Index Usage</th>
+                                <th style="width: 100px; text-align: right;">%</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% set maxRows          = max(1, max(DatabaseStatistics|column('TABLE_ROWS'))) %}
+                        {% set maxLength        = max(1, max(DatabaseStatistics|column('TOTAL_LENGTH'))) %}
+                        {% set maxAutoIncrement = max(1, max(DatabaseStatistics|column('AUTO_INCREMENT'))) %}
+                        {% set id = 0 %}
+
+                        {% for table in DatabaseStatistics %}
+                            {% set id = id + 1 %}
+                            <tr>
+                                <td>{{ id }}</td>
+                                <td>{{ table.TABLE_NAME }}</td>
+                                <td style="text-align: right;">{{ table.TABLE_ROWS|format_number({grouping_used:true}, locale: 'en') }}</td>
+                                <td>
+                                    <div class="progress progress-xs progress-striped">
+                                        <div class="progress-bar" style="width: {{ (table.TABLE_ROWS/maxRows * 100)|number_format(2, '.', '') }}%"></div>
+                                    </div>
+                                </td>
+                                <td style="text-align: right;">{{ table.TOTAL_LENGTH|byte }}</td>
+                                <td>
+                                    <div class="progress progress-xs progress-striped">
+                                        <div class="progress-bar" style="width: {{ (table.TOTAL_LENGTH/maxLength * 100)|number_format(2, '.', '') }}%"></div>
+                                    </div>
+                                </td>
+                                <td style="text-align: right;">{{ table.AUTO_INCREMENT|format_number({grouping_used:true}, locale: 'en') }}</td>
+                                <td>
+                                    <div class="progress progress-xs progress-striped">
+                                        <div class="progress-bar"
+                                             style="width: {{ (table.AUTO_INCREMENT/maxAutoIncrement * 100)|number_format(2, '.', '') }}%"></div>
+                                    </div>
+                                </td>
+                                <td style="text-align: right;">{{ (table.INDEX_PERCENTAGE*100)|number_format(6, '.', ',') }} %</td>
+                                <td>
+                                    <div class="progress progress-xs progress-striped">
+                                        <div class="progress-bar progress-bar-danger"
+                                             style="width: {{ (table.INDEX_PERCENTAGE*100)|number_format(2, '.', '') }}%"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th style="width: 10px">-</th>
+                                <th>Table</th>
+                                <th style="text-align: right;">{{ DatabaseStatistics | column("TABLE_ROWS") | sum | format_number({grouping_used:true}, locale: 'en') }}</th>
+                                <th style="width: 100px; text-align: right;">%</th>
+                                <th style="text-align: right;">{{ DatabaseStatistics | column("TOTAL_LENGTH") | sum | byte }}</th>
+                                <th style="width: 100px; text-align: right;">%</th>
+                                <th style="text-align: right;">-</th>
+                                <th style="width: 100px; text-align: right;">%</th>
+                                <th style="text-align: right;">-</th>
+                                <th style="width: 100px; text-align: right;">%</th>
+                            </tr>
+                        </tfoot>
+                    </table>
                 </div>
-                <a href="/control/services" class="small-box-footer">Control Services <i class="fa fa-arrow-circle-right"></i></a>
             </div>
         </div>
-    {% else %}
-        <div class="col-lg-3 col-xs-6">
-            <!-- small box -->
-            <div class="small-box bg-red">
-                <div class="inner">
-                    <h3>Config</h3>
-                    <p>invalid: {{ configErrorMessage }}</p>
-                </div>
-                <div class="icon">
-                    <i class="ion ion-stats-bars"></i>
-                </div>
-                <a href="/control/services" class="small-box-footer">Control Services <i class="fa fa-arrow-circle-right"></i></a>
-            </div>
-        </div>
-    {% endif %}
     </div>
 
-    <div class="box">
-        <div class="box-header with-border">
-            <h3 class="box-title">MySQL Tables</h3>
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th style="width: 10px">#</th>
-                        <th>Table</th>
-                        <th style="text-align: right;">Records</th>
-                        <th style="width: 100px; text-align: right;">%</th>
-                        <th style="text-align: right;">Size</th>
-                        <th style="width: 100px; text-align: right;">%</th>
-                        <th style="text-align: right;">Next Autoindex</th>
-                        <th style="width: 100px; text-align: right;">%</th>
-                        <th style="text-align: right;">Index Usage</th>
-                        <th style="width: 100px; text-align: right;">%</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% set maxRows          = max(1, max(DatabaseStatistics|column('TABLE_ROWS'))) %}
-                    {% set maxLength        = max(1, max(DatabaseStatistics|column('TOTAL_LENGTH'))) %}
-                    {% set maxAutoIncrement = max(1, max(DatabaseStatistics|column('AUTO_INCREMENT'))) %}
-
-                    {% for id,table in DatabaseStatistics %}
-                    <tr>
-                        <td>{{ id + 1 }}</td>
-                        <td>{{ table.TABLE_NAME }}</td>
-                        <td style="text-align: right;">{{ table.TABLE_ROWS }}</td>
-                        <td>
-                            <div class="progress progress-xs progress-striped">
-                                <div class="progress-bar" style="width: {{ (table.TABLE_ROWS/maxRows * 100)|number_format(2, '.', '') }}%"></div>
-                            </div>
-                        </td>
-                        <td style="text-align: right;">{{ table.TOTAL_LENGTH|byte }}</td>
-                        <td>
-                            <div class="progress progress-xs progress-striped">
-                                <div class="progress-bar" style="width: {{ (table.TOTAL_LENGTH/maxLength * 100)|number_format(2, '.', '') }}%"></div>
-                            </div>
-                        </td>
-                        <td style="text-align: right;">{{ table.AUTO_INCREMENT }}</td>
-                        <td>
-                            <div class="progress progress-xs progress-striped">
-                                <div class="progress-bar" style="width: {{ (table.AUTO_INCREMENT/maxAutoIncrement * 100)|number_format(2, '.', '') }}%"></div>
-                            </div>
-                        </td>
-                        <td style="text-align: right;">{{ (table.INDEX_PERCENTAGE*100)|number_format(6, '.', ',') }} %</td>
-                        <td>
-                            <div class="progress progress-xs progress-striped">
-                                <div class="progress-bar progress-bar-danger" style="width: {{ (table.INDEX_PERCENTAGE*100)|number_format(2, '.', '') }}%"></div>
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
 
 {% endblock %}

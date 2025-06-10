@@ -13,15 +13,15 @@ use Soarce\Model\SequenceRequest;
  */
 class SequenceDiagram
 {
-    private const CLIENT = 'Client';
-    private const ARROW  = '->>';
+    private const string CLIENT = 'Client';
+    private const string ARROW  = '->>';
 
     /**
      * @param  SequenceRequest $rootElement
-     * @param  string[]        $applications
+     * @param string[] $applications
      * @return string
      */
-    public static function filter(SequenceRequest $rootElement, $applications): string
+    public static function filter(SequenceRequest $rootElement, array $applications): string
     {
         $output = "sequenceDiagram\n    participant " . self::CLIENT . "\n";
         foreach ($applications as $application) {
@@ -33,10 +33,6 @@ class SequenceDiagram
         return $output;
     }
 
-    /**
-     * @param SequenceRequest $request
-     * @return string
-     */
     private static function renderSequence(SequenceRequest $request): string
     {
         $out = '    ';

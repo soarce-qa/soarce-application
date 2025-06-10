@@ -2,39 +2,22 @@
 
 namespace Soarce\Application\Controllers;
 
-use Slim\Http\Request;
-use Slim\Http\Response;
-use Slim\Container;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Soarce\Analyzer\Coverage;
+use Soarce\Config;
+use Soarce\Mvc\WebApplicationController;
 
-class CoverageController
+class CoverageController extends WebApplicationController
 {
-    /** @var Container */
-    protected $ci;
-
-    /**
-     * BaseController constructor.
-     *
-     * @param Container $dependencyInjectionContainer
-     */
-    public function __construct(Container $dependencyInjectionContainer)
+    public function index(Request $request, Response $response, array $args): Response
     {
-        $this->ci = $dependencyInjectionContainer;
-        $this->ci->view['activeMainMenu'] = 'coverage';
-    }
+        $analyzer = $this->container->get(Coverage::class);
+        $queryParams = $request->getQueryParams();
 
-    /**
-     * @param  Request  $request
-     * @param  Response $response
-     * @return Response
-     */
-    public function index(Request $request, Response $response): Response
-    {
-        $analyzer = new Coverage($this->ci);
-
-        $applicationIds = $request->getParam('applicationId') ?? [];
-        $usecaseIds     = $request->getParam('usecaseId')     ?? [];
-        $requestIds     = $request->getParam('requestId')     ?? [];
+        $applicationIds = $queryParams['applicationId'] ?? [];
+        $usecaseIds     = $queryParams['usecaseId']     ?? [];
+        $requestIds     = $queryParams['requestId']     ?? [];
 
         $viewParams = [
             'applications'   => $analyzer->getAppplications($usecaseIds),
@@ -44,24 +27,19 @@ class CoverageController
             'requests'       => $analyzer->getRequests($usecaseIds, $applicationIds),
             'requestIds'     => $requestIds,
             'files'          => $analyzer->getFiles($applicationIds, $usecaseIds, $requestIds),
-            'services'       => $this->ci->settings['soarce']['services'],
+            'services'       => $this->container->get(Config::class)->getServices(),
         ];
-        return $this->ci->view->render($response, 'coverage/index.twig', $viewParams);
+        return $this->view->render($response, 'coverage/index.twig', $viewParams);
     }
 
-    /**
-     * @param  Request  $request
-     * @param  Response $response
-     * @param  array    $params
-     * @return Response
-     */
-    public function file(Request $request, Response $response, $params): Response
+    public function file(Request $request, Response $response, array $params): Response
     {
-        $analyzer = new Coverage($this->ci);
+        $analyzer = $this->container->get(Coverage::class);
+        $queryParams = $request->getQueryParams();
 
-        $applicationIds = $request->getParam('applicationId') ?? [];
-        $usecaseIds     = $request->getParam('usecaseId')     ?? [];
-        $requestIds     = $request->getParam('requestId')     ?? [];
+        $applicationIds = $queryParams['applicationId'] ?? [];
+        $usecaseIds     = $queryParams['usecaseId']     ?? [];
+        $requestIds     = $queryParams['requestId']     ?? [];
         $fileId         = (int)($params['file'] ?? 0);
 
         if (0 === $fileId) {
@@ -79,18 +57,12 @@ class CoverageController
             'source'         => $analyzer->getSource($fileId),
             'coverage'       => $analyzer->getCoverage($fileId, $usecaseIds, $requestIds),
         ];
-        return $this->ci->view->render($response, 'coverage/file.twig', $viewParams);
+        return $this->view->render($response, 'coverage/file.twig', $viewParams);
     }
 
-    /**
-     * @param  Request  $request
-     * @param  Response $response
-     * @param  array    $params
-     * @return Response
-     */
-    public function line(Request $request, Response $response, $params): Response
+    public function line(Request $request, Response $response, array $params): Response
     {
-        $analyzer = new Coverage($this->ci);
+        $analyzer = $this->container->get(Coverage::class);
 
         $fileId        = (int)($params['file'] ?? 0);
         $lineId        = (int)($params['line'] ?? 0);

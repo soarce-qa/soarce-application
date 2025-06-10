@@ -3,41 +3,25 @@
 namespace Soarce;
 
 use Soarce\Config\Service;
-use Swaggest\JsonSchema\Schema;
 
 class Config
 {
-    /** @var string */
-    public static $validationError;
+    private array $services = [];
 
-    /**
-     * @param  string $filename
-     * @return bool
-     */
-    public static function isValid($filename): bool
+    public function __construct(string $filename)
     {
-        return true;
-/*        try {
-            $schema = Schema::import(json_decode(file_get_contents(__DIR__ . '/../../fixtures/schema.json')));
-            $schema->in(json_decode(file_get_contents($filename)));
-            return true;
-        } catch (\Exception $e) {
-            self::$validationError = $e->getMessage();
-            return false;
-        }*/
+        foreach (json_decode(file_get_contents($filename), JSON_OBJECT_AS_ARRAY)['services'] as $name => $rawService) {
+            $this->services[$name] = new Service($name, $rawService['url'], $rawService['parameter_name'], $rawService['common_path'], $rawService['preshared_secret']);
+        }
     }
 
-    /**
-     * @param  string $filename
-     * @return Service[]
-     */
-    public static function load($filename): array
+    public function getService(string $name): Service
     {
-        $services = [];
-        foreach (json_decode(file_get_contents($filename), JSON_OBJECT_AS_ARRAY)['services'] as $name => $rawService) {
-            $services[$name] = new Service($name, $rawService['url'], $rawService['parameter_name'], $rawService['common_path'], $rawService['preshared_secret']);
-        }
+        return $this->services[$name];
+    }
 
-        return $services;
+    public function getServices(): array
+    {
+        return $this->services;
     }
 }

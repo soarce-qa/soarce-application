@@ -3,26 +3,11 @@
 namespace Soarce\Control;
 
 use mysqli;
-use Slim\Container;
 
 class Usecase
 {
-    /** @var Container */
-    protected $container;
-
-    /** @var mysqli */
-    protected $mysqli;
-
-    /**
-     * Usecase constructor.
-     *
-     * @param Container $container
-     */
-    public function __construct(Container $container)
-    {
-        $this->container = $container;
-        $this->mysqli = $this->container->mysqli;
-    }
+    public function __construct(protected mysqli $mysqli)
+    {}
 
     /**
      * @return array[]

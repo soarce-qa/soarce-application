@@ -1,6 +1,9 @@
 {% extends "layout.twig" %}
 {% import 'controls.twig' as controls %}
 
+{% set activeMainMenu = "traces" %}
+{% set activeSubMenu = "trace-usecases" %}
+
 {%  block head %}
     <title>SOARCE</title>
 {%  endblock %}
@@ -28,41 +31,45 @@
                 <label for="">Function Call:</label>
                 {{ controls.select('functionId',    functionIds,    functions) }}
             </div>
-            <div class="form-group">
-                <div class="btn-group">
-                    <a href="/" class="btn btn-default"><i class="fa fa-angle-left"></i> back</a>
-                    <button type="submit" value="update" name="whatever" class="btn btn-default btn-primary"><i class="fa fa-refresh"></i> update</button>
-                </div>
+        {% endblock %}
+        {% block buttons %}
+            <div class="btn-group">
+                <a href="/" class="btn btn-default"><i class="fa fa-angle-left"></i> back</a>
+                <button type="submit" value="update" name="whatever" class="btn btn-primary"><i class="fa fa-sync"></i> update</button>
             </div>
         {% endblock %}
     {% endembed %}
 
-    <div class="box">
-        <div class="box-header with-border">
-            <h3 class="box-title">Usecases</h3>
-        </div>
-        <div class="box-body">
-            <table id="filesTable" class="table table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th>name</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for usecase in usecases %}
-                    <tr>
-                        <td>{{ usecase.name }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <th>name</th>
-                    </tr>
-                </tfoot>
-            </table>
+<div class="row">
+    <div class="col-12">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title">Usecases</h3>
+            </div>
+            <div class="card-body">
+                <table id="filesTable" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for usecase in usecases %}
+                        <tr>
+                            <td>{{ usecase.name }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>name</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
         </div>
     </div>
+</div>
 
 {% endblock %}
 

@@ -1,4 +1,5 @@
 {% extends "layout.twig" %}
+{% set activeMainMenu = "request" %}
 
 {%  block head %}
     <title>SOARCE</title>
@@ -12,42 +13,52 @@
 
     <h4>Sequence diagram of "{{ originalRequest.request_id }}"</h4>
 
-    <div class="box">
-        <div class="box-header with-border">
-            <h3 class="box-title">Details</h3>
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                </button>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title"><strong>Details</strong></h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <table id="filesTable" class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th>key</th>
+                        <th>value</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>application</td><td>{{ originalRequest.applicationName }}</td></tr>
+                        <tr><td>usecase</td>    <td>{{ originalRequest.usecaseName }}</td></tr>
+                        <tr><td>request</td>    <td>{{ originalRequest.request_id }}</td></tr>
+                        <tr><td>time</td>       <td>{{ originalRequest.request_started }}</td></tr>
+                    </tbody>
+                </table>
             </div>
         </div>
-        <div class="box-body">
-            <table id="filesTable" class="table table-bordered table-hover">
-                <thead>
-                <tr>
-                    <th>key</th>
-                    <th>value</th>
-                </tr>
-                </thead>
-                <tbody>
-                    <tr><td>application</td><td>{{ originalRequest.applicationName }}</td></tr>
-                    <tr><td>usecase</td>    <td>{{ originalRequest.usecaseName }}</td></tr>
-                    <tr><td>request</td>    <td>{{ originalRequest.request_id }}</td></tr>
-                    <tr><td>time</td>       <td>{{ originalRequest.request_started }}</td></tr>
-                </tbody>
-            </table>
-        </div>
     </div>
+</div>
 
-    <div class="box">
-        <div class="box-header with-border">
-            <h3 class="box-title">Sequence of ({{ sequence.flatList|length }}) requests</h3>
-        </div>
-        <div class="box-body">
-            <div class="mermaid">
-{{ sequence|sequenceDiagram(applications) }}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title">Sequence of ({{ sequence.flatList|length }}) requests</h3>
+            </div>
+            <div class="card-body">
+                <div class="mermaid">
+    {{ sequence|sequenceDiagram(applications) }}
+                </div>
             </div>
         </div>
     </div>
+</div>
+
+
 
     <script src="/mermaid.min.js"></script>
     <script>mermaid.initialize({startOnLoad:true});</script>

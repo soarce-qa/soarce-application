@@ -3,26 +3,11 @@
 namespace Soarce\Maintenance;
 
 use mysqli;
-use Slim\Container;
 
 class Database
 {
-    /** @var Container */
-    private $container;
-
-    /** @var mysqli */
-    private $mysqli;
-
-    /**
-     * Database constructor.
-     *
-     * @param Container $container
-     */
-    public function __construct(Container $container)
-    {
-        $this->container = $container;
-        $this->mysqli = $this->container->mysqli;
-    }
+    public function __construct(private mysqli $mysqli)
+    {}
 
     public function purgeAll(): void
     {
