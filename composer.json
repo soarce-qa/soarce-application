@@ -40,7 +40,8 @@
     "php-http/curl-client": "^2.3",
     "http-interop/http-factory-guzzle": "^1.1",
     "php-di/php-di": "^7.0",
-    "twig/intl-extra": "^3.20"
+    "twig/intl-extra": "^3.20",
+    "slim/http": "^1.4"
   },
   "autoload": {
     "psr-4": {
