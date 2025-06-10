@@ -2,11 +2,16 @@
 
 namespace Soarce\Analyzer;
 
+use mysqli;
 use Soarce\Control\Service;
 use Soarce\Control\Service\FileContent;
 
 class Coverage extends AbstractAnalyzer
 {
+    public function __construct(mysqli $mysqli, private Service $service)
+    {
+        parent::__construct($mysqli);
+    }
 
     /**
      * @param int[] $applications
@@ -21,7 +26,7 @@ class Coverage extends AbstractAnalyzer
         $requestList     = $this->buildInStatementBody($requests);
 
         $sql = 'SELECT a.`id` as `applicationId`, a.`name` as `applicationName`, any_value(f.`id`) as `fileId`, f.`filename` as `fileName`,
-                COUNT(distinct c.`line`) as `coveredLines`, any_value(f.`lines`)
+                COUNT(distinct c.`line`) as `coveredLines`, any_value(f.`lines`) as `lines`
             FROM `file`        f
             JOIN `application` a  ON a.`id`             = f.`application_id` ' . ($applicationList !== '' ? " and a.`id` in ({$applicationList}) " : '') . '
             JOIN `request`     r  ON r.`application_id` = a.`id` ' . ($usecaseList !== '' ? " and r.`usecase_id` in ({$usecaseList}) " : '') . ($requestList !== '' ? " and r.`id` in ({$requestList}) " : '') . '
@@ -48,8 +53,6 @@ class Coverage extends AbstractAnalyzer
      */
     public function getSource(int $fileId): FileContent
     {
-        $controlService = new Service($this->container);
-
         $sql = 'SELECT a.`name` as `applicationName`, f.`filename` as `fileName`
             FROM `file`        f
             JOIN `application` a ON a.`id` = f.`application_id` 
@@ -62,7 +65,7 @@ class Coverage extends AbstractAnalyzer
         }
 
         $row = $result->fetch_assoc();
-        $actionable = $controlService->getServiceActionable($row['applicationName']);
+        $actionable = $this->service->getServiceActionable($row['applicationName']);
 
         return $actionable->getFile($row['fileName']);
     }
@@ -170,5 +173,16 @@ class Coverage extends AbstractAnalyzer
             $ret[$row['id']] = $row['name'];
         }
         return $ret;
+    }
+
+    public function getTotalCoveragePercentage(): float
+    {
+        $sql = 'SELECT
+            (SELECT SUM(f.lines) from `file` f) as total_lines,
+            (SELECT COUNT(DISTINCT c.file_id, c.line) from `coverage` c WHERE c.covered = 1) as total_covered';
+
+        $result = $this->mysqli->query($sql)->fetch_assoc();
+
+        return $result['total_covered'] / $result['total_lines'];
     }
 }

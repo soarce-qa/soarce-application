@@ -17,7 +17,7 @@
             <!-- small box -->
             <div class="small-box bg-info">
                 <div class="inner">
-                    <h3>XXX</h3>
+                    <h3>{{ DatabaseStatistics.application.TABLE_ROWS|format_number({grouping_used:true}, locale: 'en') }}</h3>
                     <p>Configured Services</p>
                 </div>
                 <div class="icon">
@@ -31,7 +31,7 @@
             <!-- small box -->
             <div class="small-box bg-success">
                 <div class="inner">
-                    <h3>YYY</h3>
+                    <h3>{{ DatabaseStatistics.usecase.TABLE_ROWS|format_number({grouping_used:true}, locale: 'en') }}</h3>
                     <p>Usecases</p>
                 </div>
                 <div class="icon">
@@ -45,7 +45,7 @@
             <!-- small box -->
             <div class="small-box bg-warning">
                 <div class="inner">
-                    <h3>ZZZ</h3>
+                    <h3>{{ DatabaseStatistics.request.TABLE_ROWS|format_number({grouping_used:true}, locale: 'en') }}</h3>
                     <p>Requests</p>
                 </div>
                 <div class="icon">
@@ -59,7 +59,7 @@
             <!-- small box -->
             <div class="small-box bg-danger">
                 <div class="inner">
-                    <h3>0<sup style="font-size: 20px">%</sup></h3>
+                    <h3>{{ (totalCoverage * 100)|format_number({fraction_digit:2}, locale: 'en') }}<sup style="font-size: 20px">%</sup></h3>
                     <p>Code Coverage</p>
                 </div>
                 <div class="icon">
@@ -97,12 +97,14 @@
                         {% set maxRows          = max(1, max(DatabaseStatistics|column('TABLE_ROWS'))) %}
                         {% set maxLength        = max(1, max(DatabaseStatistics|column('TOTAL_LENGTH'))) %}
                         {% set maxAutoIncrement = max(1, max(DatabaseStatistics|column('AUTO_INCREMENT'))) %}
+                        {% set id = 0 %}
 
-                        {% for id,table in DatabaseStatistics %}
+                        {% for table in DatabaseStatistics %}
+                            {% set id = id + 1 %}
                             <tr>
-                                <td>{{ id + 1 }}</td>
+                                <td>{{ id }}</td>
                                 <td>{{ table.TABLE_NAME }}</td>
-                                <td style="text-align: right;">{{ table.TABLE_ROWS }}</td>
+                                <td style="text-align: right;">{{ table.TABLE_ROWS|format_number({grouping_used:true}, locale: 'en') }}</td>
                                 <td>
                                     <div class="progress progress-xs progress-striped">
                                         <div class="progress-bar" style="width: {{ (table.TABLE_ROWS/maxRows * 100)|number_format(2, '.', '') }}%"></div>
@@ -114,7 +116,7 @@
                                         <div class="progress-bar" style="width: {{ (table.TOTAL_LENGTH/maxLength * 100)|number_format(2, '.', '') }}%"></div>
                                     </div>
                                 </td>
-                                <td style="text-align: right;">{{ table.AUTO_INCREMENT }}</td>
+                                <td style="text-align: right;">{{ table.AUTO_INCREMENT|format_number({grouping_used:true}, locale: 'en') }}</td>
                                 <td>
                                     <div class="progress progress-xs progress-striped">
                                         <div class="progress-bar"
@@ -131,6 +133,20 @@
                             </tr>
                         {% endfor %}
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <th style="width: 10px">-</th>
+                                <th>Table</th>
+                                <th style="text-align: right;">{{ DatabaseStatistics | column("TABLE_ROWS") | sum | format_number({grouping_used:true}, locale: 'en') }}</th>
+                                <th style="width: 100px; text-align: right;">%</th>
+                                <th style="text-align: right;">{{ DatabaseStatistics | column("TOTAL_LENGTH") | sum | byte }}</th>
+                                <th style="width: 100px; text-align: right;">%</th>
+                                <th style="text-align: right;">-</th>
+                                <th style="width: 100px; text-align: right;">%</th>
+                                <th style="text-align: right;">-</th>
+                                <th style="width: 100px; text-align: right;">%</th>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>

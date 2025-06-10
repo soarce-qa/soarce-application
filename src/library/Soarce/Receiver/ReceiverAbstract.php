@@ -6,14 +6,9 @@ use mysqli;
 
 abstract class ReceiverAbstract
 {
-    /** @var int */
-    protected $applicationId;
-
-    /** @var int */
-    protected $usecaseId;
-
-    /** @var int */
-    protected $requestId;
+    protected int $applicationId;
+    protected int $usecaseId;
+    protected int $requestId;
 
     public function __construct(protected mysqli $mysqli)
     {}
@@ -36,7 +31,7 @@ abstract class ReceiverAbstract
         $this->applicationId = $this->mysqli->insert_id;
     }
 
-    protected function createFile(string $filename, int $coverableLines = 0, string $md5 = null): int
+    protected function createFile(string $filename, int $coverableLines = 0, string|null $md5 = null): int
     {
         $escapedFilename = mysqli_real_escape_string($this->mysqli, $filename);
         $sql = 'INSERT IGNORE INTO `file` (`application_id`, `filename`, `md5`, `lines`) VALUES ('

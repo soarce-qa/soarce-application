@@ -32,20 +32,23 @@
             <label for="">Requests:</label>
             {{ controls.select('requestId',     requestIds,     requests) }}
         </div>
-        <div class="form-group">
-            <div class="btn-group">
-                <a href="/" class="btn btn-default"><i class="fa fa-angle-left"></i> back</a>
-                <button type="submit" value="update" name="whatever" class="btn btn-default btn-primary"><i class="fa fa-refresh"></i> update</button>
-            </div>
+        {% endblock %}
+
+        {% block buttons %}
+        <div class="btn-group">
+            <a href="/" class="btn btn-default"><i class="fa fa-angle-left"></i> back</a>
+            <button type="submit" value="update" name="whatever" class="btn btn-primary"><i class="fa fa-sync"></i> update</button>
         </div>
         {% endblock %}
     {% endembed %}
 
-    <div class="box">
-        <div class="box-header with-border">
-            <h3 class="box-title">Files</h3>
-        </div>
-        <div class="box-body">
+<div class="row">
+    <div class="col-12">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title">Files</h3>
+            </div>
+            <div class="card-body">
             <table id="filesTable" class="table table-bordered table-hover">
                 <thead>
                     <tr>
@@ -104,6 +107,7 @@
             </table>
         </div>
     </div>
+</div>
 
 {% endblock %}
 

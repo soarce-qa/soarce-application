@@ -25,12 +25,12 @@
                         <tr>
                             <th style="text-align: left;">name</th>
                             <th style="text-align: center;">xdebug_installed</th>
-                            <th style="text-align: center;">autotrace_off</th>
+                            <th style="text-align: center;">xdebug 3.x</th>
                             <th style="text-align: center;">trace_format</th>
                             <th style="text-align: center;">trace_output_name</th>
-                            <th style="text-align: center;">trace_trigger_enabled</th>
-                            <th style="text-align: center;">tracedir_readable</th>
                             <th style="text-align: center;">datadir_writable</th>
+                            <th style="text-align: center;">outputdir_readable</th>
+                            <th style="text-align: center;">xdebug_mode</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -38,12 +38,12 @@
                         <tr>
                             <th>{{ service.serviceConfig.name }}</th>
                             <td style="text-align: center;">{{ _self.yesno(service.preconditions.xdebug_installed) }}</td>
-                            <td style="text-align: center;">{{ _self.yesno(service.preconditions.autotrace_off) }}</td>
+                            <td style="text-align: center;">{{ _self.yesno(service.preconditions.xdebug_3) }}</td>
                             <td style="text-align: center;">{{ _self.yesno(service.preconditions.trace_format) }}</td>
                             <td style="text-align: center;">{{ _self.yesno(service.preconditions.trace_output_name) }}</td>
-                            <td style="text-align: center;">{{ _self.yesno(service.preconditions.trace_trigger_enabled) }}</td>
-                            <td style="text-align: center;">{{ _self.yesno(service.preconditions.tracedir_readable) }}</td>
                             <td style="text-align: center;">{{ _self.yesno(service.preconditions.datadir_writable) }}</td>
+                            <td style="text-align: center;">{{ _self.yesno(service.preconditions.outputdir_readable) }}</td>
+                            <td style="text-align: center;">{{ _self.yesno(service.preconditions.xdebug_mode) }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -51,12 +51,12 @@
                         <tr>
                             <th style="text-align: left;">name</th>
                             <th style="text-align: center;">xdebug_installed</th>
-                            <th style="text-align: center;">autotrace_off</th>
+                            <th style="text-align: center;">xdebug 3.x</th>
                             <th style="text-align: center;">trace_format</th>
                             <th style="text-align: center;">trace_output_name</th>
-                            <th style="text-align: center;">trace_trigger_enabled</th>
-                            <th style="text-align: center;">tracedir_readable</th>
                             <th style="text-align: center;">datadir_writable</th>
+                            <th style="text-align: center;">outputdir_readable</th>
+                            <th style="text-align: center;">xdebug_mode</th>
                         </tr>
                     </tfoot>
                 </table>

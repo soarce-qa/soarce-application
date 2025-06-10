@@ -27,7 +27,7 @@ class CoverageController extends WebApplicationController
             'requests'       => $analyzer->getRequests($usecaseIds, $applicationIds),
             'requestIds'     => $requestIds,
             'files'          => $analyzer->getFiles($applicationIds, $usecaseIds, $requestIds),
-            'services'       => $this->container->get(Config::class),
+            'services'       => $this->container->get(Config::class)->getServices(),
         ];
         return $this->view->render($response, 'coverage/index.twig', $viewParams);
     }

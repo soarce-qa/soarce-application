@@ -21,7 +21,12 @@ class Database
      */
     public function getMysqlStats(): array
     {
-        // @TODO this information is cached in mysql, there should be a fix in more.
+        // dirty hack against the hard caching of the table info (this is cached by MySQL for 1 day or so)
+        $tables = $this->mysqli->query("SELECT t.TABLE_NAME FROM information_schema.`TABLES` t WHERE t.TABLE_SCHEMA = 'soarce';")->fetch_all(MYSQLI_ASSOC);
+        foreach ($tables as $table) {
+            $this->mysqli->query('ANALYZE TABLE `' . $table['TABLE_NAME'] . '`');
+        }
+
         $tables = $this->mysqli->query('SELECT t.`TABLE_NAME`, t.TABLE_ROWS, (t.DATA_LENGTH+t.INDEX_LENGTH) as TOTAL_LENGTH, t.`AUTO_INCREMENT` FROM information_schema.`TABLES` t WHERE t.TABLE_SCHEMA = "soarce";')->fetch_all(MYSQLI_ASSOC);
         foreach ($tables as &$table) {
             $temp = $this->mysqli->query('SELECT count(*) as `TABLE_ROWS` FROM ' . $table['TABLE_NAME'] . ';')->fetch_assoc();
@@ -31,6 +36,6 @@ class Database
             $table['INDEX_PERCENTAGE'] = $table['AUTO_INCREMENT'] / constant('self::MAX_' . strtoupper($temp['DATA_TYPE']));
         }
 
-        return $tables;
+        return array_column($tables, null, "TABLE_NAME");
     }
 }

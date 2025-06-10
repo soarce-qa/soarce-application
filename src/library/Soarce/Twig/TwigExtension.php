@@ -37,6 +37,11 @@ class TwigExtension
         });
         $twig->addFilter($filter);
 
+        $filter = new TwigFilter('sum', static function (array $arr) {
+            return array_sum($arr);
+        });
+        $twig->addFilter($filter);
+
         $filter = new TwigFilter('preg_replace', static function ($input, $pattern, $replacement, $limit = -1): string {
             return preg_replace($pattern, $replacement, $input, $limit);
         });

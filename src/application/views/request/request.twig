@@ -13,190 +13,210 @@
 
     <h4>Details of "{{ request.request_id }}"</h4>
 
-    <div class="box">
-        <div class="box-header with-border">
-            <h3 class="box-title">Details</h3>
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                </button>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title"><strong>Details</strong></h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                    </button>
+                </div>
             </div>
-        </div>
-        <div class="box-body">
-            <table id="filesTable" class="table table-bordered table-hover">
-                <thead>
-                <tr>
-                    <th>key</th>
-                    <th>value</th>
-                </tr>
-                </thead>
-                <tbody>
-                    <tr><td>application</td><td>{{ request.applicationName }}</td></tr>
-                    <tr><td>usecase</td>    <td>{{ request.usecaseName }}</td></tr>
-                    <tr><td>request</td>    <td>{{ request.request_id }}</td></tr>
-                    <tr><td>time</td>       <td>{{ request.request_started }}</td></tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="box collapsed-box">
-        <div class="box-header with-border">
-            <h3 class="box-title">Get ({{ request.get|length }})</h3>
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
-                </button>
-            </div>
-        </div>
-        <div class="box-body">
-            <table id="filesTable" class="table table-bordered table-hover">
-                <thead>
-                <tr>
-                    <th>key</th>
-                    <th>value</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for key, value in request.get %}
+            <div class="card-body">
+                <table id="filesTable" class="table table-bordered table-hover">
+                    <thead>
                     <tr>
-                        <td>{{ key }}</td>
-                        <td>
-                            {% if value is iterable %}
-                                {{ value | json_encode(constant('JSON_PRETTY_PRINT'))}}
-                            {% else %}
-                                {{ value }}
-                            {% endif %}
-                        </td>
+                        <th>key</th>
+                        <th>value</th>
                     </tr>
-                {% endfor %}
-                </tbody>
-                <tfoot>
-                <tr>
-                    <th>key</th>
-                    <th>value</th>
-                </tr>
-                </tfoot>
-            </table>
-        </div>
-    </div>
-
-    <div class="box collapsed-box">
-        <div class="box-header with-border">
-            <h3 class="box-title">Post ({{ request.post|length }})</h3>
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
-                </button>
+                    </thead>
+                    <tbody>
+                        <tr><td>application</td><td>{{ request.applicationName }}</td></tr>
+                        <tr><td>usecase</td>    <td>{{ request.usecaseName }}</td></tr>
+                        <tr><td>request</td>    <td>{{ request.request_id }}</td></tr>
+                        <tr><td>time</td>       <td>{{ request.request_started }}</td></tr>
+                    </tbody>
+                </table>
             </div>
         </div>
-        <div class="box-body">
-            <table id="filesTable" class="table table-bordered table-hover">
-                <thead>
-                <tr>
-                    <th>key</th>
-                    <th>value</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for key, value in request.post %}
-                    <tr>
-                        <td>{{ key }}</td>
-                        <td>
-                            {% if value is iterable %}
-                                {{ value | json_encode(constant('JSON_PRETTY_PRINT'))}}
-                            {% else %}
-                                {{ value }}
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-                <tfoot>
-                <tr>
-                    <th>key</th>
-                    <th>value</th>
-                </tr>
-                </tfoot>
-            </table>
-        </div>
     </div>
+</div>
 
-    <div class="box collapsed-box">
-        <div class="box-header with-border">
-            <h3 class="box-title">$_SERVER ({{ request.server|length }})</h3>
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
-                </button>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-primary card-outline collapsed-card">
+            <div class="card-header">
+                <h3 class="card-title"><strong>GET</strong> [{{ request.get|length }}]</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <table id="filesTable" class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th>key</th>
+                        <th>value</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for key, value in request.get %}
+                        <tr>
+                            <td>{{ key }}</td>
+                            <td>
+                                {% if value is iterable %}
+                                    {{ value | json_encode(constant('JSON_PRETTY_PRINT'))}}
+                                {% else %}
+                                    {{ value }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <th>key</th>
+                        <th>value</th>
+                    </tr>
+                    </tfoot>
+                </table>
             </div>
         </div>
-        <div class="box-body">
-            <table id="filesTable" class="table table-bordered table-hover">
-                <thead>
-                <tr>
-                    <th>key</th>
-                    <th>value</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for key, value in request.server %}
-                    <tr>
-                        <td>{{ key }}</td>
-                        <td>
-                            {% if value is iterable %}
-                                {{ value | json_encode(constant('JSON_PRETTY_PRINT'))}}
-                            {% else %}
-                                {{ value }}
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-                <tfoot>
-                <tr>
-                    <th>key</th>
-                    <th>value</th>
-                </tr>
-                </tfoot>
-            </table>
-        </div>
     </div>
+</div>
 
-    <div class="box collapsed-box">
-        <div class="box-header with-border">
-            <h3 class="box-title">$_ENV ({{ request.env|length }})</h3>
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
-                </button>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-primary card-outline collapsed-card">
+            <div class="card-header">
+                <h3 class="card-title"><strong>POST</strong> [{{ request.post|length }}]</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <table id="filesTable" class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th>key</th>
+                        <th>value</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for key, value in request.post %}
+                        <tr>
+                            <td>{{ key }}</td>
+                            <td>
+                                {% if value is iterable %}
+                                    {{ value | json_encode(constant('JSON_PRETTY_PRINT'))}}
+                                {% else %}
+                                    {{ value }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <th>key</th>
+                        <th>value</th>
+                    </tr>
+                    </tfoot>
+                </table>
             </div>
         </div>
-        <div class="box-body">
-            <table id="filesTable" class="table table-bordered table-hover">
-                <thead>
-                <tr>
-                    <th>key</th>
-                    <th>value</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for key, value in request.env %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-primary card-outline collapsed-card">
+            <div class="card-header">
+                <h3 class="card-title"><strong>SERVER</strong> [{{ request.server|length }}]</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <table id="filesTable" class="table table-bordered table-hover">
+                    <thead>
                     <tr>
-                        <td>{{ key }}</td>
-                        <td>
-                            {% if value is iterable %}
-                                {{ value | json_encode(constant('JSON_PRETTY_PRINT'))}}
-                            {% else %}
-                                {{ value }}
-                            {% endif %}
-                        </td>
+                        <th>key</th>
+                        <th>value</th>
                     </tr>
-                {% endfor %}
-                </tbody>
-                <tfoot>
-                <tr>
-                    <th>key</th>
-                    <th>value</th>
-                </tr>
-                </tfoot>
-            </table>
+                    </thead>
+                    <tbody>
+                    {% for key, value in request.server %}
+                        <tr>
+                            <td>{{ key }}</td>
+                            <td>
+                                {% if value is iterable %}
+                                    {{ value | json_encode(constant('JSON_PRETTY_PRINT'))}}
+                                {% else %}
+                                    {{ value }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <th>key</th>
+                        <th>value</th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
         </div>
     </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-primary card-outline collapsed-card">
+            <div class="card-header">
+                <h3 class="card-title"><strong>ENV</strong> [{{ request.env|length }}]</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <table id="filesTable" class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th>key</th>
+                        <th>value</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for key, value in request.env %}
+                        <tr>
+                            <td>{{ key }}</td>
+                            <td>
+                                {% if value is iterable %}
+                                    {{ value | json_encode(constant('JSON_PRETTY_PRINT'))}}
+                                {% else %}
+                                    {{ value }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <th>key</th>
+                        <th>value</th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
