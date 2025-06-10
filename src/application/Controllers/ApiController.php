@@ -4,6 +4,8 @@ namespace Soarce\Application\Controllers;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SebastianBergmann\CodeCoverage\Report\PHP;
+use Soarce\CodeCoverage\Builder;
 use Soarce\Control\Exception;
 use Soarce\Control\Usecase;
 use Soarce\Mvc\WebApplicationController;
@@ -80,5 +82,15 @@ class ApiController extends WebApplicationController
     {
         $response = $response->withHeader('Content-Type', 'application/json')->withStatus($code);
         return $response->write(json_encode($payload, JSON_PRETTY_PRINT));
+    }
+
+    public function coverage(Request $request, Response $response, $args): Response
+    {
+        $codeCoverageBuilder = $this->container->get(Builder::class);
+
+        $php = new PHP();
+
+        $response = $response->withHeader('Content-Type', 'application/text')->withHeader('Content-Disposition', 'attachment; filename="soarce-' . $args['application'] . '.cov"');
+        return $response->write($php->process($codeCoverageBuilder->getCodeCoverage($args['application'])));
     }
 }

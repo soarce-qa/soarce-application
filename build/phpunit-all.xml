@@ -1,25 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit
-        convertErrorsToExceptions="true"
-        convertNoticesToExceptions="true"
-        convertWarningsToExceptions="true"
         stopOnFailure="false"
         backupGlobals="false"
         bootstrap="../vendor/autoload.php"
 >
-    <filter>
-        <whitelist>
+    <source>
+        <include>
             <directory suffix=".php">../src/</directory>
-            <exclude>
-                <!-- directory suffix=".php">../src/library/PhpQaGraphs/Model/Gitlab/Base</directory>
-                <directory suffix=".php">../src/library/PhpQaGraphs/Model/Gitlab/Map</directory>
-                <directory suffix=".php">../src/library/PhpQaGraphs/Model/Graphs/Base</directory>
-                <directory suffix=".php">../src/library/PhpQaGraphs/Model/Graphs/Map</directory -->
-            </exclude>
-        </whitelist>
-    </filter>
-
-
+        </include>
+        <exclude>
+        </exclude>
+    </source>
 
     <testsuites>
         <testsuite name="unittests">
@@ -27,10 +18,14 @@
         </testsuite>
     </testsuites>
 
+    <coverage>
+        <report>
+            <html outputDirectory="coverage" lowUpperBound="50" highLowerBound="90" />
+            <php outputFile="logs/coverage.php" />
+        </report>
+    </coverage>
+
     <logging>
-        <log type="coverage-html" target="coverage"/>
-        <log type="coverage-clover" target="logs/clover.xml"/>
-        <log type="coverage-crap4j" target="logs/crap4j.xml"/>
-        <log type="junit" target="logs/junit.xml"/>
+        <junit outputFile="logs/junit.xml"/>
     </logging>
 </phpunit>
