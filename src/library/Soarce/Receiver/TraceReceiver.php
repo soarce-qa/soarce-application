@@ -4,9 +4,6 @@ namespace Soarce\Receiver;
 
 class TraceReceiver extends ReceiverAbstract
 {
-    /**
-     * @param array $json
-     */
     public function persist(array $json): void
     {
         $header  = $json['header'];
@@ -67,25 +64,19 @@ class TraceReceiver extends ReceiverAbstract
         $sql = "SELECT `id`, `number` FROM `function_call` WHERE `request_id` = {$requestId};";
         $result = $this->mysqli->query($sql);
 
-        $map = [];
-        while ($row = $result->fetch_assoc()) {
-            $map[$row['number']] = $row['id'];
-        }
-
-        return $map;
+        return array_column($result->fetch_all(MYSQLI_ASSOC), 'id', 'number');
     }
 
     /**
      * @param string $filename
-     * @param int[] $functions
+     * @param array[] $functions
      */
     private function storeFunctionCallsForOneFile(string $filename, array $functions): void
     {
-        if (strpos($filename, "eval()'d code") !== false) {
+        if (str_contains($filename, "eval()'d code")) {
             return;
         }
 
-        $sql = 'INSERT IGNORE INTO `function_call` (`file_id`, `request_id`, `class`, `function`, `type`, `calls`, `walltime`, `number`) VALUES ';
         $fileId = $this->createFile($filename);
         $requestId = $this->getRequestId();
 
@@ -93,18 +84,7 @@ class TraceReceiver extends ReceiverAbstract
         foreach ($functions as $functionName => $info) {
             $split = preg_split('/(->|::)/', $functionName);
             if (count($split) === 1) {
-                $rows[] = "({$fileId}, {$requestId}, '', '"
-                    . mysqli_real_escape_string($this->mysqli, $split[0])
-                    . "', '"
-                    . (1 == $info['type'] ? 'user-defined' : 'internal')
-                    . "', '"
-                    . mysqli_real_escape_string($this->mysqli, $info['count'])
-                    . "', '"
-                    . mysqli_real_escape_string($this->mysqli, $info['walltime'])
-                    . "', '"
-                    . mysqli_real_escape_string($this->mysqli, $info['number'])
-                    . "')";
-                continue;
+                array_unshift($split, '');
             }
 
             $rows[] = "({$fileId}, {$requestId}, '"
@@ -122,6 +102,7 @@ class TraceReceiver extends ReceiverAbstract
                 . "')";
         }
 
+        $sql = 'INSERT IGNORE INTO `function_call` (`file_id`, `request_id`, `class`, `function`, `type`, `calls`, `walltime`, `number`) VALUES ';
         $sql .= implode(', ', $rows);
 
         $this->mysqli->query($sql);
