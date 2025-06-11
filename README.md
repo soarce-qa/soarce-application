@@ -39,4 +39,4 @@ in /etc/hosts that points to `soarce.local`.
 
 ## Further topics
 
-Further topics are covered in the Documentation available inside the application.
+Further topics are covered on the website: https://www.soarce-qa.de/.
