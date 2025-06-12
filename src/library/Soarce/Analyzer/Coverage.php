@@ -183,6 +183,9 @@ class Coverage extends AbstractAnalyzer
 
         $result = $this->mysqli->query($sql)->fetch_assoc();
 
+        if ($result['total_lines'] == 0) {
+            return 0.0;
+        }
         return $result['total_covered'] / $result['total_lines'];
     }
 }
