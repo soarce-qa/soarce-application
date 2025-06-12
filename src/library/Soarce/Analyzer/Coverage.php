@@ -188,4 +188,19 @@ class Coverage extends AbstractAnalyzer
         }
         return $result['total_covered'] / $result['total_lines'];
     }
+
+    public function getApplicationStats(): array
+    {
+        $sql = 'SELECT
+            a.id, a.`name`, 
+            (SELECT SUM(f.lines) from `file` f where f.application_id = a.id) as total_lines,
+            (SELECT count(*) from `file` f where f.application_id = a.id) as `files`,
+            (SELECT COUNT(DISTINCT c.file_id, c.line) from `coverage` c join `file` f on c.file_id = f.id WHERE c.covered = 1 and f.application_id = a.id) as total_covered
+            from application a
+            where true
+            order by a.`name`
+            ';
+
+        return $this->mysqli->query($sql)->fetch_all(MYSQLI_ASSOC);
+    }
 }

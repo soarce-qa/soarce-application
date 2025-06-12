@@ -1,0 +1,131 @@
+{% extends "layout.twig" %}
+
+{% set activeMainMenu = "coverage" %}
+
+
+{%  block head %}
+    <title>SOARCE</title>
+{%  endblock %}
+
+{%  block header %}
+    Coverage Analysis
+{% endblock %}
+
+{% block main %}
+
+
+    <p>See below a list of files in which at least one line was executed. Click on a link to open the detail view of the code.
+        The list can be filtered with the following controls:</p>
+
+    {% embed "filterbox.twig" %}
+        {% block filters %}
+        {% import 'controls.twig' as controls %}
+        <div class="form-group">
+            <label for="">Application:</label>
+            {{ controls.select('applicationId', applicationIds, applications) }}
+        </div>
+        <div class="form-group">
+            <label for="">Usecases:</label>
+            {{ controls.select('usecaseId',     usecaseIds,     usecases) }}
+        </div>
+        <div class="form-group">
+            <label for="">Requests:</label>
+            {{ controls.select('requestId',     requestIds,     requests) }}
+        </div>
+        {% endblock %}
+
+        {% block buttons %}
+        <div class="btn-group">
+            <a href="/coverage" class="btn btn-default"><i class="fa fa-angle-left"></i> back</a>
+            <button type="submit" value="update" name="whatever" class="btn btn-primary"><i class="fa fa-sync"></i> update</button>
+        </div>
+        {% endblock %}
+    {% endembed %}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title">Files</h3>
+            </div>
+            <div class="card-body">
+            <table id="filesTable" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>application</th>
+                        <th>file</th>
+                        <th>lines</th>
+                        <th>lines covered</th>
+                        <th>---</th>
+                        <th>%</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for file in files %}
+                    {% if file.lines != 0 %}
+                        {% set percentage = file.coveredLines / file.lines %}
+                    {% else %}
+                        {% set percentage = 1 %}
+                    {% endif %}
+
+                    {% if percentage < 0.5 %}
+                        {% set color = "red" %}
+                    {% elseif percentage < 0.75 %}
+                        {% set color = "yellow" %}
+                    {% else %}
+                        {% set color = "green" %}
+                    {% endif %}
+
+
+
+                    <tr>
+                        <td>{{ file.applicationName }}</td>
+                        <td>
+                            <a href="/coverage/file/{{ file.fileId }}?{{ {'applicationId': applicationIds, 'usecaseId': usecaseIds, 'requestId': requestIds}|url_encode }}">
+                                {{ file.fileName | stripCommonPath(services[file.applicationName].commonPath) }}
+                            </a>
+                        </td>
+                        <td style="text-align: right">{{ file.lines }}</td>
+                        <td style="text-align: right">{{ file.coveredLines }}</td>
+                        <td style="text-align: right; width: 160px"><div class="progress progress-xs">
+                                <div class="progress-bar progress-bar-{{ color }}" style="width: {{ (percentage * 100)|number_format(1) }}%"></div>
+                            </div></td>
+                        <td style="text-align: center"><span class="badge bg-{{ color }}">{{ (percentage * 100)|number_format }}%</span></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>application</th>
+                        <th>file</th>
+                        <th>lines</th>
+                        <th>lines covered</th>
+                        <th>---</th>
+                        <th>%</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block pageEnd %}
+    <script>
+        $(function () {
+            $('#filesTable').DataTable({
+                'paging'      : true,
+                'pageLength'  : 25,
+                'lengthChange': true,
+                "lengthMenu": [ 10, 25, 50, 100, 250 ],
+                'searching'   : true,
+                'ordering'    : true,
+                'info'        : true,
+                'autoWidth'   : true
+            });
+
+            $('.select2').select2();
+        })
+    </script>
+{% endblock %}

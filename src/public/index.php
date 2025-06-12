@@ -28,7 +28,6 @@ try {
     $app->any('/maintenance', MaintenanceController::class . ':index');
     $app->group('/api',   function(RouteCollectorProxy $group) {
         $group->get('',                               ApiController::class . ':index');
-        $group->get('/coverage/{application:[0-9]+}', ApiController::class . ':coverage');
         $group->any('/usecases[/{usecase}]',          ApiController::class . ':usecase');
         $group->post('/usecases/{usecase}/{action}',  ApiController::class . ':usecase');
     });
@@ -39,8 +38,10 @@ try {
     });
     $app->group('/coverage',   function(RouteCollectorProxy $group) {
         $group->get('',                                       CoverageController::class . ':index');
+        $group->get('/files',                                 CoverageController::class . ':files');
         $group->get('/file/{file:[0-9]+}',                    CoverageController::class . ':file');
         $group->get('/file/{file:[0-9]+}/line/{line:[0-9]+}', CoverageController::class . ':line');
+        $group->get('/export/{application:[0-9]+}',           CoverageController::class . ':export');
     });
     $app->group('/trace',      function(RouteCollectorProxy $group) {
         $group->get('',                          TraceController::class . ':index');

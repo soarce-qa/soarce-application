@@ -4,13 +4,25 @@ namespace Soarce\Application\Controllers;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use SebastianBergmann\CodeCoverage\Report\PHP;
 use Soarce\Analyzer\Coverage;
+use Soarce\CodeCoverage\Builder;
 use Soarce\Config;
 use Soarce\Mvc\WebApplicationController;
 
 class CoverageController extends WebApplicationController
 {
     public function index(Request $request, Response $response, array $args): Response
+    {
+        $analyzer = $this->container->get(Coverage::class);
+        $viewParams = [
+            'applications'   => $analyzer->getApplicationStats(),
+        ];
+        return $this->view->render($response, 'coverage/index.twig', $viewParams);
+    }
+
+
+    public function files(Request $request, Response $response, array $args): Response
     {
         $analyzer = $this->container->get(Coverage::class);
         $queryParams = $request->getQueryParams();
@@ -29,7 +41,7 @@ class CoverageController extends WebApplicationController
             'files'          => $analyzer->getFiles($applicationIds, $usecaseIds, $requestIds),
             'services'       => $this->container->get(Config::class)->getServices(),
         ];
-        return $this->view->render($response, 'coverage/index.twig', $viewParams);
+        return $this->view->render($response, 'coverage/files.twig', $viewParams);
     }
 
     public function file(Request $request, Response $response, array $params): Response
@@ -87,7 +99,18 @@ class CoverageController extends WebApplicationController
         echo json_encode([
             'usecases' => $usecases,
             'requests' => $requests,
-        ], JSON_PRETTY_PRINT);
+        ], JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
         die();
     }
+
+    public function export(Request $request, Response $response, $args): Response
+    {
+        $codeCoverageBuilder = $this->container->get(Builder::class);
+
+        $php = new PHP();
+
+        $response = $response->withHeader('Content-Type', 'application/text')->withHeader('Content-Disposition', 'attachment; filename="soarce-' . $args['application'] . '.cov"');
+        return $response->write($php->process($codeCoverageBuilder->getCodeCoverage($args['application'])));
+    }
+
 }
