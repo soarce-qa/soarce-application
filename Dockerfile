@@ -1,9 +1,10 @@
 FROM php:8.4-fpm-bookworm
 
-RUN apt-get update -y && apt-get install -y libxslt-dev && apt-get clean && rm -rf /var/lib/apt/lists
+RUN apt-get update -y && apt-get install -y libxslt-dev libaom-dev libicu-dev && apt-get clean && rm -rf /var/lib/apt/lists
 
-# RUN pecl install -f -o redis xdebug
-# RUN docker-php-ext-enable redis.so xdebug.so
+RUN pecl install -f -o redis && rm -rf /tmp/pear && docker-php-ext-enable redis.so
+
+RUN docker-php-ext-configure intl
 
 RUN docker-php-ext-install mysqli xsl intl
 # RUN docker-php-ext-configure gd --with-jpeg-dir --with-png-dir --with-webp--dir

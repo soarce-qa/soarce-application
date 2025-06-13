@@ -32,6 +32,24 @@ services:
                 read_only: false
         links:
             - mysql-soarce
+            - redis-soarce
+        networks:
+            default:
+                aliases:
+                    - soarce.local
+
+    worker-soarce:
+        build: .
+        volumes:
+            -   type: bind
+                source: .
+                target: /var/www
+                read_only: false
+        entrypoint: php -f /var/www/src/bin/cli.php queueWorker
+        links:
+            - mysql-soarce
+            - redis-soarce
+        restart: unless-stopped    #will exit after 500 runs to reduce memleak potential
         networks:
             default:
                 aliases:

@@ -14,3 +14,5 @@ soarce.json
 error.log
 
 tools/
+
+php-errors.log
