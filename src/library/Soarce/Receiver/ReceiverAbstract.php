@@ -13,7 +13,7 @@ abstract class ReceiverAbstract
     public function __construct(protected mysqli $mysqli)
     {}
 
-    abstract public function persist(array $json);
+    abstract public function persist(int $usecaseId, array $json);
 
     /**
      * @return int
@@ -48,17 +48,6 @@ abstract class ReceiverAbstract
         return $this->mysqli->insert_id;
     }
 
-    protected function getUsecaseId(): int
-    {
-        if (null === $this->usecaseId) {
-            // due to the unique constraint/index there can only be one row!
-            $result = $this->mysqli->query('SELECT `id` FROM `usecase` WHERE `active` = 1');
-            $this->usecaseId = $result->fetch_assoc()['id'];
-        }
-
-        return $this->usecaseId;
-    }
-
     protected function getRequestId(): int
     {
         if (null === $this->requestId) {
@@ -67,10 +56,10 @@ abstract class ReceiverAbstract
         return $this->requestId;
     }
 
-    protected function createRequest(string $requestId, string $requestStarted, array $get, array $post, array $server, array $env): void
+    protected function createRequest(int $usecaseId, string $requestId, string $requestStarted, array $get, array $post, array $server, array $env): void
     {
         $sql = 'INSERT IGNORE INTO `request` (`usecase_id`, `application_id`, `request_id`, `request_started`, `get`, `post`, `server`, `env`) VALUES ('
-            . mysqli_real_escape_string($this->mysqli, $this->getUsecaseId())
+            . mysqli_real_escape_string($this->mysqli, $usecaseId)
             . ', '
             . mysqli_real_escape_string($this->mysqli, $this->getApplicationId())
             . ', "'

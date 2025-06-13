@@ -4,10 +4,7 @@ namespace Soarce\Receiver;
 
 class TraceReceiver extends ReceiverAbstract
 {
-    /**
-     * @param array $json
-     */
-    public function persist(array $json): void
+    public function persist(int $usecaseId, array $json): void
     {
         $header  = $json['header'];
         $payload = $json['payload'];
@@ -15,6 +12,7 @@ class TraceReceiver extends ReceiverAbstract
         $this->createApplication($header['host']);
 
         $this->createRequest(
+            $usecaseId,
             $header['request_id'],
             $header['request_time'],
             $header['get'],

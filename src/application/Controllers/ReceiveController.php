@@ -5,13 +5,13 @@ namespace Soarce\Application\Controllers;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Soarce\Mvc\WebApplicationController;
-use Soarce\Receiver\CoverageReceiver;
-use Soarce\Receiver\TraceReceiver;
+use Soarce\QueueManager;
 
 class ReceiveController extends WebApplicationController
 {
     public function index(Request $request, Response $response): Response
     {
+        /* * / //debug
         $json = json_decode((string)$request->getBody(), JSON_OBJECT_AS_ARRAY);
         if (null === $json) {
             return $response->withStatus(400);
@@ -22,8 +22,6 @@ class ReceiveController extends WebApplicationController
         }
 
         $mysqli = $this->container->get(\mysqli::class);
-
-        /* * / //debug
         $sql = "INSERT INTO soarce.dump (raw, header, payload) VALUES ('"
             . mysqli_real_escape_string($mysqli, (string)$request->getBody())
             . '\', \''
@@ -35,17 +33,9 @@ class ReceiveController extends WebApplicationController
         $mysqli->query($sql);
         /* */
 
+        $queueManager = $this->container->get(QueueManager::class);
+        $queueManager->store((string)$request->getBody());
 
-        if ($json['header']['type'] === 'coverage') {
-            $coverageReceiver = $this->container->get(CoverageReceiver::class);
-            $coverageReceiver->persist($json);
-        }
-
-        if ($json['header']['type'] === 'trace') {
-            $traceReceiver = $this->container->get(TraceReceiver::class);
-            $traceReceiver->persist($json);
-        }
-
-        return $response;
+        return $response->withStatus(201); // created
     }
 }
