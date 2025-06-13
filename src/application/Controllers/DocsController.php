@@ -10,8 +10,7 @@ class DocsController extends WebApplicationController
 {
     public function index(Request $request, Response $response, array $params): Response
     {
-        $page = $params['page'] ?? 'index';
-        return $this->view->render($response, 'docs/' . $page . '.twig');
+        return $this->view->render($response, 'docs/index.twig');
     }
 
     /**
