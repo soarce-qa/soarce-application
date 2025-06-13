@@ -44,7 +44,8 @@
     "twig/intl-extra": "^3.20",
     "slim/http": "^1.4",
     "phpunit/php-code-coverage": "^12.3",
-    "symfony/console": "^7.3"
+    "symfony/console": "^7.3",
+    "soarce/parallel-process-dispatcher": "^6.2"
   },
   "autoload": {
     "psr-4": {

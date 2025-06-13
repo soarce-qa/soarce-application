@@ -49,7 +49,16 @@ services:
         links:
             - mysql-soarce
             - redis-soarce
-        restart: unless-stopped    #will exit after 500 runs to reduce memleak potential
+        restart: unless-stopped    #will exit after a number of runs to reduce memleak potential
+        environment:
+            SOARCE_QUEUE_TIMEOUT_SECONDS: 15   # go small for debugging, but not too large to keep workforce at high capacity close to restarts
+            SOARCE_JOBS_PER_WORKER: 500
+            # leave some resources for the DB (and application, and tested application if all runs on the same machine). suggested max: Cores/2
+            SOARCE_WORKERS_PARALLEL: 4
+            SOARCE_WORKERS_TOTAL: 20
+            # container restarts after SOARCE_WORKER_RESTARTS * SOARCE_JOBS_PER_WORKER  jobs were processed.
+            # or latest after (SOARCE_WORKER_RESTARTS * SOARCE_JOBS_PER_WORKER * SOARCE_QUEUE_TIMEOUT_SECONDS) / SOARCE_WORKERS_PARALLEL   seconds if the queues
+            # were idle.
         networks:
             default:
                 aliases:

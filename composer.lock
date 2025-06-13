@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b34cd66f80919c09cbf8c9b0924a1b45",
+    "content-hash": "ead54323f8337565a4a25e801d2885f1",
     "packages": [
         {
             "name": "almasaeed2010/adminlte",
@@ -2239,6 +2239,59 @@
                 "source": "https://github.com/slimphp/Twig-View/tree/3.4.1"
             },
             "time": "2024-09-26T05:42:02+00:00"
+        },
+        {
+            "name": "soarce/parallel-process-dispatcher",
+            "version": "6.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/soarce-qa/parallel-process-dispatcher.git",
+                "reference": "65e04b95474d923dd0992a022f1aed8036f91fe9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/soarce-qa/parallel-process-dispatcher/zipball/65e04b95474d923dd0992a022f1aed8036f91fe9",
+                "reference": "65e04b95474d923dd0992a022f1aed8036f91fe9",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.0"
+            },
+            "replace": {
+                "fastbill/parallel-process-dispatcher": "*"
+            },
+            "require-dev": {
+                "pdepend/pdepend": "*",
+                "php-parallel-lint/php-parallel-lint": "^1.3",
+                "phploc/phploc": "*",
+                "phpmd/phpmd": "*",
+                "phpunit/phpunit": "*",
+                "sebastian/phpcpd": "*",
+                "squizlabs/php_codesniffer": "*",
+                "theseer/phpdox": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Soarce\\ParallelProcessDispatcher\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Holger Segnitz",
+                    "email": "holger@segnitz.net"
+                }
+            ],
+            "description": "Tiny PHP library for running jobs in background and/or in parallel",
+            "support": {
+                "issues": "https://github.com/soarce-qa/parallel-process-dispatcher/issues",
+                "source": "https://github.com/soarce-qa/parallel-process-dispatcher/tree/6.2.0"
+            },
+            "time": "2024-12-20T19:43:53+00:00"
         },
         {
             "name": "swaggest/json-diff",

@@ -10,8 +10,6 @@ class QueueManager
 
     private const string SEPARATOR = '/!\SOARCE-SPLITTING-IT-GOOD/!\\';
 
-    private const int TIMEOUT = 15;
-
     public function __construct(private readonly Redis $redis, private readonly \mysqli $mysqli)
     {}
 
@@ -32,9 +30,9 @@ class QueueManager
         );
     }
 
-    public function retrieve(): ?array
+    public function retrieve(int $timeout): ?array
     {
-        $temp = $this->redis->brPop(self::QUEUE, self::TIMEOUT);
+        $temp = $this->redis->brPop(self::QUEUE, $timeout);
         if (null === $temp || $temp === []) {
             return null;
         }

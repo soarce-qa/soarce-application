@@ -5,6 +5,7 @@ namespace Soarce\Application\Cli;
 use DI\Container;
 use Symfony\Component\Console\Command\Command as CommandAlias;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class QueueWorkerCommand extends CommandAlias
@@ -20,6 +21,7 @@ class QueueWorkerCommand extends CommandAlias
 
         $this
             ->setName('queueWorker')
+            ->addOption('isWorker', 'w', InputOption::VALUE_NONE, 'Specify if this is the worker or dispatcher')
             ->setDescription('Processes the queue serially to allow the web application to exit early and prevent racing conditions');
     }
 
@@ -36,7 +38,19 @@ class QueueWorkerCommand extends CommandAlias
     {
         $QueueWorker = $this->container->get(QueueWorkerService::class);
 
-        $QueueWorker->run($output);
+        if ($input->getOption('isWorker')) {
+            $QueueWorker->run(
+                $output,
+                $_ENV['SOARCE_QUEUE_TIMEOUT_SECONDS'] ?? 15,
+                $_ENV['SOARCE_JOBS_PER_WORKER'] ?? 500,
+            );
+        } else {
+            $QueueWorker->dispatch(
+                $output,
+                $_ENV['SOARCE_WORKERS_PARALLEL'],
+                $_ENV['SOARCE_WORKERS_TOTAL'],
+            );
+        }
 
         return 0;
     }
