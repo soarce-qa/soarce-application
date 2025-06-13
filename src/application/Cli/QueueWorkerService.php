@@ -2,6 +2,9 @@
 
 namespace Soarce\Application\Cli;
 
+use Soarce\ParallelProcessDispatcher\Dispatcher;
+use Soarce\ParallelProcessDispatcher\OutputAggregator;
+use Soarce\ParallelProcessDispatcher\ProcessLineOutput;
 use Soarce\QueueManager;
 use Soarce\Receiver\CoverageReceiver;
 use Soarce\Receiver\TraceReceiver;
@@ -10,8 +13,6 @@ use function Sentry\captureException;
 
 class QueueWorkerService
 {
-    private const int RESTART_AFTER_RUNS = 500;
-
     private OutputInterface $output;
 
     public function __construct(
@@ -20,14 +21,35 @@ class QueueWorkerService
         private readonly TraceReceiver $traceReceiver)
     {}
 
-    public function run(OutputInterface $output): void
+    public function dispatch(OutputInterface $output, int $parallel, int $total)
+    {
+        $this->output = $output;
+
+        $dispatcher = new Dispatcher($parallel);
+        $dispatcher->setPreserveFinishedProcesses(true);
+
+        for ($i = 0; $i < $total; $i++) {
+            $dispatcher->addProcess(new ProcessLineOutput('php -f /var/www/src/bin/cli queueWorker -w', 'worker-' . $i));
+        }
+        $this->output->writeln("queued $total workers, $parallel in parallel. Starting");
+
+        $oa = new OutputAggregator($dispatcher);
+        foreach ($oa -> getOutput(25000) as $worker => $processOutput) {
+            $this->output->write($worker . ': ' . $processOutput);
+        }
+
+        $this->output->writeln("end of worker queue, ending");
+    }
+
+
+    public function run(OutputInterface $output, int $timeout, int $jobs): void
     {
         $this->output = $output;
 
         $runs = 0;
-        while (++$runs < self::RESTART_AFTER_RUNS) {
+        while (++$runs <= $jobs) {
             try {
-                $this->process();
+                $this->process($timeout);
             } catch (\Throwable $t) {
                 $this->output->writeln($t->getMessage());
                 captureException($t);
@@ -35,9 +57,9 @@ class QueueWorkerService
         }
     }
 
-    protected function process(): void
+    protected function process(int $timeout): void
     {
-        $temp = $this->queueManager->retrieve();
+        $temp = $this->queueManager->retrieve($timeout);
         if (null === $temp) {
             $this->output->writeln('empty queue after timeout');
             return;
