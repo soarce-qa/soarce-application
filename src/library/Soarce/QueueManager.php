@@ -43,4 +43,9 @@ class QueueManager
 
         return explode(self::SEPARATOR, $temp[1], 2);
     }
+
+    public function getQueueSize(): int
+    {
+        return $this->redis->lLen(self::QUEUE);
+    }
 }

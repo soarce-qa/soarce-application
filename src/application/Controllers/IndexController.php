@@ -6,6 +6,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Soarce\Analyzer\Coverage;
 use Soarce\Mvc\WebApplicationController;
+use Soarce\QueueManager;
 use Soarce\Statistics\Database;
 
 class IndexController extends WebApplicationController
@@ -17,6 +18,7 @@ class IndexController extends WebApplicationController
 #            'configErrorMessage' => Config::$validationError,
             'DatabaseStatistics' => $this->container->get(Database::class)->getMysqlStats(),
             'totalCoverage'  => $this->container->get(Coverage::class)->getTotalCoveragePercentage(),
+            'queueSize'  => $this->container->get(QueueManager::class)->getQueueSize(),
         ];
 
         return $this->view->render($response, 'index/index.twig', $viewVars);
