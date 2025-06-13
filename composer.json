@@ -30,6 +30,7 @@
     "php": ">=8.4,<9.0-DEV",
     "ext-json": "*",
     "ext-mysqli": "*",
+    "ext-redis": "*",
     "slim/slim": "^4.14",
     "twig/twig": "^3.19",
     "slim/twig-view": "^3.4",

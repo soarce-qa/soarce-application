@@ -106,6 +106,16 @@ $container->set(
     }
 );
 
+$container->set(
+    Redis::class,
+    static function (Container $container): Redis
+    {
+        $redis = new Redis();
+        $redis->connect($_ENV['REDIS_HOST'], (int)$_ENV['REDIS_PORT']);
+        $redis->select($_ENV['REDIS_DB']);
+        return $redis;
+    }
+);
 
 $GLOBALS['container'] = $container;
 
