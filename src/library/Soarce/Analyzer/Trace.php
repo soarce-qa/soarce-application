@@ -32,10 +32,7 @@ class Trace extends AbstractAnalyzer
             throw new AnalyzerException($this->mysqli->error, $this->mysqli->errno);
         }
 
-        while ($row = $result->fetch_assoc()) {
-            $ret[$row['id']] = $row;
-        }
-        return $ret;
+        return array_column($result->fetch_all(MYSQLI_ASSOC), null, 'id');
     }
 
     /**

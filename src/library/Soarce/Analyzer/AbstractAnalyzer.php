@@ -40,10 +40,8 @@ abstract class AbstractAnalyzer
             throw new AnalyzerException($this->mysqli->error, $this->mysqli->errno);
         }
 
-        while ($row = $result->fetch_assoc()) {
-            $ret[$row['id']] = $row;
-        }
-        return $ret;
+        $res = $result->fetch_all(MYSQLI_ASSOC);
+        return array_column($res, 'id');
     }
 
     /**
@@ -65,10 +63,8 @@ abstract class AbstractAnalyzer
             throw new AnalyzerException($this->mysqli->error, $this->mysqli->errno);
         }
 
-        while ($row = $result->fetch_assoc()) {
-            $ret[$row['id']] = $row;
-        }
-        return $ret;
+        $res = $result->fetch_all(MYSQLI_ASSOC);
+        return array_column($res, 'id');
     }
 
     /**
@@ -96,10 +92,8 @@ abstract class AbstractAnalyzer
             throw new AnalyzerException($this->mysqli->error, $this->mysqli->errno);
         }
 
-        while ($row = $result->fetch_assoc()) {
-            $ret[$row['id']] = $row;
-        }
-        return $ret;
+        $res = $result->fetch_all(MYSQLI_ASSOC);
+        return array_column($res, 'id');
     }
 
     /**

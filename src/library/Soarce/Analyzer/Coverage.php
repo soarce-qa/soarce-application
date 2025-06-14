@@ -95,12 +95,7 @@ class Coverage extends AbstractAnalyzer
             throw new AnalyzerException($this->mysqli->error, $this->mysqli->errno);
         }
 
-        $ret = [];
-        while ($row = $result->fetch_assoc()) {
-            $ret[$row['line']] = $row['coverageLevel'];
-        }
-
-        return $ret;
+        return array_column($result->fetch_all(MYSQLI_ASSOC), 'coverageLevel', 'line');
     }
 
     /**
@@ -135,17 +130,13 @@ class Coverage extends AbstractAnalyzer
             WHERE c.`file_id` = ' . (int)$fileId . ' AND c.`line` = ' . (int)$line . ' AND c.`covered` = 1
             ORDER BY r.`request_id` ASC';
 
-        $ret = [];
         $result = $this->mysqli->query($sql);
 
         if (!$result) {
             throw new AnalyzerException($this->mysqli->error, $this->mysqli->errno);
         }
 
-        while ($row = $result->fetch_assoc()) {
-            $ret[$row['id']] = $row['request_id'];
-        }
-        return $ret;
+        return array_column($result->fetch_all(MYSQLI_ASSOC), 'request_id', 'id');
     }
 
     /**
@@ -162,17 +153,13 @@ class Coverage extends AbstractAnalyzer
             WHERE c.`file_id` = ' . (int)$fileId . ' AND c.`line` = ' . (int)$line . ' AND c.`covered` = 1
             ORDER BY r.`request_id` ASC';
 
-        $ret = [];
         $result = $this->mysqli->query($sql);
 
         if (!$result) {
             throw new AnalyzerException($this->mysqli->error, $this->mysqli->errno);
         }
 
-        while ($row = $result->fetch_assoc()) {
-            $ret[$row['id']] = $row['name'];
-        }
-        return $ret;
+        return array_column($result->fetch_all(MYSQLI_ASSOC), 'name', 'id');
     }
 
     public function getTotalCoveragePercentage(): float

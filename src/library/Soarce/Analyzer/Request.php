@@ -75,12 +75,7 @@ class Request extends AbstractAnalyzer
             throw new AnalyzerException($this->mysqli->error, $this->mysqli->errno);
         }
 
-        $list = [];
-        while ($temp = $result->fetch_assoc()) {
-            $list[$temp['request_id']] = $temp;
-        }
-
-        return $list;
+        return array_column($result->fetch_all(MYSQLI_ASSOC), null, 'request_id');
     }
 
 
