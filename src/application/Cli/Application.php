@@ -12,6 +12,7 @@ class Application extends \Symfony\Component\Console\Application
     {
         parent::__construct($name, $version);
         $this->add(new QueueWorkerCommand()->setContainer($container));
+        $this->add(new ChangePathsCommand()->setContainer($container));
     }
 
     public function doRun(InputInterface $input, OutputInterface $output): int
