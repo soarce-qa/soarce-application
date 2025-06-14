@@ -41,7 +41,7 @@ try {
         $group->get('/files',                                 CoverageController::class . ':files');
         $group->get('/file/{file:[0-9]+}',                    CoverageController::class . ':file');
         $group->get('/file/{file:[0-9]+}/line/{line:[0-9]+}', CoverageController::class . ':line');
-        $group->get('/export/{application:[0-9]+}',           CoverageController::class . ':export');
+        $group->get('/export/{application}',                  CoverageController::class . ':export');
     });
     $app->group('/trace',      function(RouteCollectorProxy $group) {
         $group->get('',                          TraceController::class . ':index');

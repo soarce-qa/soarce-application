@@ -14,7 +14,7 @@ class Builder
     public function __construct(private \mysqli $mysqli, private Coverage $coverageAnalyzer)
     {}
 
-    public function getCodeCoverage(int $applicationId): CodeCoverage
+    public function getCodeCoverage(int|string $applicationId): CodeCoverage
     {
         $primaryCodeCoverage = new CodeCoverage(
             new DummyDriver(),
