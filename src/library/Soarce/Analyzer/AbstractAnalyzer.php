@@ -147,6 +147,6 @@ abstract class AbstractAnalyzer
         }
 
         $res = $result->fetch_all(MYSQLI_ASSOC);
-        return array_column($res, null, 'id');
+        return array_column($res, 'id');
     }
 }
