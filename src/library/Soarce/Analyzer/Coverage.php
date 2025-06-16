@@ -65,9 +65,7 @@ class Coverage extends AbstractAnalyzer
         }
 
         $row = $result->fetch_assoc();
-        $actionable = $this->service->getServiceActionable($row['applicationName']);
-
-        return $actionable->getFile($row['fileName']);
+        return $this->service->getServiceActionable($row['applicationName'])->getFile($row['fileName']);
     }
 
     /**
@@ -170,7 +168,7 @@ class Coverage extends AbstractAnalyzer
 
         $result = $this->mysqli->query($sql)->fetch_assoc();
 
-        if ($result['total_lines'] == 0) {
+        if ((int)$result['total_lines'] === 0) {
             return 0.0;
         }
         return $result['total_covered'] / $result['total_lines'];

@@ -165,7 +165,7 @@ class Trace extends AbstractAnalyzer
             return [];
         }
         $res = $result->fetch_all(MYSQLI_ASSOC);
-        return array_column($res, 'id');
+        return array_column($res, null, 'id');
     }
 
     /**
