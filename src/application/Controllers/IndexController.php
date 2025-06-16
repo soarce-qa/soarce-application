@@ -13,12 +13,15 @@ class IndexController extends WebApplicationController
 {
      public function index(Request $request, Response $response): Response
     {
+        $coverageAnalyzer = $this->container->get(Coverage::class);
+
         $viewVars = [
 #            'configIsValid' => Config::isValid(__DIR__ . '/../../../soarce.json'),
 #            'configErrorMessage' => Config::$validationError,
             'DatabaseStatistics' => $this->container->get(Database::class)->getMysqlStats(),
             'totalCoverage'  => $this->container->get(Coverage::class)->getTotalCoveragePercentage(),
-            'queueSize'  => $this->container->get(QueueManager::class)->getQueueSize(),
+            'queueSize'      => $this->container->get(QueueManager::class)->getQueueSize(),
+            'applications'   => $coverageAnalyzer->getApplicationStats(),
         ];
 
         return $this->view->render($response, 'index/index.twig', $viewVars);

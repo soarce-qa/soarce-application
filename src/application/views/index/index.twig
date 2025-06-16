@@ -84,4 +84,142 @@
         <!-- ./col -->
     </div>
 
+
+{% if applications %}
+
+
+
+
+    <div class="row">
+        <div class="col-lg-3 col-6">
+            <div class="card card-info">
+                <div class="card-header">
+                    <h3 class="card-title">Files per Application</h3>
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <canvas id="donutFilesPerApplication" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+
+
+        <div class="col-lg-3 col-6">
+            <div class="card card-info">
+                <div class="card-header">
+                    <h3 class="card-title">LoC per Application</h3>
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <canvas id="donutLocPerApplication" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+
+
+        <div class="col-lg-3 col-6">
+            <div class="card card-info">
+                <div class="card-header">
+                    <h3 class="card-title">Covered Lines per Application</h3>
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <canvas id="donutCoveragePerApplication" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+
+
+
+    </div>
+
+{% endif %}
+
+
+
+
+{% endblock %}
+
+
+{% block pageEnd %}
+
+    <script>
+
+        //-------------
+        //- DONUT CHART -
+        //-------------
+        // Get context with jQuery - using jQuery's .get() method.
+        var donutData1 = {
+            labels: {{ applications | column("name") | json_encode | raw }},
+            datasets: [
+                {
+                    data: {{ applications | column("files") | json_encode | raw }},
+                    backgroundColor : ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
+                }
+            ]
+        }
+
+        var donutData2 = {
+            labels: {{ applications | column("name") | json_encode | raw }},
+            datasets: [
+                {
+                    data: {{ applications | column("total_lines") | json_encode | raw }},
+                    backgroundColor : ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
+                }
+            ]
+        }
+
+        var donutData3 = {
+            labels: {{ applications | column("name") | json_encode | raw }},
+            datasets: [
+                {
+                    data: {{ applications | column("total_covered") | json_encode | raw }},
+                    backgroundColor : ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
+                }
+            ]
+        }
+
+
+        var donutOptions     = {
+            maintainAspectRatio : false,
+            responsive : true,
+            legend: {
+                position: 'right',
+                values: true,
+            }
+        }
+
+        var donutChartCanvas1 = $('#donutFilesPerApplication').get(0).getContext('2d')
+        var donutChartCanvas2 = $('#donutLocPerApplication').get(0).getContext('2d')
+        var donutChartCanvas3 = $('#donutCoveragePerApplication').get(0).getContext('2d')
+
+        new Chart(donutChartCanvas1, {type: 'doughnut', data: donutData1, options: donutOptions })
+        new Chart(donutChartCanvas2, {type: 'doughnut', data: donutData2, options: donutOptions })
+        new Chart(donutChartCanvas3, {type: 'doughnut', data: donutData3, options: donutOptions })
+
+
+    </script>
+
+
 {% endblock %}
