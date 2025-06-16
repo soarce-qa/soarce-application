@@ -23,6 +23,10 @@ class MaintenanceController extends WebApplicationController
             }
         }
 
-        return $this->view->render($response, 'maintenance/index.twig');
+        $viewParams = [
+            'DatabaseStatistics' => $this->container->get(\Soarce\Statistics\Database::class)->getMysqlStats(false),
+        ];
+
+        return $this->view->render($response, 'maintenance/index.twig', $viewParams);
     }
 }

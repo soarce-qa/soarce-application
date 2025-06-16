@@ -11,8 +11,8 @@ class Database
 
     public function purgeAll(): void
     {
-        foreach (['usecase', 'application'] as $table) {
-            echo $sql = "DELETE FROM `{$table}` WHERE 1;";
+        foreach (['usecase', 'application'] as $table) {  //  deletes are cascaded through constraints
+            $sql = "DELETE FROM `{$table}` WHERE 1;";
             $this->mysqli->query($sql);
             if ($this->mysqli->error) {
                 die ($this->mysqli->error);
@@ -23,7 +23,7 @@ class Database
     public function resetAutoIncrement(): void
     {
         foreach ($this->getAllTableNames() as $table) {
-            echo $sql = "ALTER TABLE `{$table['TABLE_NAME']}` AUTO_INCREMENT=1;";
+            $sql = "ALTER TABLE `{$table['TABLE_NAME']}` AUTO_INCREMENT=1;";
             $this->mysqli->query($sql);
         }
     }

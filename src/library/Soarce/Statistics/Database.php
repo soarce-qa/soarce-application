@@ -19,12 +19,15 @@ class Database
     /**
      * @return array
      */
-    public function getMysqlStats(): array
+    public function getMysqlStats($cached = true): array
     {
-        // dirty hack against the hard caching of the table info (this is cached by MySQL for 1 day or so)
-        $tables = $this->mysqli->query("SELECT t.TABLE_NAME FROM information_schema.`TABLES` t WHERE t.TABLE_SCHEMA = 'soarce';")->fetch_all(MYSQLI_ASSOC);
-        foreach ($tables as $table) {
-            $this->mysqli->query('ANALYZE TABLE `' . $table['TABLE_NAME'] . '`');
+        if (!$cached) {
+            // dirty hack against the hard caching of the table info (this is cached by MySQL for 1 day or so)
+            // this kills performance while workers are running.!
+            $tables = $this->mysqli->query("SELECT t.TABLE_NAME FROM information_schema.`TABLES` t WHERE t.TABLE_SCHEMA = 'soarce';")->fetch_all(MYSQLI_ASSOC);
+            foreach ($tables as $table) {
+                $this->mysqli->query('ANALYZE TABLE `' . $table['TABLE_NAME'] . '`');
+            }
         }
 
         $tables = $this->mysqli->query('SELECT t.`TABLE_NAME`, t.TABLE_ROWS, (t.DATA_LENGTH+t.INDEX_LENGTH) as TOTAL_LENGTH, t.`AUTO_INCREMENT` FROM information_schema.`TABLES` t WHERE t.TABLE_SCHEMA = "soarce";')->fetch_all(MYSQLI_ASSOC);
