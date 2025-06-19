@@ -51,7 +51,7 @@ class TraceReceiver extends ReceiverAbstract
         }
 
         $sqlStart = 'INSERT IGNORE INTO `function_map` (`caller`, `callee`, `calls`) VALUES ';
-        foreach (array_chunk($rows, 1000) as $block) {
+        foreach (array_chunk($rows, 10000) as $block) {
             $this->mysqli->query($sqlStart . implode(',', $block));
         }
     }
