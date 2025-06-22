@@ -5,6 +5,7 @@ namespace Soarce\Application\Controllers;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Soarce\Control\Exception;
+use Soarce\Control\Service;
 use Soarce\Control\Usecase;
 use Soarce\Mvc\WebApplicationController;
 
@@ -74,6 +75,21 @@ class ApiController extends WebApplicationController
         }
 
         return $this->returnJson($response, ['message' => 'method not allowed: ' . $request->getMethod()], 405);
+    }
+
+    public function startCollection(Request $request, Response $response, array $args): Response
+    {
+        $serviceControl = $this->container->get(Service::class);
+        $res = $serviceControl->start();
+
+        return $this->returnJson($res, 200);
+    }
+    public function stopCollection(Request $request, Response $response, array $args): Response
+    {
+        $serviceControl = $this->container->get(Service::class);
+        $res = $serviceControl->end();
+
+        return $this->returnJson($res, 200);
     }
 
     private function returnJson(Response $response, mixed $payload, int $code = 200): Response

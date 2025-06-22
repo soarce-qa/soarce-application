@@ -27,9 +27,11 @@ try {
     $app->any('/receive',     ReceiveController::class . ':index');
     $app->any('/maintenance', MaintenanceController::class . ':index');
     $app->group('/api',   function(RouteCollectorProxy $group) {
-        $group->get('',                               ApiController::class . ':index');
-        $group->any('/usecases[/{usecase}]',          ApiController::class . ':usecase');
-        $group->post('/usecases/{usecase}/{action}',  ApiController::class . ':usecase');
+        $group->get('',                              ApiController::class . ':index');
+        $group->get('/collection/start',             ApiController::class . ':startCollection');
+        $group->get('/collection/stop',              ApiController::class . ':stopCollection');
+        $group->any('/usecases[/{usecase}]',         ApiController::class . ':usecase');
+        $group->post('/usecases/{usecase}/{action}', ApiController::class . ':usecase');
     });
     $app->group('/control',   function(RouteCollectorProxy $group) {
         $group->get('',                      ControlController::class . ':index');
