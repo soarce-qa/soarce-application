@@ -114,7 +114,7 @@ class Trace extends AbstractAnalyzer
         $sql = 'SELECT b.class, b.`function`, SUM(m.calls) numcalls
             FROM `function_map` m
             JOIN `function_call` b ON m.caller = b.id
-            WHERE m.callee IN (' . implode(',', $this->getFunctionIds($class, $function, $applications, $usecases, $requests, $files)) . ')
+            WHERE m.callee IN (' . implode(', ', $this->getFunctionIds($class, $function, $applications, $usecases, $requests, $files)) . ')
             GROUP BY b.class, b.`function`
             ORDER BY numcalls desc, b.`class` asc, b.`function` asc';
 
@@ -165,7 +165,7 @@ class Trace extends AbstractAnalyzer
             return [];
         }
         $res = $result->fetch_all(MYSQLI_ASSOC);
-        return array_column($res, null, 'id');
+        return array_column($res, 'id');
     }
 
     /**

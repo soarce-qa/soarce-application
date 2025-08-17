@@ -1,4 +1,4 @@
-<table>
+<table class="callerCallee">
     <thead>
         <tr>
             <th>class</th>
@@ -11,7 +11,7 @@
         <tr>
             <td>{{ call.class }}</td>
             <td>{{ call.function }}</td>
-            <td>{{ call.numcalls }}</td>
+            <td style=" text-align: right">{{ call.numcalls }}</td>
         </tr>
     {% endfor %}
     </tbody>
