@@ -5,6 +5,14 @@ use Sentry\ErrorHandler;
 use Soarce\Application\Cli\Application;
 use function Sentry\init;
 
+###### hack to sleep a few seconds for redis to become available
+###
+if (in_array('queueWorker', $argv) && !in_array('-w', $argv)) {
+    echo "Waiting 3s for redis to become available...\n";
+    sleep(3);
+}
+
+
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 if (isset($_ENV['SENTRY_DSN']) && $_ENV['SENTRY_DSN'] !== '') {
