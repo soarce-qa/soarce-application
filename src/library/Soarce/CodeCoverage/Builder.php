@@ -49,7 +49,7 @@ class Builder
                 JOIN coverage c ON f.id = c.file_id
                 JOIN request r on c.request_id = r.id
             WHERE f.application_id = " . $applicationId . " AND r.usecase_id = " . $usecaseId . "
-            GROUP BY c.line
+            GROUP BY f.filename, c.line
             ORDER BY `filename`, c.line";
 
         $result = $this->mysqli->query($sql)->fetch_all(MYSQLI_ASSOC);
