@@ -42,6 +42,41 @@ class Builder
         return $primaryCodeCoverage;
     }
 
+    public function buildV6(CodeCoverage $coverage, int|string $applicationId): string
+    {
+        $rawCoverage = $coverage->getData(true);
+
+        $return = '<' . '?php' . PHP_EOL;
+        $return .= '
+$coverage = new SebastianBergmann\CodeCoverage\CodeCoverage;
+$coverage->setData(' . var_export($rawCoverage->lineCoverage(), true) . ');';
+
+        $tests = [];
+        foreach ($this->coverageAnalyzer->getUsecases([], [], [$applicationId]) as $usecase) {
+            $tests['soarce:' . $usecase['name']] = [
+                'size' => 'unknown',
+                'status' => 0,
+            ];
+        }
+
+        $return .= PHP_EOL;
+        $return .= '
+$coverage->setTests(' . var_export($tests, true) . ');
+
+$filter = $coverage->filter();
+$filter->setWhitelistedFiles(';
+
+        $files = $rawCoverage->coveredFiles();
+        $files = array_combine($files, array_fill(0, count($files), true));
+
+        $return .= var_export($files, true) . ');
+
+return $coverage;';
+
+        return $return;
+    }
+
+
     private function collectCoverageFromDb(int $applicationId, int $usecaseId): array
     {
         $sql = "SELECT any_value(f.filename) as `filename`, c.line, max(c.covered) as `covered` 
