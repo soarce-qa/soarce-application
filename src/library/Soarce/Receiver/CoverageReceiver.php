@@ -2,6 +2,9 @@
 
 namespace Soarce\Receiver;
 
+use Soarce\Config;
+use Soarce\Filter\PathFilter;
+
 class CoverageReceiver extends ReceiverAbstract
 {
     /** @var string[] */
@@ -12,6 +15,9 @@ class CoverageReceiver extends ReceiverAbstract
         $header  = $json['header'];
         $payload = $json['payload'];
         $this->fileMd5Hashes = $json['md5'] ?? [];
+
+        $filter = PathFilter::fromServiceConfig($this->config->getService($header['host']));
+        $payload = $filter->filterArrayKeys($payload);
 
         $this->createApplication($header['host']);
 

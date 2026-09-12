@@ -8,11 +8,23 @@ class Config
 {
     private array $services = [];
 
-    public function __construct(string $filename)
+    public function __construct(string $json)
     {
-        foreach (json_decode(file_get_contents($filename), JSON_OBJECT_AS_ARRAY)['services'] as $name => $rawService) {
-            $this->services[$name] = new Service($name, $rawService['url'], $rawService['parameter_name'], $rawService['common_path'], $rawService['preshared_secret']);
+        foreach (json_decode($json, JSON_OBJECT_AS_ARRAY)['services'] as $name => $rawService) {
+            $this->services[$name] = new Service(
+                $name,
+                $rawService['url'],
+                $rawService['parameter_name'],
+                $rawService['common_path'],
+                $rawService['preshared_secret'] ?? '',
+                $rawService['filters'] ?? []
+            );
         }
+    }
+
+    public static function fromFile(string $filename): self
+    {
+        return new self(file_get_contents($filename));
     }
 
     public function getService(string $name): Service

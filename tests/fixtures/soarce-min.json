@@ -1,0 +1,9 @@
+{
+  "services": {
+    "testService": {
+      "url": "http://test-service.example.com/",
+      "parameter_name": "SOARCE",
+      "common_path": "/var/www/html"
+    }
+  }
+}
