@@ -1,0 +1,26 @@
+{
+  "services": {
+    "testService": {
+      "url": "http://test-service.example.com/",
+      "parameter_name": "SOARCE",
+      "common_path": "/var/www/html",
+      "preshared_secret": "yo-mama!",
+      "filters": {
+        "allow": [
+          "/var/www/html/src/application/",
+          "/var/www/html/vendor/",
+          "/var/www/html/libraries/"
+        ],
+        "allow_regex": [
+          "/(api|cli)/i"
+        ],
+        "reject": [
+          "/var/www/html/vendor/guzzle"
+        ],
+        "reject_regex": [
+          "/(admin|test)/i"
+        ]
+      }
+    }
+  }
+}

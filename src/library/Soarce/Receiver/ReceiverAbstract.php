@@ -3,13 +3,14 @@
 namespace Soarce\Receiver;
 
 use mysqli;
+use Soarce\Config;
 
 abstract class ReceiverAbstract
 {
     protected ?int $applicationId;
     protected ?int $requestId = null;
 
-    public function __construct(protected mysqli $mysqli)
+    public function __construct(protected mysqli $mysqli, protected Config $config)
     {}
 
     abstract public function persist(int $usecaseId, array $json);

@@ -88,7 +88,9 @@ MERMAID;
 
         $requests = json_decode(
             file_get_contents(__DIR__ . '/../../../fixtures/sequence.json'),
-            JSON_OBJECT_AS_ARRAY
+            JSON_OBJECT_AS_ARRAY,
+            512,
+            JSON_THROW_ON_ERROR
         );
 
         $sequence = SequenceRequest::buildTree($requests);

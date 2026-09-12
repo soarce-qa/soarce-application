@@ -22,7 +22,7 @@ lint:
 	vendor/bin/parallel-lint -j $(shell nproc --all) --blame src tests
 
 phpunit:
-	php -d zend_extension=xdebug.so tools/phpunit --configuration=./build/phpunit-all.xml
+	XDEBUG_MODE=coverage php -d zend_extension=xdebug.so tools/phpunit --configuration=./build/phpunit-all.xml --coverage-text --only-summary-for-coverage-text #--display-deprecations
 
 build: composer-install lint phpunit
 

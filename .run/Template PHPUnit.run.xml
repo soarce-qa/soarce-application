@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="true" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
+    <CommandLine>
+      <PhpTestInterpreterSettings>
+        <option name="interpreterName" value="PHP 8.5" />
+      </PhpTestInterpreterSettings>
+    </CommandLine>
+    <TestRunner />
+    <method v="2" />
+  </configuration>
+</component>
