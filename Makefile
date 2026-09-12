@@ -29,3 +29,6 @@ build: composer-install lint phpunit
 deploy: build
 	# No Deployment here -- library only
 
+migrate:   # this for post-updates or post-deployment
+	docker compose exec app-soarce /var/www/vendor/bin/phinx migrate -vvv --configuration=/var/www/src/db/phinx.php
+
