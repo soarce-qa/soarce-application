@@ -26,7 +26,10 @@ class SequenceRequestTest extends TestCase
 
         $this->assertParentInstanceValues($result);
 
+        $this->assertFalse($result->hasChildren());
         $this->assertEquals([], $result->getChildren());
+        $this->assertCount(1, $result->getFlatList());
+        $this->assertNull($result->getParent());
     }
 
     public function testWithOneChildRequest(): void
@@ -52,6 +55,7 @@ class SequenceRequestTest extends TestCase
 
         $children = $result->getChildren();
         $this->assertCount(1, $children);
+        $this->assertFalse($result->hasChildren());
 
         $child = array_pop($children);
 
@@ -63,6 +67,8 @@ class SequenceRequestTest extends TestCase
         $this->assertEquals(1337,                                 $child->getApplicationId());
 
         $this->assertSame($result, $child->getParent());
+
+        $this->assertCount(2, $result->getFlatList());
     }
 
     public function testMultipleLevelsExample(): void
