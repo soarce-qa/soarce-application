@@ -70,7 +70,9 @@ class SequenceRequestTest extends TestCase
         $result = SequenceRequest::buildTree(
             json_decode(
                 file_get_contents(__DIR__ . '/../../fixtures/sequence.json'),
-                JSON_OBJECT_AS_ARRAY
+                JSON_OBJECT_AS_ARRAY,
+                512,
+                JSON_THROW_ON_ERROR
             )
         );
 
@@ -102,10 +104,7 @@ class SequenceRequestTest extends TestCase
         return $ret;
     }
 
-    /**
-     * @param SequenceRequest|null $result
-     */
-    private function assertParentInstanceValues(?SequenceRequest $result): void
+    private function assertParentInstanceValues(object $result): void
     {
         $this->assertNull($result->getParent());
 

@@ -9,7 +9,7 @@ class SequenceRequestHeap extends \SplHeap
      * @param  SequenceRequest $value2
      * @return int|void
      */
-    protected function compare($value1, $value2)
+    protected function compare($value1, $value2): int
     {
         return strnatcmp($value2->getRequestId(), $value1->getRequestId());
     }
