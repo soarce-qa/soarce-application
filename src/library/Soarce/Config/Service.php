@@ -4,7 +4,7 @@ namespace Soarce\Config;
 
 class Service
 {
-    public function __construct(private string $name, private string $url, private string $parameterName, private string $commonPath, private string $presharedSecret)
+    public function __construct(private string $name, private string $url, private string $parameterName, private string $commonPath, private string $presharedSecret, private array $filters)
     {}
 
     /**
@@ -46,4 +46,10 @@ class Service
     {
         return $this->presharedSecret;
     }
+
+    public function getFilters(): array
+    {
+        return $this->filters;
+    }
+
 }

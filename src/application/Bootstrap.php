@@ -102,7 +102,7 @@ $container->set(
 $container->set(
     Config::class,
     static function (): Config {
-        return new Config(__DIR__ . '/../../soarce.json');
+        return Config::fromFile(__DIR__ . '/../../soarce.json');
     }
 );
 
