@@ -25,15 +25,16 @@ class Coverage extends AbstractAnalyzer
         $usecaseList     = $this->buildInStatementBody($usecases);
         $requestList     = $this->buildInStatementBody($requests);
 
-        $sql = 'SELECT a.`id` as `applicationId`, a.`name` as `applicationName`, any_value(f.`id`) as `fileId`, f.`filename` as `fileName`,
+        $applicationsLookup = $this->getAppplications();
+
+        $sql = 'SELECT f.`application_id` as `applicationId`, any_value(f.`id`) as `fileId`, f.`filename` as `fileName`,
                 COUNT(distinct c.`line`) as `coveredLines`, any_value(f.`lines`) as `lines`
             FROM `file`        f
-            JOIN `application` a  ON a.`id`             = f.`application_id` ' . ($applicationList !== '' ? " and a.`id` in ({$applicationList}) " : '') . '
-            JOIN `request`     r  ON r.`application_id` = a.`id` ' . ($usecaseList !== '' ? " and r.`usecase_id` in ({$usecaseList}) " : '') . ($requestList !== '' ? " and r.`id` in ({$requestList}) " : '') . '
+            JOIN `request`     r  ON r.`application_id` = f.`application_id` ' . ($usecaseList !== '' ? " and r.`usecase_id` in ({$usecaseList}) " : '') . ($requestList !== '' ? " and r.`id` in ({$requestList}) " : '') . '
             JOIN `coverage`    c  ON c.`request_id`     = r.`id` and c.`file_id`  = f.`id` and c.`covered` = 1
-            WHERE 1
-            GROUP BY a.id, f.filename
-            ORDER BY a.name ASC, f.filename ASC';
+            WHERE 1 ' . ($applicationList !== '' ? " and f.`application_id` in ({$applicationList}) " : '') . '
+            GROUP BY f.application_id, f.filename
+            ORDER BY f.application_id ASC, f.filename ASC';
         $result = $this->mysqli->query($sql);
 
         if (!$result) {
@@ -41,9 +42,12 @@ class Coverage extends AbstractAnalyzer
         }
 
         if ($result->num_rows > 0) {
-            return $result->fetch_all(MYSQLI_ASSOC);
+            $res = $result->fetch_all(MYSQLI_ASSOC);
+            foreach ($res as &$row) {
+                $row['applicationName'] = $applicationsLookup[$row['applicationId']]['name'];
+            }
+            return $res;
         }
-
         return [];
     }
 
