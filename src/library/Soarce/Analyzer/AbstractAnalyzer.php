@@ -33,7 +33,6 @@ abstract class AbstractAnalyzer
 
         $sql .= ' WHERE 1 GROUP BY u.`id` ORDER BY u.`name` ASC';
 
-        $ret = [];
         $result = $this->mysqli->query($sql);
 
         if (!$result) {
@@ -56,7 +55,6 @@ abstract class AbstractAnalyzer
             FROM `application` a
             ' . ($usecaseList !== '' ? "JOIN `request` r on r.`application_id` = a.id and r.`usecase_id` in ({$usecaseList}) " : '') . '
             WHERE 1 GROUP BY a.`id` ORDER BY a.`name` ASC';
-        $ret = [];
         $result = $this->mysqli->query($sql);
 
         if (!$result) {
@@ -85,7 +83,6 @@ abstract class AbstractAnalyzer
                                                                   . ($usecaseList     !== '' ? " and r.`usecase_id`     in ({$usecaseList})     " : '') . '
             JOIN `coverage` c    ON c.`request_id`     = r.`id` ' . ($fileList        !== '' ? " and c.`file_id`        in ({$fileList})        " : '') . '
             WHERE 1 GROUP BY r.`id` ORDER BY `name` ASC';
-        $ret = [];
         $result = $this->mysqli->query($sql);
 
         if (!$result) {

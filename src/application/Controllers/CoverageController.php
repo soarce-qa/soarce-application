@@ -107,10 +107,25 @@ class CoverageController extends WebApplicationController
     {
         $codeCoverageBuilder = $this->container->get(Builder::class);
 
-        $php = new PHP();
+        $coverage = $codeCoverageBuilder->getCodeCoverage($args['application']);
+
+        $queryParams = $request->getQueryParams();
+        $version = $queryParams['version'] ?? 12;
+
+        switch ($version) {
+            case 6:
+                $out = $codeCoverageBuilder->buildV6($coverage, $args['application']);
+                break;
+            case 12:
+                $php = new PHP();
+                $out = $php->process($coverage);
+                break;
+            default:
+                throw new \Exception('Unsupported version ' . $version);
+        }
 
         $response = $response->withHeader('Content-Type', 'application/text')->withHeader('Content-Disposition', 'attachment; filename="soarce-' . $args['application'] . '.cov"');
-        return $response->write($php->process($codeCoverageBuilder->getCodeCoverage($args['application'])));
+        return $response->write($out);
     }
 
 }
