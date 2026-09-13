@@ -6,7 +6,7 @@ RUN pecl install -f -o redis && rm -rf /tmp/pear && docker-php-ext-enable redis.
 
 RUN docker-php-ext-configure intl
 
-RUN docker-php-ext-install mysqli xsl intl
+RUN docker-php-ext-install mysqli xsl intl pdo pdo_mysql
 # RUN docker-php-ext-configure gd --with-jpeg-dir --with-png-dir --with-webp--dir
 # RUN docker-php-ext-install gd
 
