@@ -9,7 +9,7 @@ class Column
         private readonly string  $name = '',
         private readonly bool    $searchable = true,
         private readonly bool    $orderable = true,
-        private readonly ?Search $search)
+        private readonly ?Search $search = null)
     {}
 
     public function getData(): string

@@ -13,4 +13,19 @@ class Order
             throw new \InvalidArgumentException('Invalid order direction');
         }
     }
+
+    public function getColumn(): int
+    {
+        return $this->column;
+    }
+
+    public function getDir(): string
+    {
+        return $this->dir;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
 }

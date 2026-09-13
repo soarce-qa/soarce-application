@@ -8,24 +8,25 @@ use Soarce\DataTables\ServersidePaginatorFilter\Search;
 
 class ServersidePaginatorFilter
 {
-    public static function fromJson(string $json): self
+    public static function fromPost(array $post): self
     {
-        $raw = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
-
-        if (isset($raw['search']['value'])) {
-            $search = new Search($raw['search']['value'], $raw['search']['regex'] ?? false);
+        if (isset($post['search']['value'])) {
+            $searchGlobal = new Search(
+                $post['search']['value'],
+                isset($post['search']['regex']) && strtolower($post['search']['regex']) === 'true'
+            );
         }
 
         $order = [];
-        if (isset($raw['order'])) {
-            foreach ($raw['order'] as $orderRow) {
+        if (isset($post['order'])) {
+            foreach ($post['order'] as $orderRow) {
                 $order[] = new Order($orderRow['column'], $orderRow['dir'], $orderRow['name'] ?? '');
             }
         }
 
         $columns = [];
-        if (isset($raw['columns'])) {
-            foreach ($raw['columns'] as $columnRow) {
+        if (isset($post['columns'])) {
+            foreach ($post['columns'] as $columnRow) {
                 if (isset($columnRow['search']['value'])) {
                     $search = new Search($columnRow['search']['value'], $columnRow['search']['regex'] ?? false);
                 } else {
@@ -43,10 +44,10 @@ class ServersidePaginatorFilter
         }
 
         return new self(
-            $raw['draw'] ?? 0,
-            $raw['start'] ?? 0,
-            $raw['length'] ?? -1,
-            $search ?? null,
+            $post['draw'] ?? 0,
+            $post['start'] ?? 0,
+            $post['length'] ?? -1,
+            $searchGlobal ?? null,
             $order,
             $columns,
         );
@@ -64,7 +65,7 @@ class ServersidePaginatorFilter
         private int     $draw    = 0,
         private int     $start   = 0,
         private int     $length  = -1,
-        private ?Search $search,
+        private ?Search $search  = null,
         private array   $order   = [],
         private array   $columns = []
     ) {}
@@ -105,4 +106,17 @@ class ServersidePaginatorFilter
         return $this->columns;
     }
 
+    public function getOrderSQL(array $columnMap = []): string
+    {
+        $columns = $this->getColumns();
+        $order = [];
+        foreach ($this->getOrder() as $orderColumn) {
+            $column = $columns[$orderColumn->getColumn()];
+            if (!isset($columnMap[$column->getName()])) {
+                throw new \RuntimeException('column name not found in columnMap, cannot map to database columns');
+            }
+            $order[] = $columnMap[$column->getName()] . ' ' . $orderColumn->getDir();
+        }
+        return implode (", ", $order);
+    }
 }
