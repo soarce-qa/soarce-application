@@ -35,6 +35,10 @@ class Database
             $temp = $this->mysqli->query('SELECT count(*) as `TABLE_ROWS` FROM ' . $table['TABLE_NAME'] . ';')->fetch_assoc();
             $table['TABLE_ROWS'] = $temp['TABLE_ROWS'];
 
+            if ($table['TABLE_NAME'] === 'phinxlog') {
+                continue;
+            }
+            
             $temp = $this->mysqli->query('SELECT c.DATA_TYPE FROM information_schema.`COLUMNS` c WHERE c.`TABLE_SCHEMA` = "soarce" AND c.`TABLE_NAME` = "' . $table['TABLE_NAME'] . '" AND c.`COLUMN_NAME`="id";')->fetch_assoc();
             $table['INDEX_PERCENTAGE'] = $table['AUTO_INCREMENT'] / constant('self::MAX_' . strtoupper($temp['DATA_TYPE']));
         }
