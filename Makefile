@@ -32,3 +32,5 @@ deploy: build
 migrate:   # this for post-updates or post-deployment
 	docker compose exec app-soarce /var/www/vendor/bin/phinx migrate -vvv --configuration=/var/www/src/db/phinx.php
 
+up: composer-install migrate
+	docker compose up -d
