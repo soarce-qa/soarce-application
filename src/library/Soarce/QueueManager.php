@@ -22,11 +22,13 @@ class QueueManager
         return $result->fetch_assoc()['id'];
     }
 
-    public function store(string $payload): void
+    public function store(string $payload, ?int $usecaseId = null): void
     {
+        $usecaseId = $usecaseId ?? $this->getActiveUsecaseId();
+
         $this->redis->lPush(
             self::QUEUE,
-            $this->getActiveUsecaseId() . self::SEPARATOR . $payload
+            $usecaseId . self::SEPARATOR . $payload
         );
     }
 

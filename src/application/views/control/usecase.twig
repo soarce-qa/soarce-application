@@ -41,7 +41,8 @@
                             <td>
                                 <form action="/control/usecases/{{ usecase.id }}" method="post">
                                     <div class="btn-group">
-                                        <button type="submit" name="action" value="activate"  class="btn btn-sm btn-success {% if usecase.active %}disabled"  disabled="disabled{% endif %}"><i class="fa fa-play"></i> activate</button>
+                                        <button type="submit" name="action" value="activate" class="btn btn-sm btn-success {% if usecase.active %}disabled"  disabled="disabled{% endif %}"><i class="fa fa-play"></i> activate</button>
+                                        <button type="submit" name="action" value="recalculate" class="btn btn-sm btn-primary {% if usecase.active %}disabled"  disabled="disabled{% endif %}"><i class="fa fa-file fa-file-lines"></i> recalculate</button>
                                         <button type="button" data-toggle="modal" data-target="#restartModal"  data-formaction="/control/usecases/{{ usecase.id }}" class="btn btn-sm btn-warning"><i class="fas fa-redo"></i> restart</button>
                                         <button type="button" data-toggle="modal" data-target="#deleteModal"   data-formaction="/control/usecases/{{ usecase.id }}" class="btn btn-sm btn-danger" ><i class="fa fa-trash"></i> delete</button>
                                     </div>

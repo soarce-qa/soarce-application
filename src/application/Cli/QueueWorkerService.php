@@ -82,6 +82,10 @@ class QueueWorkerService
                 $this->coverageReceiver->persist($usecase, $json);
                 $this->output->writeln('processed coverage for usecase ' . $usecase);
                 return;
+            case 'update_materialized_view':
+                $this->coverageReceiver->updateMaterializedView($usecase);
+                $this->output->writeln('updated materialized view for usecase ' . $usecase);
+                return;
             default:
                 throw new \RuntimeException('Unsupported header type');
         }

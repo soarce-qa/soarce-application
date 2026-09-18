@@ -97,6 +97,9 @@ class ControlController extends WebApplicationController
                 case 'delete':
                     $usecaseControl->delete($usecase);
                     break;
+                case 'recalculate':
+                    $usecaseControl->recalculate($usecase);
+                    break;
             }
         }
 
