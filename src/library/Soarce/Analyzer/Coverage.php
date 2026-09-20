@@ -5,36 +5,120 @@ namespace Soarce\Analyzer;
 use mysqli;
 use Soarce\Control\Service;
 use Soarce\Control\Service\FileContent;
+use Soarce\DataTables\ServersidePaginatorFilter;
 
 class Coverage extends AbstractAnalyzer
 {
+    private const COLUMN_MAP = [
+        'file' => 'fileName',
+        'lines' => 'lines',
+        'totalCoveredLines' => 'totalCoverage',
+        'totalPercentageNumber' => 'totalCoveragePercent',
+    ];
+
     public function __construct(mysqli $mysqli, private Service $service)
     {
         parent::__construct($mysqli);
     }
 
-    /**
-     * @param int[] $applications
-     * @param int[] $usecases
-     * @param int[] $requests
-     * @return array
-     */
-    public function getFiles(array $applications = [], array $usecases = [], array $requests = []): array
+    public function getTotalFileCount(): int
     {
-        $applicationList = $this->buildInStatementBody($applications);
-        $usecaseList     = $this->buildInStatementBody($usecases);
-        $requestList     = $this->buildInStatementBody($requests);
+        $sql = "SELECT count(*) as `totalFileCount` FROM `file`";
+        $result = $this->mysqli->query($sql);
+        $row = $result->fetch_assoc();
+        return $row['totalFileCount'];
+    }
 
-        $applicationsLookup = $this->getAppplications();
+    public function getFilteredFileCount(array $applications = [], array $usecases = [], array $requests = [], ?ServersidePaginatorFilter $serversidePaginatorFilter = null): int
+    {
+        $query = $this->buildQuery($applications, $usecases, $requests, $serversidePaginatorFilter);
+        $query = str_replace('%%%FIELDS%%%', 'count(*) as `filteredFileCount`', $query);
+        $result = $this->mysqli->query($query);
+        $row = $result->fetch_assoc();
+        return $row['filteredFileCount'];
+    }
 
-        $sql = 'SELECT f.`application_id` as `applicationId`, any_value(f.`id`) as `fileId`, f.`filename` as `fileName`,
-                COUNT(distinct c.`line`) as `coveredLines`, any_value(f.`lines`) as `lines`
-            FROM `file`        f
-            JOIN `request`     r  ON r.`application_id` = f.`application_id` ' . ($usecaseList !== '' ? " and r.`usecase_id` in ({$usecaseList}) " : '') . ($requestList !== '' ? " and r.`id` in ({$requestList}) " : '') . '
-            JOIN `coverage`    c  ON c.`request_id`     = r.`id` and c.`file_id`  = f.`id` and c.`covered` = 1
-            WHERE 1 ' . ($applicationList !== '' ? " and f.`application_id` in ({$applicationList}) " : '') . '
-            GROUP BY f.application_id, f.filename
-            ORDER BY f.application_id ASC, f.filename ASC';
+    private function buildQuery(array $applications = [], array $usecases = [], array $requests = [], ?ServersidePaginatorFilter $serversidePaginatorFilter = null): string
+    {
+        $sql = "SELECT %%%FIELDS%%% FROM `file` f ";
+        $where = '1 ';
+
+        if (count($applications) > 0) {
+            $applicationList = $this->buildInStatementBody($applications);
+            $where .= " AND f.`application_id` IN ($applicationList) ";
+        }
+
+        if (count($usecases) > 0 && count($requests) === 0) {
+            $requests = $this->getRequestIdsFromUsecases($usecases);
+        }
+
+        if (count($requests) > 0) {
+            $requestList = $this->buildInStatementBody($requests);
+            $subSql2 = "SELECT DISTINCT c.`file_id` from `coverage` c where c.`request_id` IN ($requestList)";
+            $result = $this->mysqli->query($subSql2)->fetch_all(MYSQLI_ASSOC);
+            $fileIds = array_column($result, 'file_id');
+            $fileIdList = $this->buildInStatementBody($fileIds);
+            $where .= " AND f.`id` IN ($fileIdList)";
+        }
+
+        return $sql . ' WHERE ' . $where;
+    }
+
+    public function getFiles(array $applications = [], array $usecases = [], array $requests = [], ?ServersidePaginatorFilter $serversidePaginatorFilter = null): array
+    {
+        $query = $this->buildQuery($applications, $usecases, $requests, $serversidePaginatorFilter);
+        $query = str_replace('%%%FIELDS%%%', 'f.`application_id` as `applicationId`, f.`id` as `fileId`, f.`filename` as `fileName`, f.`lines` as `lines`, f.`total_coverage` as `totalCoverage`, f.`total_coverage_percent` as `totalCoveragePercent`', $query);
+
+        if ($serversidePaginatorFilter instanceof ServersidePaginatorFilter) {
+            $query .= " ORDER BY " . $serversidePaginatorFilter->getOrderSQL(self::COLUMN_MAP)
+                . " LIMIT " . min($serversidePaginatorFilter->getLength(), 1000)
+                . " OFFSET " . $serversidePaginatorFilter->getStart();
+        }
+
+        $result = $this->mysqli->query($query);
+
+        if (!$result) {
+            throw new AnalyzerException($this->mysqli->error, $this->mysqli->errno);
+        }
+
+
+        if ($result->num_rows > 0) {
+            $applicationsLookup = $this->getAppplications();
+            $res = $result->fetch_all(MYSQLI_ASSOC);
+            $coverageForFiles = $this->filteredCoverageForFiles(
+                array_column($res, 'fileId'),
+                $usecases,
+                $requests
+            );
+            foreach ($res as &$row) {
+                $row['applicationName'] = $applicationsLookup[$row['applicationId']]['name'];
+                $row['filteredCoveredLines'] = $coverageForFiles[$row['fileId']];
+                $row['filteredCoveredPercent'] = number_format(($coverageForFiles[$row['fileId']] / $row['lines']) * 100, 2);
+            }
+            return $res;
+        }
+        return [];
+    }
+
+    public function filteredCoverageForFiles(array $fileIds = [], array $usecases = [], array $requests = []): array
+    {
+        if (count($usecases) > 0 && count($requests) === 0) {
+            $requests = $this->getRequestIdsFromUsecases($usecases);
+        }
+
+        $fileList    = $this->buildInStatementBody($fileIds);
+
+        $sql = 'SELECT c.`file_id` as `fileId`, COUNT(distinct c.`line`) as `filteredCoveredLines`
+            FROM `coverage` c
+            WHERE c.`file_id` IN (' . $fileList . ') and c.`covered` = 1';
+
+        if (count($requests) > 0) {
+            $requestList = $this->buildInStatementBody($requests);
+            $sql .= ' and c.`request_id` IN (' . $requestList . ') ';
+        }
+
+        $sql .= ' GROUP BY c.`file_id`';
+
         $result = $this->mysqli->query($sql);
 
         if (!$result) {
@@ -42,15 +126,10 @@ class Coverage extends AbstractAnalyzer
         }
 
         if ($result->num_rows > 0) {
-            $res = $result->fetch_all(MYSQLI_ASSOC);
-            foreach ($res as &$row) {
-                $row['applicationName'] = $applicationsLookup[$row['applicationId']]['name'];
-            }
-            return $res;
+            return array_column($result->fetch_all(MYSQLI_ASSOC), 'filteredCoveredLines', 'fileId');
         }
         return [];
     }
-
     /**
      * @param int $fileId
      * @return FileContent
@@ -191,5 +270,12 @@ class Coverage extends AbstractAnalyzer
             ';
 
         return $this->mysqli->query($sql)->fetch_all(MYSQLI_ASSOC);
+    }
+    private function getRequestIdsFromUsecases(array $usecases): array
+    {
+        $usecaseList = $this->buildInStatementBody($usecases);
+        $subSql = "SELECT DISTINCT r.`id` from `request` r where r.`usecase_id` IN ($usecaseList)";
+        $result = $this->mysqli->query($subSql)->fetch_all(MYSQLI_ASSOC);
+        return array_column($result, 'id');
     }
 }

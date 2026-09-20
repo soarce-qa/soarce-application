@@ -115,7 +115,7 @@ class ServersidePaginatorFilter
             if (!isset($columnMap[$column->getName()])) {
                 throw new \RuntimeException('column name not found in columnMap, cannot map to database columns');
             }
-            $order[] = $columnMap[$column->getName()] . ' ' . $orderColumn->getDir();
+            $order[] = '`' . $columnMap[$column->getName()] . '` ' . $orderColumn->getDir();
         }
         return implode (", ", $order);
     }

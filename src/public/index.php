@@ -41,6 +41,7 @@ try {
     $app->group('/coverage',   function(RouteCollectorProxy $group) {
         $group->get('',                                       CoverageController::class . ':index');
         $group->get('/files',                                 CoverageController::class . ':files');
+        $group->any('/filesAjax',                             CoverageController::class . ':filesAjax');
         $group->get('/file/{file:[0-9]+}',                    CoverageController::class . ':file');
         $group->get('/file/{file:[0-9]+}/line/{line:[0-9]+}', CoverageController::class . ':line');
         $group->get('/export/{application}',                  CoverageController::class . ':export');
