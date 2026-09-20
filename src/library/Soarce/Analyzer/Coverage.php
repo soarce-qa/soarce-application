@@ -61,6 +61,10 @@ class Coverage extends AbstractAnalyzer
             $where .= " AND f.`id` IN ($fileIdList)";
         }
 
+        if ($serversidePaginatorFilter->getSearch()->getValue() !== '') {
+            $where .= " AND f.`filename` LIKE '%" . $serversidePaginatorFilter->getSearch()->getValue() . "%'";
+        }
+        
         return $sql . ' WHERE ' . $where;
     }
 
