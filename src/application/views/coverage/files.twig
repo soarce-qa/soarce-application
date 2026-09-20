@@ -18,6 +18,7 @@
         The list can be filtered with the following controls:</p>
 
     {% embed "filterbox.twig" %}
+        {% block action %}/coverage/files{% endblock %}
         {% block filters %}
         {% import 'controls.twig' as controls %}
         <div class="form-group">
@@ -55,53 +56,25 @@
                             <th>application</th>
                             <th>file</th>
                             <th>lines</th>
-                            <th>lines covered</th>
-                            <th>---</th>
-                            <th>%</th>
+                            <th>total lines covered</th>
+                            <th style="width: 160px">---</th>
+                            <th>total %</th>
+                            <th>filtered lines covered</th>
+                            <th style="width: 160px">---</th>
+                            <th>filtered %</th>
                         </tr>
                     </thead>
-                    <tbody>
-                    {% for file in files %}
-                        {% if file.lines != 0 %}
-                            {% set percentage = file.coveredLines / file.lines %}
-                        {% else %}
-                            {% set percentage = 1 %}
-                        {% endif %}
-
-                        {% if percentage < 0.5 %}
-                            {% set color = "red" %}
-                        {% elseif percentage < 0.75 %}
-                            {% set color = "yellow" %}
-                        {% else %}
-                            {% set color = "green" %}
-                        {% endif %}
-
-
-
-                        <tr>
-                            <td>{{ file.applicationName }}</td>
-                            <td>
-                                <a href="/coverage/file/{{ file.fileId }}?{{ {'applicationId': applicationIds, 'usecaseId': usecaseIds, 'requestId': requestIds}|url_encode }}">
-                                    {{ file.fileName | stripCommonPath(services[file.applicationName].commonPath) }}
-                                </a>
-                            </td>
-                            <td style="text-align: right">{{ file.lines }}</td>
-                            <td style="text-align: right">{{ file.coveredLines }}</td>
-                            <td style="text-align: right; width: 160px"><div class="progress progress-xs">
-                                    <div class="progress-bar progress-bar-{{ color }}" style="width: {{ (percentage * 100)|number_format(1) }}%"></div>
-                                </div></td>
-                            <td style="text-align: center"><span class="badge bg-{{ color }}">{{ (percentage * 100)|number_format }}%</span></td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
                     <tfoot>
                         <tr>
                             <th>application</th>
                             <th>file</th>
                             <th>lines</th>
-                            <th>lines covered</th>
+                            <th>total lines covered</th>
                             <th>---</th>
-                            <th>%</th>
+                            <th>total %</th>
+                            <th>filtered lines covered</th>
+                            <th>---</th>
+                            <th>filtered %</th>
                         </tr>
                     </tfoot>
                 </table>
@@ -115,8 +88,23 @@
 
 {% block pageEnd %}
     <script>
+        function coverageColor(percentage) {
+            if (percentage < 50) {
+                return 'red';
+            } else if (percentage < 75) {
+                return 'yellow';
+            } else {
+                return 'green';
+            }
+        }
+
         $(function () {
             $('#filesTable').DataTable({
+                'serverSide'  : true,
+                'ajax'        : {
+                    url: '/coverage/filesAjax?{{ queryString|raw }}',
+                    type: 'POST'
+                },
                 'paging'      : true,
                 'pageLength'  : 25,
                 'lengthChange': true,
@@ -124,7 +112,37 @@
                 'searching'   : true,
                 'ordering'    : true,
                 'info'        : true,
-                'autoWidth'   : true
+                'autoWidth'   : true,
+                order: [[ 1, 'asc' ]],
+                columnDefs: [
+                    {
+                        render: function (data, type, row) {
+                            return '<a href="' + row.url + '">' + data + '</a>';
+                        },
+                        targets: 1
+                    },{
+                        render: function (data, type, row) {
+                            return '<div class="progress progress-xs"><div class="progress-bar progress-bar-' + coverageColor(data) + '" style="width: ' + data + '%"></div></div>';
+                        },
+                        targets: [4, 7]
+                    },{
+                        render: function (data, type, row) {
+                            return '<span class="badge bg-' + coverageColor(data) + '">' + data + '%</span>';
+                        },
+                        targets: [5, 8]
+                    }
+                ],
+                columns: [
+                    { data: 'application', name: 'application', searchable: false, orderable: false },
+                    { data: 'file', name: 'file', searchable: true, orderable: true },
+                    { data: 'lines', name: 'lines', searchable: false, orderable: true, type: 'num', className: 'text-right' },
+                    { data: 'totalCoveredLines', name: 'totalCoveredLines', searchable: false, orderable: true, type: 'num', className: 'text-right' },
+                    { data: 'totalPercentageBar', name: 'totalPercentageBar', searchable: false, orderable: false },
+                    { data: 'totalPercentageNumber', name: 'totalPercentageNumber', searchable: false, orderable: true, type: 'num', className: 'text-center' },
+                    { data: 'filteredCoveredLines', name: 'filteredCoveredLines', searchable: false, orderable: false, type: 'num', className: 'text-right' },
+                    { data: 'filteredPercentageBar', name: 'filteredPercentageBar', searchable: false, orderable: false },
+                    { data: 'filteredPercentageNumber', name: 'filteredPercentageNumber', searchable: false, orderable: false, type: 'num', className: 'text-center' }
+                ]
             });
 
             $('.select2').select2();

@@ -5,7 +5,7 @@ namespace UnitTests;
 use Soarce\Config;
 use Soarce\Filter\PathFilter;
 
-class PathFilterTest extends \PHPUnit\Framework\TestCase{
+class PathFilterTest extends \PHPUnit\Framework\TestCase {
     private const CONFIG = <<<JSON
 {
   "services": {

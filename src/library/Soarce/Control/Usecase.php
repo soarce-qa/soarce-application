@@ -4,10 +4,11 @@ namespace Soarce\Control;
 
 use mysqli;
 use mysqli_sql_exception;
+use Soarce\QueueManager;
 
 class Usecase
 {
-    public function __construct(protected mysqli $mysqli)
+    public function __construct(protected mysqli $mysqli, protected QueueManager $queueManager)
     {}
 
     /**
@@ -59,6 +60,12 @@ class Usecase
 
     public function activate(int|string $usecaseNameOrId): void
     {
+        // On switch of usesecases queue a job for recalculation of coverage for the previous usecase.
+        $previousActiveId = $this->mysqli->query("SELECT `id` FROM `usecase` WHERE `active` = 1 LIMIT 1")->fetch_assoc();
+        if ([] !== $previousActiveId) {
+            $this->recalculate($previousActiveId['id']);
+        }
+
         $this->mysqli->query('UPDATE `usecase` SET active = null WHERE 1;');
         if (is_numeric($usecaseNameOrId)) {
             $this->mysqli->query('UPDATE `usecase` SET active = 1 WHERE `id` = "' . mysqli_real_escape_string($this->mysqli, $usecaseNameOrId) . '";');
@@ -83,6 +90,17 @@ class Usecase
             die($this->mysqli->error);
         }
         $this->activate($usecaseNameOrId);
+    }
+
+    public function recalculate(int $usecaseId): void
+    {
+        $json = [
+            'header' => [
+                'type' => 'update_materialized_view'
+            ],
+            'payload' => [],
+        ];
+        $this->queueManager->store(json_encode($json, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR), $usecaseId);
     }
 
     public function createOrRestart(string $usecaseNameOrId): void

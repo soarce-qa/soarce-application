@@ -59,4 +59,31 @@ class CoverageReceiver extends ReceiverAbstract
 
         $this->mysqli->query($sql);
     }
+
+    public function updateMaterializedView(int $usecaseId): void
+    {
+        sleep(2); // to prevent racing conditions, when another worker might still process incoming coverage of the same usecase.
+        $requestIds = $this->mysqli->query("SELECT id FROM request WHERE usecase_id = {$usecaseId}")->fetch_all(MYSQLI_ASSOC);
+        $requestIds = array_column($requestIds, 'id');
+
+        $fileIds = $this->mysqli->query("SELECT DISTINCT file_id FROM coverage WHERE request_id IN (" . implode(", ", $requestIds) . ")")->fetch_all(MYSQLI_ASSOC);
+        $fileIds = array_column($fileIds, 'file_id');
+
+        $chunks = array_chunk($fileIds, 1000);
+        foreach ($chunks as $chunk) {
+            $this->updateMaterializedViewBatch($chunk);
+        }
+    }
+
+    private function updateMaterializedViewBatch(array $fileIds): void
+    {
+        $sql = "UPDATE file f
+            set f.total_coverage = (SELECT count(distinct c.line) from coverage c where c.file_id = f.id and c.covered=1),
+                f.`lines` = (SELECT count(distinct c.line) from coverage c where c.file_id = f.id)
+            where f.id in (" . implode(", ", $fileIds) . ")";
+        $this->mysqli->query($sql);
+
+        $sql = "UPDATE file f set total_coverage_percent = (f.total_coverage / f.lines) * 100 where f.id in (" . implode(", ", $fileIds) . ")";
+        $this->mysqli->query($sql);
+    }
 }

@@ -2,12 +2,14 @@
 
 namespace Soarce\Application\Controllers;
 
+use MongoDB\Driver\Server;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SebastianBergmann\CodeCoverage\Report\PHP;
 use Soarce\Analyzer\Coverage;
 use Soarce\CodeCoverage\Builder;
 use Soarce\Config;
+use Soarce\DataTables\ServersidePaginatorFilter;
 use Soarce\Mvc\WebApplicationController;
 
 class CoverageController extends WebApplicationController
@@ -34,14 +36,54 @@ class CoverageController extends WebApplicationController
         $viewParams = [
             'applications'   => $analyzer->getAppplications($usecaseIds),
             'applicationIds' => $applicationIds,
-            'usecases'       => $analyzer->getUsecases(),
+            'usecases'       => $analyzer->getUsecases([], [], $applicationIds),
             'usecaseIds'     => $usecaseIds,
             'requests'       => $analyzer->getRequests($usecaseIds, $applicationIds),
             'requestIds'     => $requestIds,
-            'files'          => $analyzer->getFiles($applicationIds, $usecaseIds, $requestIds),
             'services'       => $this->container->get(Config::class)->getServices(),
+            'queryString'    => http_build_query($request->getQueryParams()),
         ];
         return $this->view->render($response, 'coverage/files.twig', $viewParams);
+    }
+
+    public function filesAjax(Request $request, Response $response, array $args): Response
+    {
+        $dtRequest = ServersidePaginatorFilter::fromPost($request->getParsedBody());
+        $analyzer = $this->container->get(Coverage::class);
+
+        $queryParams = $request->getQueryParams();
+
+        $applicationIds = $queryParams['applicationId'] ?? [];
+        $usecaseIds     = $queryParams['usecaseId']     ?? [];
+        $requestIds     = $queryParams['requestId']     ?? [];
+
+        $files = $analyzer->getFiles($applicationIds, $usecaseIds, $requestIds, $dtRequest);
+
+        $data = [];
+        foreach ($files as $file) {
+            $data[] = [
+                'url' => '/coverage/file/' . $file['fileId'] . '?' . http_build_query($queryParams),
+                'application' => $file['applicationName'],
+                'file' => $file['fileName'],
+                'lines' => $file['lines'],
+                'totalCoveredLines' => $file['totalCoverage'],
+                'totalPercentageBar' => $file['totalCoveragePercent'],
+                'totalPercentageNumber' => $file['totalCoveragePercent'],
+                'filteredCoveredLines' => $file['filteredCoveredLines'],
+                'filteredPercentageBar' => $file['filteredCoveredPercent'],
+                'filteredPercentageNumber' => $file['filteredCoveredPercent'],
+            ];
+        }
+
+        $return = new \Soarce\DataTables\Response(
+            $dtRequest->getDraw(),
+            $analyzer->getTotalFileCount(),
+            $analyzer->getFilteredFileCount($applicationIds, $usecaseIds, $requestIds, $dtRequest),
+            $data,
+            ""
+        );
+
+        return $response->write($return->toJson());
     }
 
     public function file(Request $request, Response $response, array $params): Response

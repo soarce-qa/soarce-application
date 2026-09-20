@@ -19,7 +19,7 @@
                 <h3 class="card-title">Control Usecases Manually</h3>
             </div>
             <div class="card-body">
-                <table id="filesTable" class="table table-bordered table-hover">
+                <table id="usecaseTable" class="table table-bordered table-hover">
                     <thead>
                         <tr>
                             <th>id</th>
@@ -32,7 +32,7 @@
                     </thead>
                     <tbody>
                     {% for usecase in usecases %}
-                        <tr>
+                        <tr {% if usecase.active %}class="table-active"{% endif %}>
                             <th>{{ usecase.id }}</th>
                             <td>{{ usecase.name }}</td>
                             <td style="text-align: right;">{{ usecase.requests }}</td>
@@ -41,7 +41,8 @@
                             <td>
                                 <form action="/control/usecases/{{ usecase.id }}" method="post">
                                     <div class="btn-group">
-                                        <button type="submit" name="action" value="activate"  class="btn btn-sm btn-success {% if usecase.active %}disabled"  disabled="disabled{% endif %}"><i class="fa fa-play"></i> activate</button>
+                                        <button type="submit" name="action" value="activate" class="btn btn-sm btn-success {% if usecase.active %}disabled"  disabled="disabled{% endif %}"><i class="fa fa-play"></i> activate</button>
+                                        <button type="submit" name="action" value="recalculate" class="btn btn-sm btn-primary {% if usecase.active %}disabled"  disabled="disabled{% endif %}"><i class="fa fa-file fa-file-lines"></i> recalculate</button>
                                         <button type="button" data-toggle="modal" data-target="#restartModal"  data-formaction="/control/usecases/{{ usecase.id }}" class="btn btn-sm btn-warning"><i class="fas fa-redo"></i> restart</button>
                                         <button type="button" data-toggle="modal" data-target="#deleteModal"   data-formaction="/control/usecases/{{ usecase.id }}" class="btn btn-sm btn-danger" ><i class="fa fa-trash"></i> delete</button>
                                     </div>
@@ -53,7 +54,7 @@
                 </table>
             </div>
             <div class="card-footer with-border">
-                <i class="fa fa-refresh"></i><strong> Restart</strong> will delete all requests and their data<br>
+                <i class="fa fa-redo"></i><strong> Restart</strong> will delete all requests and their data<br>
                 <i class="fa fa-trash"></i><strong> Delete</strong>    will delete the usecase as well
             </div>
         </div>
@@ -109,4 +110,22 @@
     'actionName':  'action',
     'actionValue': 'delete',
 } %}
+
+    <script>
+        $(function () {
+            $('#usecaseTable').DataTable({
+                'paging'      : true,
+                'pageLength'  : 25,
+                'lengthChange': true,
+                "lengthMenu": [ 10, 25, 50, 100, 250 ],
+                'searching'   : true,
+                'ordering'    : true,
+                'info'        : true,
+                'autoWidth'   : true
+            });
+
+            $('.select2').select2();
+        })
+    </script>
+
 {% endblock %}
