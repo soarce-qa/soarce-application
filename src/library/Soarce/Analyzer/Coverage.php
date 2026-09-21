@@ -264,7 +264,7 @@ class Coverage extends AbstractAnalyzer
         $applicationsLookup = $this->getAppplications();
 
         $sql = 'SELECT
-            f.application_id,
+            f.application_id as `id`,
             SUM(f.lines) as total_lines,
             count(*)     as `files`,
             SUM(f.total_coverage) as total_covered
@@ -275,7 +275,7 @@ class Coverage extends AbstractAnalyzer
         $ret = $this->mysqli->query($sql)->fetch_all(MYSQLI_ASSOC);
 
         foreach ($ret as &$row) {
-            $row['name'] = $applicationsLookup[$row['application_id']]['name'];
+            $row['name'] = $applicationsLookup[$row['id']]['name'];
         }
 
         return $ret;
