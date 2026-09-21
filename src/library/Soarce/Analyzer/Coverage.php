@@ -249,9 +249,7 @@ class Coverage extends AbstractAnalyzer
 
     public function getTotalCoveragePercentage(): float
     {
-        $sql = 'SELECT
-            (SELECT SUM(f.lines) from `file` f) as total_lines,
-            (SELECT COUNT(DISTINCT c.file_id, c.line) from `coverage` c WHERE c.covered = 1) as total_covered';
+        $sql = 'SELECT SUM(f.lines) as `total_lines`, SUM(f.total_coverage) as `total_covered` FROM file f WHERE 1';
 
         $result = $this->mysqli->query($sql)->fetch_assoc();
 
