@@ -249,9 +249,7 @@ class Coverage extends AbstractAnalyzer
 
     public function getTotalCoveragePercentage(): float
     {
-        $sql = 'SELECT
-            (SELECT SUM(f.lines) from `file` f) as total_lines,
-            (SELECT COUNT(DISTINCT c.file_id, c.line) from `coverage` c WHERE c.covered = 1) as total_covered';
+        $sql = 'SELECT SUM(f.lines) as `total_lines`, SUM(f.total_coverage) as `total_covered` FROM file f WHERE 1';
 
         $result = $this->mysqli->query($sql)->fetch_assoc();
 
@@ -263,17 +261,24 @@ class Coverage extends AbstractAnalyzer
 
     public function getApplicationStats(): array
     {
-        $sql = 'SELECT
-            a.id, a.`name`, 
-            (SELECT SUM(f.lines) from `file` f where f.application_id = a.id) as total_lines,
-            (SELECT count(*) from `file` f where f.application_id = a.id) as `files`,
-            (SELECT COUNT(DISTINCT c.file_id, c.line) from `coverage` c join `file` f on c.file_id = f.id WHERE c.covered = 1 and f.application_id = a.id) as total_covered
-            from application a
-            where true
-            order by a.`name`
-            ';
+        $applicationsLookup = $this->getAppplications();
 
-        return $this->mysqli->query($sql)->fetch_all(MYSQLI_ASSOC);
+        $sql = 'SELECT
+            f.application_id as `id`,
+            SUM(f.lines) as total_lines,
+            count(*)     as `files`,
+            SUM(f.total_coverage) as total_covered
+            from file f
+            where true
+            group by f.application_id';
+
+        $ret = $this->mysqli->query($sql)->fetch_all(MYSQLI_ASSOC);
+
+        foreach ($ret as &$row) {
+            $row['name'] = $applicationsLookup[$row['id']]['name'];
+        }
+
+        return $ret;
     }
     private function getRequestIdsFromUsecases(array $usecases): array
     {

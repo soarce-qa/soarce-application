@@ -79,6 +79,7 @@ return $coverage;';
 
     private function collectCoverageFromDb(int $applicationId, int $usecaseId): array
     {
+        // 4.0 sec total with this SQL in a test db. tried subquery (4.4sec), and separate query (7.5s) - so this is currently the fastest implementation.
         $sql = "SELECT any_value(f.filename) as `filename`, c.line, max(c.covered) as `covered` 
             FROM `file` f
                 JOIN coverage c ON f.id = c.file_id

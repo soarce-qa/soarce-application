@@ -18,7 +18,7 @@ class CoverageController extends WebApplicationController
     {
         $analyzer = $this->container->get(Coverage::class);
         $viewParams = [
-            'applications'   => $analyzer->getApplicationStats(),
+            'applications' => $analyzer->getApplicationStats(),
         ];
         return $this->view->render($response, 'coverage/index.twig', $viewParams);
     }
