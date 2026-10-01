@@ -32,7 +32,7 @@ class CoverageReceiver extends ReceiverAbstract
         );
 
         foreach ($payload as $filename => $coveredLines) {
-            $this->storeCoverageForOneFile($filename, $coveredLines);
+            $this->storeCoverageForOneFile($filename, $coveredLines, $filter['skip_unused_lines'] ?? false);
         }
     }
 
@@ -40,7 +40,7 @@ class CoverageReceiver extends ReceiverAbstract
      * @param string $filename
      * @param int[] $coveredLines
      */
-    private function storeCoverageForOneFile(string $filename, array $coveredLines): void
+    private function storeCoverageForOneFile(string $filename, array $coveredLines, bool $skipUnusedLines = false): void
     {
         if (str_contains($filename, "eval()'d code")) {
             return;
@@ -51,6 +51,9 @@ class CoverageReceiver extends ReceiverAbstract
 
         $rows = [];
         foreach ($coveredLines as $line => $covered) {
+            if ($skipUnusedLines && $covered != 1) {
+                continue;
+            }
             $rows[] = "({$fileId}, {$requestId}, {$line}, {$covered})";
         }
 

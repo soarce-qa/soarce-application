@@ -20,6 +20,7 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('/var/www/html', $service->getCommonPath());
         $this->assertEquals('yo-mama!', $service->getPresharedSecret());
         $this->assertEquals([
+            "skip_unused_lines" => true,
             "allow" => [
                 "/var/www/html/src/application/",
                 "/var/www/html/vendor/",

@@ -6,6 +6,7 @@
       "common_path": "/var/www/html",
       "preshared_secret": "yo-mama!",
       "filters": {
+        "skip_unused_lines": true,
         "allow": [
           "/var/www/html/src/application/",
           "/var/www/html/vendor/",
