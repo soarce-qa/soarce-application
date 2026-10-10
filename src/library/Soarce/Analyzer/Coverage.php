@@ -55,10 +55,13 @@ class Coverage extends AbstractAnalyzer
         if (count($requests) > 0) {
             $requestList = $this->buildInStatementBody($requests);
             $subSql2 = "SELECT DISTINCT c.`file_id` from `coverage` c where c.`request_id` IN ($requestList)";
+
             $result = $this->mysqli->query($subSql2)->fetch_all(MYSQLI_ASSOC);
-            $fileIds = array_column($result, 'file_id');
-            $fileIdList = $this->buildInStatementBody($fileIds);
-            $where .= " AND f.`id` IN ($fileIdList)";
+            if (count($result) > 0) {
+                $fileIds = array_column($result, 'file_id');
+                $fileIdList = $this->buildInStatementBody($fileIds);
+                $where .= " AND f.`id` IN ($fileIdList)";
+            }
         }
 
         if ($serversidePaginatorFilter->getSearch()->getValue() !== '') {
@@ -78,6 +81,8 @@ class Coverage extends AbstractAnalyzer
                 . " LIMIT " . min($serversidePaginatorFilter->getLength(), 1000)
                 . " OFFSET " . $serversidePaginatorFilter->getStart();
         }
+
+        #echo $query; die();
 
         $result = $this->mysqli->query($query);
 

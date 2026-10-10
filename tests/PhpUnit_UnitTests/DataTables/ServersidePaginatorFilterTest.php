@@ -30,7 +30,7 @@ class ServersidePaginatorFilterTest extends TestCase {
 
         $spf = ServersidePaginatorFilter::fromPost($post);
 
-        $this->assertEquals('application_id asc, coverage desc', $spf->getOrderSQL([
+        $this->assertEquals('`application_id` asc, `coverage` desc', $spf->getOrderSQL([
             'application' => 'application_id',
             'percentageBar' => 'coverage',
         ]));

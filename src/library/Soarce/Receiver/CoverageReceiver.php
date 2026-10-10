@@ -16,7 +16,8 @@ class CoverageReceiver extends ReceiverAbstract
         $payload = $json['payload'];
         $this->fileMd5Hashes = $json['md5'] ?? [];
 
-        $filter = PathFilter::fromServiceConfig($this->config->getService($header['host']));
+        $serviceConfig = $this->config->getService($header['host']);
+        $filter = PathFilter::fromServiceConfig($serviceConfig);
         $payload = $filter->filterArrayKeys($payload);
 
         $this->createApplication($header['host']);
@@ -32,15 +33,14 @@ class CoverageReceiver extends ReceiverAbstract
         );
 
         foreach ($payload as $filename => $coveredLines) {
-            $this->storeCoverageForOneFile($filename, $coveredLines);
+            $this->storeCoverageForOneFile($filename, $coveredLines, $serviceConfig->getFilters()['skip_unused_lines'] ?? false);
         }
     }
 
     /**
-     * @param string $filename
      * @param int[] $coveredLines
      */
-    private function storeCoverageForOneFile(string $filename, array $coveredLines): void
+    private function storeCoverageForOneFile(string $filename, array $coveredLines, bool $skipUnusedLines = false): void
     {
         if (str_contains($filename, "eval()'d code")) {
             return;
@@ -51,13 +51,17 @@ class CoverageReceiver extends ReceiverAbstract
 
         $rows = [];
         foreach ($coveredLines as $line => $covered) {
+            if ($skipUnusedLines && $covered < 1) {
+                continue;
+            }
             $rows[] = "({$fileId}, {$requestId}, {$line}, {$covered})";
         }
 
-        $sql = 'INSERT IGNORE INTO `coverage` (`file_id`, `request_id`, `line`, `covered`) VALUES ';
-        $sql .= implode(', ', $rows);
-
-        $this->mysqli->query($sql);
+        if ($rows !== []) {
+            $sql = 'INSERT IGNORE INTO `coverage` (`file_id`, `request_id`, `line`, `covered`) VALUES ';
+            $sql .= implode(', ', $rows);
+            $this->mysqli->query($sql);
+        }
     }
 
     public function updateMaterializedView(int $usecaseId): void
@@ -77,6 +81,10 @@ class CoverageReceiver extends ReceiverAbstract
 
     private function updateMaterializedViewBatch(array $fileIds): void
     {
+        if ($fileIds === []) {
+            return;
+        }
+
         $sql = "UPDATE file f
             set f.total_coverage = (SELECT count(distinct c.line) from coverage c where c.file_id = f.id and c.covered=1),
                 f.`lines` = (SELECT count(distinct c.line) from coverage c where c.file_id = f.id)
