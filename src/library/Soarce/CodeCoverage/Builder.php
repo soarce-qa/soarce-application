@@ -2,9 +2,12 @@
 
 namespace Soarce\CodeCoverage;
 
+use ReflectionClass;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Data\ProcessedCodeCoverageData;
 use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
+use SebastianBergmann\CodeCoverage\Driver\Driver;
+use SebastianBergmann\CodeCoverage\Driver\XdebugDriver;
 use SebastianBergmann\CodeCoverage\Filter;
 use Soarce\Analyzer\Coverage;
 use Soarce\CodeCoverage\Driver\DummyDriver;
@@ -16,9 +19,13 @@ class Builder
 
     public function getCodeCoverage(int|string $applicationId): CodeCoverage
     {
+        $filter = new Filter();
+
+        $ref = new ReflectionClass(XdebugDriver::class);
+        $driver = $ref->newInstanceWithoutConstructor();
         $primaryCodeCoverage = new CodeCoverage(
-            new DummyDriver(),
-            new Filter()
+            $driver,
+            $filter,
         );
 
         foreach ($this->coverageAnalyzer->getUsecases([], [], [$applicationId]) as $usecaseId => $usecase) {
@@ -31,8 +38,8 @@ class Builder
             $processed->markCodeAsExecutedByTestCase('soarce:' . $usecase['name'], $rawCodeCoverageData);
 
             $codeCoverage = new CodeCoverage(
-                new DummyDriver(),
-                new Filter()
+                $driver,
+                $filter,
             );
 
             $codeCoverage->setData($processed);
